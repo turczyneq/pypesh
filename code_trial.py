@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from skfem.helpers import grad, dot
 
 # Define the Peclet number
-peclet = 0.000001
+peclet = 10000
 
 floor_depth = 5.0
 floor_width = 5.0
@@ -23,6 +23,16 @@ box_points = np.array(
         [0, floor_depth],
     ]
 )
+
+big_mesh_box = np.array(
+    [
+        [floor_width, -floor_depth],
+        [2*floor_width, -floor_depth],
+        [2*floor_width, floor_depth],
+        [floor_width, floor_depth],
+        
+    ]
+)
 phi_values = np.linspace(0, np.pi, ball_segments)
 ball_points = ball_size * np.column_stack((np.sin(phi_values), np.cos(phi_values)))
 mesh_boundary = np.vstack((box_points, ball_points))
@@ -33,6 +43,7 @@ with pygmsh.geo.Geometry() as geom:
         mesh_boundary,
         mesh_size=mesh_size,  # Mesh size
     )
+    # poly2 = geom.add_polygon(big_mesh_box,mesh_size=2*mesh_size)
 
     raw_mesh = geom.generate_mesh()
 
@@ -63,7 +74,6 @@ plt.plot(ball_nodes[0], ball_nodes[1], "o")
 show()
 
 
-@BilinearForm
 @BilinearForm
 def advection(u, v, w):
     """Advection bilinear form."""
@@ -106,7 +116,7 @@ u = solve(*condense(A, x=u, I=interior))
 if __name__ == "__main__":
     # Plot the solution
 
-    # mesh.draw()
+    #mesh.draw()
 
     plt.tripcolor(mesh.p[0], mesh.p[1], mesh.t.T, u, shading="gouraud", cmap="viridis")
     plt.colorbar()
