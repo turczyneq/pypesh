@@ -6,7 +6,7 @@ from skfem.visuals.matplotlib import plot, show
 import matplotlib.pyplot as plt
 
 # Define the Peclet number
-peclet = 10000
+peclet = 100
 
 floor_depth = 5.0
 floor_width = 5.0
