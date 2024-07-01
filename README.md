@@ -2,9 +2,7 @@ FEM advection diffusion solver
 ==============================
 
 This repository attempts to find a solution to advection diffusion problem
-$$
-0 = \Delta \phi - \mathrm{Pe} (u \cdot \nabla \phi)
-$$
+$$0 = \Delta \phi - \mathrm{Pe} (u \cdot \nabla \phi) $$
 with $\phi = 1$ for $z \to \infty$ and $\phi = 0$ on a surface of the sphere and $\mathrm{Pe}$ denoting Peclet number.
 
 ![Some solution of advection diffusion type problem](/graphics/sample_image.png)
