@@ -1,0 +1,4 @@
+scikit-fem
+matplotlib
+meshio
+pygmsh
