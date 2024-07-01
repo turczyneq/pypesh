@@ -13,25 +13,27 @@ floor_depth = 5.0
 floor_width = 5.0
 ball_size = 1.0
 ball_segments = 100
-mesh_size = 0.1
+mesh_size = 0.05
+far_mesh = 1
 
-box_points = np.array(
-    [
-        [0, -floor_depth],
-        [floor_width, -floor_depth],
-        [floor_width, floor_depth],
-        [0, floor_depth],
+box_points = [
+        ([0, -floor_depth], far_mesh),
+        ([floor_width, -floor_depth], far_mesh),
+        ([floor_width, floor_depth], far_mesh),
+        ([0, floor_depth], mesh_size),
     ]
-)
+
 phi_values = np.linspace(0, np.pi, ball_segments)
 ball_points = ball_size * np.column_stack((np.sin(phi_values), np.cos(phi_values)))
-mesh_boundary = np.vstack((box_points, ball_points))
+mesh_boundary = np.vstack((
+    np.array([p for p,s  in box_points])
+    , ball_points))
 
 # Create the geometry and mesh using pygmsh
 with pygmsh.geo.Geometry() as geom:
     poly = geom.add_polygon(
-        mesh_boundary,
-        mesh_size=mesh_size,  # Mesh size
+        mesh_boundary,        
+        mesh_size=([s for p,s in box_points]) + ([mesh_size] * len(ball_points)),
     )
 
     raw_mesh = geom.generate_mesh()
