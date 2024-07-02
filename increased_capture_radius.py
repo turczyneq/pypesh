@@ -1,12 +1,3 @@
-# Copyright (C) 2024  Radost Waszkiewicz and Jan Turczynowicz
-# This software is published under GPL3.0 license
-
-# Folowing code solves advection-diffusion problem for 
-# temperature distribution around a cold sphere in warm 
-# liquid. Liquid flow is modelled using stokes flow field.
-# Thermal difusivity to advection ratio is controlled by 
-# Peclet number.
-
 import pygmsh
 import numpy as np
 from skfem import *
@@ -77,13 +68,16 @@ show()
 def advection(u, v, w):
     """Advection bilinear form."""
 
-    # Coordinate fields
-    r, z = w.x
-
     U = 1 # velocity scale
-    a = 1 # ball size
-            
-    squared_dist = r**2 + z**2    
+    a = 0.9 # ball size
+    r, z = w.x
+    
+    # # Calculate the velocity components v_r and v_z
+    # v_r = (-3 * z * r * (-1 + z**2 + r**2)) / (4. * (z**2 + r**2)**2.5)
+    # v_z = -(2 * z**2 - 6 * z**4 - r**2 - 9 * z**2 * r**2 - 3 * r**4 + 4 * (z**2 + r**2)**2.5) / (4. * (z**2 + r**2)**2.5)
+
+    squared_dist = r**2 + z**2
+
     v_r = ((3*a*r*z*U)/(4*(squared_dist)**0.5))*((a/(squared_dist))**2-(1/(squared_dist)))
     v_z = U + ((3*a*U)/(4*(squared_dist)**0.5))*((2*a**2+3*r**2)/(3*(squared_dist))-((a*r)/(squared_dist))**2-2)
     
@@ -93,7 +87,7 @@ def advection(u, v, w):
 
 @BilinearForm
 def claplace(u, v, w):
-    """Laplace operator in cylindrical coords."""
+    """laplace operator in cylindrical coors. bilinear form."""
     r = abs(w.x[1])    
     return dot(grad(u),grad(v))*2*np.pi*r
 
@@ -107,6 +101,7 @@ A = asm(claplace, basis) + peclet * asm(advection, basis)
 # Initialize the solution vector with boundary conditions
 u = basis.zeros()
 
+# u[basis.get_dofs("left")] = 1.0  # Left boundary condition
 u[basis.get_dofs("bottom")] = 1.0  # Bottom boundary condition
 u[basis.get_dofs("ball")] = 0.0  # Bottom boundary condition
 
@@ -125,10 +120,22 @@ if __name__ == "__main__":
     z = np.linspace(-5, 5, 100)
     R_grid, Z_grid = np.meshgrid(r, z)
 
+    # Calculate the expression on the grid
+    squared_dist = R_grid**2 + Z_grid**2
+    expression = (0.5 * U * R_grid**2 * (1 - 1.5 * R / np.sqrt(squared_dist) + 0.5 * (R / np.sqrt(squared_dist))**3))
+
+    # Create the contour plot with a single contour line at value 0.05
+    plt.figure(figsize=(8, 8))
+    toplt = plt.contour(R_grid, Z_grid, expression, [0.005],colors="#aaa")
+    #plt.clabel(toplt, inline=True, colors='blue')
+
     plt.tripcolor(mesh.p[0], mesh.p[1], mesh.t.T, u, shading="gouraud", cmap="viridis")
     plt.colorbar()
     plt.clim(vmin=0, vmax=1)  # Set color range
     plt.gca().set_aspect('equal', 'box')  # 'equal' ensures that one unit in x is equal to one unit in y
     plt.tight_layout()
 
-    plt.show()    
+    plt.show()
+
+    # plot(basis, u, shading="gouraud", colorbar=True, cmap="viridis")
+    # show()
