@@ -7,13 +7,13 @@ import matplotlib.pyplot as plt
 from skfem.helpers import grad, dot
 
 # Define the Peclet number
-peclet = 0.000001
+peclet = 10000
 
 floor_depth = 5.0
 floor_width = 5.0
 ball_size = 1.0
 ball_segments = 100
-mesh_size = 0.05
+mesh_size = 0.01
 far_mesh = 1
 
 box_points = [
@@ -80,13 +80,13 @@ def advection(u, v, w):
     
     advection_velocity_x = v_r
     advection_velocity_y = -v_z
-    return (v * advection_velocity_x * grad(u)[0] + v * advection_velocity_y * grad(u)[1])*r
+    return (v * advection_velocity_x * grad(u)[0] + v * advection_velocity_y * grad(u)[1])*2*np.pi*r
 
 @BilinearForm
 def claplace(u, v, w):
     """laplace operator in cylindrical coors. bilinear form."""
     r = abs(w.x[1])    
-    return dot(grad(u),grad(v)) *r
+    return dot(grad(u),grad(v))*2*np.pi*r
 
 
 # Identify the interior degrees of freedom
