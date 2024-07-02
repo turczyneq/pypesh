@@ -7,14 +7,14 @@ import matplotlib.pyplot as plt
 from skfem.helpers import grad, dot
 
 # Define the Peclet number
-peclet = 10000
+peclet = 10**6
 
 floor_depth = 5.0
 floor_width = 5.0
 ball_size = 1.0
 ball_segments = 100
-mesh_size = 0.01
-far_mesh = 1
+mesh_size = 0.001
+far_mesh = 0.5
 
 box_points = [
         ([0, -floor_depth], far_mesh),
@@ -64,22 +64,25 @@ plt.plot(bottom_nodes[0], bottom_nodes[1], "x")
 plt.plot(ball_nodes[0], ball_nodes[1], "o")
 show()
 
-
-@BilinearForm
 @BilinearForm
 def advection(u, v, w):
     """Advection bilinear form."""
 
     U = 1 # velocity scale
-    a = 1 # ball size
+    a = 0.9 # ball size
     r, z = w.x
     
     # # Calculate the velocity components v_r and v_z
-    v_r = (-3 * z * r * (-1 + z**2 + r**2)) / (4. * (z**2 + r**2)**2.5)
-    v_z = -(2 * z**2 - 6 * z**4 - r**2 - 9 * z**2 * r**2 - 3 * r**4 + 4 * (z**2 + r**2)**2.5) / (4. * (z**2 + r**2)**2.5)
+    # v_r = (-3 * z * r * (-1 + z**2 + r**2)) / (4. * (z**2 + r**2)**2.5)
+    # v_z = -(2 * z**2 - 6 * z**4 - r**2 - 9 * z**2 * r**2 - 3 * r**4 + 4 * (z**2 + r**2)**2.5) / (4. * (z**2 + r**2)**2.5)
+
+    squared_dist = r**2 + z**2
+
+    v_r = ((3*a*r*z*U)/(4*(squared_dist)**0.5))*((a/(squared_dist))**2-(1/(squared_dist)))
+    v_z = U + ((3*a*U)/(4*(squared_dist)**0.5))*((2*a**2+3*r**2)/(3*(squared_dist))-((a*r)/(squared_dist))**2-2)
     
     advection_velocity_x = v_r
-    advection_velocity_y = -v_z
+    advection_velocity_y = v_z
     return (v * advection_velocity_x * grad(u)[0] + v * advection_velocity_y * grad(u)[1])*2*np.pi*r
 
 @BilinearForm
@@ -108,7 +111,23 @@ u = solve(*condense(A, x=u, I=interior))
 if __name__ == "__main__":
     # Plot the solution
 
+    # Define the parameters
+    U = 1.0  # Example value for U
+    R = 1.0  # Example value for R
+
     # mesh.draw()
+    r = np.linspace(0, 5, 100)
+    z = np.linspace(-5, 5, 100)
+    R_grid, Z_grid = np.meshgrid(r, z)
+
+    # Calculate the expression on the grid
+    squared_dist = R_grid**2 + Z_grid**2
+    expression = (0.5 * U * R_grid**2 * (1 - 1.5 * R / np.sqrt(squared_dist) + 0.5 * (R / np.sqrt(squared_dist))**3))
+
+    # Create the contour plot with a single contour line at value 0.05
+    plt.figure(figsize=(8, 8))
+    toplt = plt.contour(R_grid, Z_grid, expression, [0.005],colors="#aaa")
+    #plt.clabel(toplt, inline=True, colors='blue')
 
     plt.tripcolor(mesh.p[0], mesh.p[1], mesh.t.T, u, shading="gouraud", cmap="viridis")
     plt.colorbar()
