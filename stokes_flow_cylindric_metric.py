@@ -77,14 +77,15 @@ if __name__ == "__main__":
 # mesh = MeshTri(
 #     raw_mesh.points[:, :2].T, raw_mesh.cells_dict["triangle"].T
 # ).with_boundaries(
-#     {
+#     {s
 #         "left": lambda x: np.isclose(x[0], 0),  # Left boundary condition
 #         "bottom": lambda x: np.isclose(x[1], -floor_depth),  # Bottom boundary condition
 #         "ball": lambda x: x[0] ** 2 + x[1] ** 2 < 1.1 * ball_size**2,
 #     }
 # )
 
-mesh = MeshTri.load(Path(__file__).parent / "meshes" / "cylinder_stokes.msh")
+# mesh = MeshTri.load(Path(__file__).parent / "meshes" / "cylinder_stokes.msh")
+mesh = MeshTri.load(Path(__file__).parent / "meshes" / "cylinder_stokes_fine.msh")
 
 # Define the basis for the finite element method
 basis = Basis(mesh, ElementTriP1())
@@ -101,10 +102,10 @@ def advection(k, l, m):
     a = 1  # ball size
 
     # Stokes flow around a sphere of size `a`
-    w = r ** 2 + z ** 2
-    v_r = ((3 * a * r * z * u) / (4 * w ** 0.5)) * ((a / w) ** 2 - (1 / w))
-    v_z = u + ((3 * a * u) / (4 * w ** 0.5)) * (
-        (2 * a ** 2 + 3 * r ** 2) / (3 * w) - ((a * r) / w) ** 2 - 2
+    w = r**2 + z**2
+    v_r = ((3 * a * r * z * u) / (4 * w**0.5)) * ((a / w) ** 2 - (1 / w))
+    v_z = u + ((3 * a * u) / (4 * w**0.5)) * (
+        (2 * a**2 + 3 * r**2) / (3 * w) - ((a * r) / w) ** 2 - 2
     )
 
     return (l * v_r * grad(k)[0] + l * v_z * grad(k)[1]) * 2 * np.pi * r
@@ -139,16 +140,13 @@ fbasis = FacetBasis(mesh, ElementTriP1(), facets="top")
 
 
 @Functional
-def intercepted(w):
-    r, z = w.x
-    phi = w["u"]
+def intercepted(m):
+    r, z = m.x
+    phi = m["u"]
+
     return (1 - phi) * 2 * np.pi * r
 
 
 result = asm(intercepted, fbasis, u=u)
 
-print("")
-print("Peclet:")
-print(peclet)
-print("Intercepted:")
-print(result)
+print(f"pe,{peclet},intercepted,{result},")
