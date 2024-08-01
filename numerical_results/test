@@ -1,0 +1,25 @@
+width 2:
+
+pe,10000.0,intercepted,0.05854808923973823,
+
+ 
+width 5:
+
+pe,10000.0,intercepted,0.019241333962318488,
+
+ 
+width 10:
+
+pe,10000.0,intercepted,0.01891707831628215,
+
+ 
+width 20:
+
+pe,10000.0,intercepted,0.01891021181289762,
+
+ 
+width 50:
+
+pe,10000.0,intercepted,0.018908806794869174,
+
+ 

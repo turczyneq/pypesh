@@ -2,3 +2,4 @@ scikit-fem
 matplotlib
 meshio
 pygmsh
+tqdm

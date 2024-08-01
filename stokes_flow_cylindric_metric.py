@@ -22,8 +22,8 @@ from skfem import (
 from skfem import asm, solve, condense
 from skfem.helpers import grad, dot
 
-# Define the Peclet number
-peclet = 30
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 if __name__ == "__main__":
     import argparse
@@ -32,9 +32,23 @@ if __name__ == "__main__":
     parser.add_argument(
         "--peclet",
         type=float,
-        default=30,
+        default=100,
         help="value of Peclet number",
     )
+    parser.add_argument(
+        "--mesh",
+        type=str,
+        default="cylinder_stokes_fine.msh",
+        help="select if specyfic mesh is downloaded",
+    )
+
+    parser.add_argument(
+        "--ball",
+        type=float,
+        default=1,
+        help="radius of the ball in absorbing radius",
+    )
+
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
 
@@ -85,7 +99,7 @@ if __name__ == "__main__":
 # )
 
 # mesh = MeshTri.load(Path(__file__).parent / "meshes" / "cylinder_stokes.msh")
-mesh = MeshTri.load(Path(__file__).parent / "meshes" / "cylinder_stokes_fine.msh")
+mesh = MeshTri.load(Path(__file__).parent / "meshes" / args.mesh)
 
 # Define the basis for the finite element method
 basis = Basis(mesh, ElementTriP1())
@@ -99,7 +113,7 @@ def advection(k, l, m):
     r, z = m.x
 
     u = 1  # velocity scale
-    a = 1  # ball size
+    a = args.ball  # ball size
 
     # Stokes flow around a sphere of size `a`
     w = r**2 + z**2
@@ -112,17 +126,16 @@ def advection(k, l, m):
 
 
 @BilinearForm
-def claplace(u, v, w):
+def claplace(u, v, m):
     """Laplace operator in cylindrical coordinates."""
-    r = abs(w.x[1])
+    r, z = m.x
     return dot(grad(u), grad(v)) * 2 * np.pi * r
 
+# Assemble the system matrix
+A = (1/peclet) * asm(claplace, basis) + asm(advection, basis)
 
 # Identify the interior degrees of freedom
 interior = basis.complement_dofs(basis.get_dofs({"bottom", "ball"}))
-
-# Assemble the system matrix
-A = asm(claplace, basis) + peclet * asm(advection, basis)
 
 # Boundary condition
 u = basis.zeros()
@@ -132,21 +145,54 @@ u[basis.get_dofs("ball")] = 0.0
 u = solve(*condense(A, x=u, I=interior))
 
 if __name__ == "__main__" and not args.quiet:
+    import matplotlib.pyplot as plt
 
     mesh.draw(boundaries=True).show()
-    basis.plot(u, shading="gouraud", cmap="viridis").show()
+
+    dofs = basis.get_dofs("top")
+    vals = [[x, 1-el] for x, el in zip(mesh.p[0, dofs.nodal["u"]],u[basis.get_dofs("top")])]
+    vals = sorted(vals, key=lambda pair: pair[0])
+    xargs, yargs = zip(*vals)
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(xargs, yargs, color='b', marker = 'o')
+
+    # Add labels and title
+    plt.xlabel('radius')
+    plt.ylabel('propability')
+
+    # Show the plot
+    plt.show()
+
+    # basis.plot(u, shading="gouraud", cmap="viridis").show()
 
 fbasis = FacetBasis(mesh, ElementTriP1(), facets="top")
 
-
 @Functional
 def intercepted(m):
+    # Coordinate fields
     r, z = m.x
+
+    u = 1  # velocity scale
+    a = args.ball  # ball size
+
+    w = r**2 + z**2
+
+    v_z = u + ((3 * a * u) / (4 * w**0.5)) * (
+    (2 * a**2 + 3 * r**2) / (3 * w) - ((a * r) / w) ** 2 - 2
+    )
     phi = m["u"]
 
-    return (1 - phi) * 2 * np.pi * r
+    '''
+    calculation of effective surface: 
+        1-phi - propability of hitting
+        2*pi*r - measure from cylindrical integration
+        v_z - flux is v.n so effective surface is dependent on value of v_z for selected r
+    '''
+
+    return (1 - phi) * 2 * np.pi * r * v_z
 
 
 result = asm(intercepted, fbasis, u=u)
 
-print(f"pe,{peclet},intercepted,{result},")
+print(f"{peclet}\t{result}")
