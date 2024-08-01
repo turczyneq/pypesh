@@ -101,7 +101,7 @@ plt.scatter(
 
 # Plot Kramers experimental data
 plt.scatter(
-    kramers[:, 0],
+    2*kramers[:, 0],
     kramers[:, 1],
     label="Kramers et al.",
     color="C6",
