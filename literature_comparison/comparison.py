@@ -7,14 +7,19 @@ parent_dir = Path(__file__).parent
 numerical_path = parent_dir / "data/this_work.csv"
 numerical = np.loadtxt(numerical_path, delimiter=",", skiprows=1)
 
+
 def clift_approximation(pe):
     return (1 / 2) * (1 + (1 + 2 * pe) ** (1 / 3))
+
 
 peclet_values = np.logspace(-1, 5, 300)
 analytic_clift = clift_approximation(peclet_values)
 
 numerical_clift_path = parent_dir / "data/clift.csv"
 numerical_clift = np.loadtxt(numerical_clift_path, delimiter=",", skiprows=1)
+
+friedlander_path = parent_dir / "data/friedlander.csv"
+friedlander = np.loadtxt(friedlander_path, delimiter=",", skiprows=1)
 
 kutateladze_path = parent_dir / "data/kutateladze.csv"
 kutateladze = np.loadtxt(kutateladze_path, delimiter=",", skiprows=1)
@@ -36,8 +41,8 @@ plt.loglog(
     numerical[:, 0],
     numerical[:, 1],
     label="This work",
-    color="b",
-    linewidth=2,
+    color="C0",
+    linewidth=4,
     zorder=2,
 )
 
@@ -46,8 +51,8 @@ plt.loglog(
     peclet_values,
     analytic_clift,
     label="Clift et al. (analytic)",
-    color="gray",
-    linestyle="--",
+    color="C7",
+    linestyle="-",
     linewidth=3,
     zorder=1,
 )
@@ -55,18 +60,27 @@ plt.loglog(
     numerical_clift[:, 0],
     numerical_clift[:, 1],
     label="Clift et al. (numerical)",
-    color="g",
-    linestyle="--",
+    color="C7",
+    dashes=[4, 0.5, 0.5, 0.5],
+    linewidth=3,
+    zorder=1,
+)
+plt.loglog(
+    0.5 * friedlander[:, 0],
+    0.5 * friedlander[:, 1],
+    label="Friedlander (numerical)",
+    color="C7",
+    dashes=[4, 0.5, 0.5, 0.5, 0.5, 0.5],
     linewidth=3,
     zorder=1,
 )
 
-# Plot Kuta experimental data
+# Plot Kutateladze experimental data
 plt.scatter(
-    kutateladze[:, 0],
+    0.5 * kutateladze[:, 0],
     kutateladze[:, 1],
     label="Kutateladze et al.",
-    color="r",
+    color="C1",
     marker="o",
     s=50,
     edgecolor="k",
@@ -78,11 +92,11 @@ plt.scatter(
     feng[:, 0],
     feng[:, 1],
     label="Feng et al.",
-    color="orange",
-    marker="^",
+    color="C3",
+    marker="D",
     s=50,
     edgecolor="k",
-    zorder=3,
+    zorder=4,
 )
 
 # Plot Kramers experimental data
@@ -90,7 +104,7 @@ plt.scatter(
     kramers[:, 0],
     kramers[:, 1],
     label="Kramers et al.",
-    color="pink",
+    color="C6",
     marker="s",
     s=50,
     edgecolor="k",
