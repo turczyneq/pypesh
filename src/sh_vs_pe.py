@@ -100,39 +100,72 @@ if __name__ == "__main__":
 # )
 
 # mesh = MeshTri.load(Path(__file__).parent / "meshes" / "cylinder_stokes.msh")
-mesh = MeshTri.load(Path(__file__).parent / "meshes" / args.mesh)
+mesh_fine = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes_fine_turbo.msh")
+
+mesh_default = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes_fine.msh")
+
+mesh_wide = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes_fine_wide.msh")
 
 # Define the basis for the finite element method
-basis = Basis(mesh, ElementTriP1())
+basis_fine = Basis(mesh_fine, ElementTriP1())
+
+basis_default = Basis(mesh_default, ElementTriP1())
+
+basis_wide = Basis(mesh_wide, ElementTriP1())
 
 
-@BilinearForm
-def advection(k, l, m):
-    """Advection bilinear form."""
+def sherwood(peclet, ball_radius):
+    
+    @BilinearForm
+    def advection(k, l, m):
+        """Advection bilinear form."""
 
-    # Coordinate fields
-    r, z = m.x
+        # Coordinate fields
+        r, z = m.x
 
-    u = 1  # velocity scale
-    a = args.ball  # ball size
+        u = 1  # velocity scale
+        a = ball_radius  # ball size
 
-    # Stokes flow around a sphere of size `a`
-    w = r**2 + z**2
-    v_r = ((3 * a * r * z * u) / (4 * w**0.5)) * ((a / w) ** 2 - (1 / w))
-    v_z = u + ((3 * a * u) / (4 * w**0.5)) * (
-        (2 * a**2 + 3 * r**2) / (3 * w) - ((a * r) / w) ** 2 - 2
-    )
+        # Stokes flow around a sphere of size `a`
+        w = r**2 + z**2
+        v_r = ((3 * a * r * z * u) / (4 * w**0.5)) * ((a / w) ** 2 - (1 / w))
+        v_z = u + ((3 * a * u) / (4 * w**0.5)) * (
+            (2 * a**2 + 3 * r**2) / (3 * w) - ((a * r) / w) ** 2 - 2
+        )
 
-    return (l * v_r * grad(k)[0] + l * v_z * grad(k)[1]) * 2 * np.pi * r
+        return (l * v_r * grad(k)[0] + l * v_z * grad(k)[1]) * 2 * np.pi * r
 
 
-@BilinearForm
-def claplace(u, v, m):
-    """Laplace operator in cylindrical coordinates."""
-    r, z = m.x
-    return dot(grad(u), grad(v)) * 2 * np.pi * r
+    @BilinearForm
+    def claplace(u, v, m):
+        """Laplace operator in cylindrical coordinates."""
+        r, z = m.x
+        return dot(grad(u), grad(v)) * 2 * np.pi * r
 
-def sherwood(peclet):
+    if peclet > 50000:
+        '''
+        For big peclets use finer mesh
+        '''
+        mesh = mesh_fine
+        basis = basis_fine
+        #print(f"peclet {peclet}, using finer mesh")
+
+    elif peclet < 5:
+        '''
+        For small peclets use wider base with bigger mesh
+        '''
+        mesh = mesh_wide
+        basis = basis_wide
+        #print(f"peclet {peclet}, using wider mesh")
+
+    else:
+        '''
+        For regural peclets use default mesh
+        '''
+        mesh = mesh_default
+        basis = basis_default
+        #print(f"peclet {peclet}, using default mesh")
+
     # Assemble the system matrix
     A =  asm(claplace, basis) + peclet * asm(advection, basis)
 
@@ -146,10 +179,10 @@ def sherwood(peclet):
 
     u = solve(*condense(A, x=u, I=interior))
 
-    dofs = basis.get_dofs("top")
-    vals = [[x, 1-el] for x, el in zip(mesh.p[0, dofs.nodal["u"]],u[basis.get_dofs("top")])]
-    vals = sorted(vals, key=lambda pair: pair[0])
-    xargs, yargs = zip(*vals)
+    # dofs = basis.get_dofs("top")
+    # vals = [[x, 1-el] for x, el in zip(mesh.p[0, dofs.nodal["u"]],u[basis.get_dofs("top")])]
+    # vals = sorted(vals, key=lambda pair: pair[0])
+    # xargs, yargs = zip(*vals)
     # pe_exp = f"{peclet}".replace('.', '_')
     # output_file = f"numerical_results/sh_vs_pe/ball{args.ball}/peclet" + pe_exp + ".txt"
     # with open(output_file, 'w') as f:
@@ -159,19 +192,19 @@ def sherwood(peclet):
     if __name__ == "__main__" and not args.quiet:
         import matplotlib.pyplot as plt
 
-        # mesh.draw(boundaries=True).show()
+        mesh.draw(boundaries=True).show()
 
-        plt.figure(figsize=(10, 6))
-        plt.plot(xargs, yargs, color='b', marker = 'o')
+        # plt.figure(figsize=(10, 6))
+        # plt.plot(xargs, yargs, color='b', marker = 'o')
 
-        # Add labels and title
-        plt.xlabel('radius')
-        plt.ylabel('propability')
+        # # Add labels and title
+        # plt.xlabel('radius')
+        # plt.ylabel('propability')
 
-        # Show the plot
-        plt.show()
+        # # Show the plot
+        # plt.show()
 
-        # basis.plot(u, shading="gouraud", cmap="viridis").show()
+        basis.plot(u, shading="gouraud", cmap="viridis").show()
 
     fbasis = FacetBasis(mesh, ElementTriP1(), facets="top")
 
@@ -199,27 +232,36 @@ def sherwood(peclet):
 
         return (1 - phi) * 2 * np.pi * r * v_z
 
-
+    '''
+    Calculating Sherwood
+    '''
     result = peclet*asm(intercepted, fbasis, u=u)/(4*np.pi)
 
     return result
 
-sherwood(10**6)
+pe_list = []
+for i in range(0,11):
+    pe_list = pe_list + [round((10**i)*float(round(pe,1)),2) for pe in np.logspace(0, 1, 8)[:-1]]
+pe_list = [0.1, 0.2, 0.5] + pe_list
 
-# pe_list = np.logspace(-1, 6, 20)
+'''
+r_syf is measured in radius of ball(r_ball) - this is intuitve, on the other hand everything else is measured in r_syf + r_ball
 
-# from tqdm import tqdm
-# try:  
-#     os.mkdir(f"numerical_results/sh_vs_pe/ball{args.ball}")
-# except OSError as error:  
-#     pass
+so r_ball = 1/(1 + r_syf)
+'''
+ball_list = []
+for i in range(-3,0):
+    ball_list = ball_list + [(10**i)*ball for ball in [1, 2, 5]]
+ball_list = [0] + ball_list
 
-# result = np.zeros((len(pe_list),2))
-# for n in tqdm(range(len(pe_list))):
-#     result[n,0] = pe_list[n]
-#     result[n,1] = sherwood(pe_list[n]) 
+from tqdm import tqdm
 
-# output_file = f"numerical_results/sh_vs_pe/ball{args.ball}.txt"
-# with open(output_file, 'w') as f:
-#     for x, y in result:
-#         f.write(f"{x}\t{y}\n")
+output_file = f"numerical_results/sh_vs_pe_and_ball.txt"
+with open(output_file, 'w') as f:
+    f.write("Peclet\tr_syf\tSherwood\n")
+
+for j in range(len(ball_list)):
+    print(f"doing ball with radius {1/(1+ball_list[j])}")
+    for n in tqdm(range(len(pe_list))):
+        with open(output_file, 'a') as f:
+            f.write(f"{pe_list[n]}\t{ball_list[j]}\t{sherwood(pe_list[n], 1/(1+ball_list[j]))}\n")

@@ -18,3 +18,4 @@ rich==13.7.1
 scikit-fem==9.1.1
 scipy==1.14.0
 six==1.16.0
+tqdm
