@@ -22,6 +22,7 @@ from skfem import (
 from skfem import asm, solve, condense
 from skfem.helpers import grad, dot
 import os
+import pychast.collision_kernels as coll_ker
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
@@ -100,6 +101,8 @@ if __name__ == "__main__":
 # )
 
 # mesh = MeshTri.load(Path(__file__).parent / "meshes" / "cylinder_stokes.msh")
+
+
 mesh_fine = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes_fine_turbo.msh")
 
 mesh_default = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes_fine.msh")
@@ -142,7 +145,10 @@ def sherwood(peclet, ball_radius):
         r, z = m.x
         return dot(grad(u), grad(v)) * 2 * np.pi * r
 
-    if peclet > 50000:
+    if peclet > 10**7:
+        return 1
+
+    elif peclet > 50000:
         '''
         For big peclets use finer mesh
         '''
@@ -239,29 +245,32 @@ def sherwood(peclet, ball_radius):
 
     return result
 
-pe_list = []
-for i in range(0,11):
-    pe_list = pe_list + [round((10**i)*float(round(pe,1)),2) for pe in np.logspace(0, 1, 8)[:-1]]
-pe_list = [0.1, 0.2, 0.5] + pe_list
+# print(coll_ker.sherwood_from_peclet(100000, 0.9, trials = 200, floor_r = 0.5, r_mesh = 0.001))
+# print(sherwood(100000, 0.9))
 
 '''
-r_syf is measured in radius of ball(r_ball) - this is intuitve, on the other hand everything else is measured in r_syf + r_ball
-
-so r_ball = 1/(1 + r_syf)
+For high peclets, relevant scaling is peclet*r_syf**2 so values calculated for equal xi = peclet*r_syf**2 for all r_syf
 '''
+
+xi_list = []
+for i in range(0,6):
+    xi_list = xi_list + [round((10**i)*float(round(xi,1)),2) for xi in np.logspace(0, 1, 6)[:-1]]
+xi_list = [0.1, 0.2, 0.5] + xi_list
+
 ball_list = []
 for i in range(-3,0):
     ball_list = ball_list + [(10**i)*ball for ball in [1, 2, 5]]
-ball_list = [0] + ball_list
 
 from tqdm import tqdm
 
 output_file = f"numerical_results/sh_vs_pe_and_ball.txt"
 with open(output_file, 'w') as f:
-    f.write("Peclet\tr_syf\tSherwood\n")
+    f.write("Peclet\tr_syf\tSherwood_fem\tSherwood_pychast\n")
 
 for j in range(len(ball_list)):
-    print(f"doing ball with radius {1/(1+ball_list[j])}")
-    for n in tqdm(range(len(pe_list))):
+    print(f"doing ball with radius {ball_list[j]}")
+    for n in tqdm(range(len(xi_list))):
+        peclet = xi_list[n]/((ball_list[j])**2)
+        ball_radius = 1 - ball_list[j]
         with open(output_file, 'a') as f:
-            f.write(f"{pe_list[n]}\t{ball_list[j]}\t{sherwood(pe_list[n], 1/(1+ball_list[j]))}\n")
+            f.write(f"{peclet}\t{ball_list[j]}\t{sherwood(peclet, ball_radius)}\t{coll_ker.sherwood_from_peclet(peclet, ball_radius, trials = 150, floor_r = ball_list[j]*2, r_mesh = ball_list[j]*2/100)}\n")

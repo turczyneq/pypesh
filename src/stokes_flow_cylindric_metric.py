@@ -99,7 +99,7 @@ if __name__ == "__main__":
 # )
 
 # mesh = MeshTri.load(Path(__file__).parent / "meshes" / "cylinder_stokes.msh")
-mesh = MeshTri.load(Path(__file__).parent / "meshes" / args.mesh)
+mesh = MeshTri.load(Path(__file__).parent.parent / "meshes" / args.mesh)
 
 # Define the basis for the finite element method
 basis = Basis(mesh, ElementTriP1())
@@ -147,24 +147,35 @@ u = solve(*condense(A, x=u, I=interior))
 if __name__ == "__main__" and not args.quiet:
     import matplotlib.pyplot as plt
 
-    mesh.draw(boundaries=True).show()
+    # mesh.draw(boundaries=True).show()
 
-    dofs = basis.get_dofs("top")
-    vals = [[x, 1-el] for x, el in zip(mesh.p[0, dofs.nodal["u"]],u[basis.get_dofs("top")])]
-    vals = sorted(vals, key=lambda pair: pair[0])
-    xargs, yargs = zip(*vals)
+    # dofs = basis.get_dofs("top")
+    # vals = [[x, 1-el] for x, el in zip(mesh.p[0, dofs.nodal["u"]],u[basis.get_dofs("top")])]
+    # vals = sorted(vals, key=lambda pair: pair[0])
+    # xargs, yargs = zip(*vals)
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(xargs, yargs, color='b', marker = 'o')
+    # plt.figure(figsize=(10, 6))
+    # plt.plot(xargs, yargs, color='b', marker = 'o')
 
-    # Add labels and title
-    plt.xlabel('radius')
-    plt.ylabel('propability')
+    # # Add labels and title
+    # plt.xlabel('radius')
+    # plt.ylabel('propability')
 
-    # Show the plot
-    plt.show()
+    # # Show the plot
+    # plt.show()
 
     # basis.plot(u, shading="gouraud", cmap="viridis").show()
+
+    plt.figure(figsize=(8, 8))
+    plt.tripcolor(mesh.p[0], -mesh.p[1], mesh.t.T, u, shading="gouraud", cmap="viridis")
+    # plt.colorbar()
+    plt.clim(vmin=0, vmax=1)  # Set color range
+    plt.gca().set_aspect('equal', 'box')  # 'equal' ensures that one unit in x is equal to one unit in y
+    plt.tight_layout()
+    plt.xlim(0, 3)
+    plt.ylim(-5.5, 2.5)
+
+    plt.savefig("fem.eps", format = "eps")
 
 fbasis = FacetBasis(mesh, ElementTriP1(), facets="top")
 

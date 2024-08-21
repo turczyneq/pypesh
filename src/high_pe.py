@@ -19,6 +19,7 @@ from skfem import (
     BilinearForm,
     LinearForm,
     FacetBasis,
+    InteriorFacetBasis,
     Functional,
 )
 from skfem import asm, solve, condense
@@ -104,16 +105,11 @@ if __name__ == "__main__":
 # mesh = MeshTri.load(Path(__file__).parent / "meshes" / "cylinder_stokes.msh")
 # mesh_fine = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes_fine_turbo.msh")
 
-mesh_default = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes.msh")
-
-mesh_wide = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes.msh")
-
+mesh = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes.msh")
 # Define the basis for the finite element method
 # basis_fine = Basis(mesh_fine, ElementTriP1())
 
-basis_default = Basis(mesh_default, ElementTriDG(ElementTriP4()))
-
-basis_wide = Basis(mesh_wide, ElementTriDG(ElementTriP4()))
+basis = Basis(mesh_default, ElementTriDG(ElementTriP4()))
 
 
 def sherwood(peclet, ball_radius):
@@ -144,29 +140,6 @@ def sherwood(peclet, ball_radius):
         r, z = m.x
         return dot(grad(u), grad(v)) * 2 * np.pi * r
 
-    if peclet > 50000:
-        '''
-        For big peclets use finer mesh
-        '''
-        mesh = mesh_default
-        basis = basis_default
-        #print(f"peclet {peclet}, using finer mesh")
-
-    elif peclet < 5:
-        '''
-        For small peclets use wider base with bigger mesh
-        '''
-        mesh = mesh_wide
-        basis = basis_wide
-        #print(f"peclet {peclet}, using wider mesh")
-
-    else:
-        '''
-        For regural peclets use default mesh
-        '''
-        mesh = mesh_default
-        basis = basis_default
-        #print(f"peclet {peclet}, using default mesh")
 
     # Assemble the system matrix
     A =  asm(claplace, basis) + peclet * asm(advection, basis)
