@@ -51,7 +51,7 @@ if __name__ == "__main__":
         help="radius of the ball in absorbing radius",
     )
 
-    parser.add_argument("--quiet", action="store_true")
+    parser.add_argument("--showgraph", action="store_false")
     args = parser.parse_args()
 
     peclet = args.peclet
@@ -195,7 +195,7 @@ def sherwood(peclet, ball_radius):
     #     for x, y in vals:
     #         f.write(f"{x}\t{y}\n")
 
-    if __name__ == "__main__" and not args.quiet:
+    if __name__ == "__main__" and not args.showgraph:
         import matplotlib.pyplot as plt
 
         mesh.draw(boundaries=True).show()
@@ -245,22 +245,21 @@ def sherwood(peclet, ball_radius):
 
     return result
 
-# print(coll_ker.sherwood_from_peclet(100000, 0.9, trials = 200, floor_r = 0.5, r_mesh = 0.001))
-# print(sherwood(100000, 0.9))
-
 '''
 For high peclets, relevant scaling is peclet*r_syf**2 so values calculated for equal xi = peclet*r_syf**2 for all r_syf
 '''
 
-xi_list = []
-for i in range(0,6):
-    xi_list = xi_list + [round((10**i)*float(round(xi,1)),2) for xi in np.logspace(0, 1, 6)[:-1]]
-xi_list = [0.1, 0.2, 0.5] + xi_list
+pe_list = []
+for i in range(0,10):
+    pe_list = pe_list + [round((10**i)*float(round(xi,1)),2) for xi in np.logspace(0, 1, 3)[:-1]]
+# pe_list = [0.1, 0.2, 0.5] + pe_list
 
 ball_list = []
 for i in range(-3,0):
     ball_list = ball_list + [(10**i)*ball for ball in [1, 2, 5]]
 
+print(ball_list)
+print(pe_list)
 from tqdm import tqdm
 
 output_file = f"numerical_results/sh_vs_pe_and_ball.txt"
@@ -268,9 +267,12 @@ with open(output_file, 'w') as f:
     f.write("Peclet\tr_syf\tSherwood_fem\tSherwood_pychast\n")
 
 for j in range(len(ball_list)):
-    print(f"doing ball with radius {ball_list[j]}")
-    for n in tqdm(range(len(xi_list))):
-        peclet = xi_list[n]/((ball_list[j])**2)
+    for n in range(len(pe_list)):
+        peclet = pe_list[n]
         ball_radius = 1 - ball_list[j]
+        print(f"radius = {ball_radius}, peclet = {peclet}")
+        femsol = sherwood(peclet, ball_radius)
+        trajsol = coll_ker.sherwood_from_peclet(peclet, ball_radius, trials = 400, floor_r = ball_list[j]*2, r_mesh = ball_list[j]*2/100)
         with open(output_file, 'a') as f:
-            f.write(f"{peclet}\t{ball_list[j]}\t{sherwood(peclet, ball_radius)}\t{coll_ker.sherwood_from_peclet(peclet, ball_radius, trials = 150, floor_r = ball_list[j]*2, r_mesh = ball_list[j]*2/100)}\n")
+            f.write(f"{peclet}\t{ball_list[j]}\t{femsol}\t{trajsol}\n")
+

@@ -175,7 +175,7 @@ if __name__ == "__main__" and not args.quiet:
     plt.xlim(0, 3)
     plt.ylim(-5.5, 2.5)
 
-    plt.savefig("fem.eps", format = "eps")
+    plt.savefig("fem.png", format = "eps")
 
 fbasis = FacetBasis(mesh, ElementTriP1(), facets="top")
 

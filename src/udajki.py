@@ -36,9 +36,9 @@ def binary_search(fun, target, left, right, tol=1e-15, max_iter=10000):
 
         # If the middle value is less than the target, move to the right half
         if mid_val < target:
-            left = mid + tol
+            left = mid - tol
         else:
-            right = mid - tol
+            right = mid + tol
 
         iteration += 1
 

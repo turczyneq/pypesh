@@ -9,7 +9,7 @@ def sherwood_from_peclet(
     floor_r=5,
     floor_h=5,):
         
-    single_pe_trajectories = gen_traj.generate_trajectories(
+    single_pe_trajectories = gen_traj.generate_trajectories_multiply(
     peclet,
     ball_radius,
     trials=trials,
