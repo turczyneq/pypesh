@@ -119,15 +119,19 @@ def visualise_trajectories(
     circle = plt.Circle((0, 0), ball_radius, color="#666", fill=False)
     plt.gca().add_artist(circle)
 
+    plt.text(1,-1, f"Pe = 10^{int(np.log10(peclet))}")
+
     plt.gca().set_aspect("equal")
-    plt.axis([0, 5, -5.5, 5])
+    plt.axis([0, 2, -2, 0])
 
     # plt.savefig("traj_visualize.svg", format='svg')
     plt.show()
 
-visualise_trajectories(10**6, 0.999, floor_r = 0.002, r_mesh = 0.0001)
+visualise_trajectories(10**6, 0.995, floor_r = 0.002, r_mesh = 0.0005)
 
-print(gen_traj.hitting_propability_at_x(0.0005, 10**9, 0.999, trials = 400))
+visualise_trajectories(10**9, 0.995, floor_r = 0.002, r_mesh = 0.0005)
+
+# print(gen_traj.hitting_propability_at_x(0.0005, 10**9, 0.999, trials = 400))
 
 # pe_list = [10**i for i in range(5,10)]
 

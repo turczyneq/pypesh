@@ -60,54 +60,78 @@ if __name__ == "__main__":
 # Code for creating mesh which we load
 #
 
-# floor_depth = 5.0
-# floor_width = 5.0
-# ball_size = 1.0
-# ball_segments = 100
-# mesh_size = 0.01
-# far_mesh = 0.5
+def gen_mesh( mesh = 0.01, far_mesh = 0.5, cell_size = 1, width = 10, ceiling = 10, floor = 10,)
+    floor_depth = floor*cell_size
+    ceiling_depth = ceiling*cell_size
+    floor_width = width*cell_size
+    ball_size = 1.0
+    ball_segments = int(1/mesh)
+    mesh_size = mesh
+    far_mesh = far_mesh
 
-# box_points = [
-#         ([0, -floor_depth], far_mesh),
-#         ([floor_width, -floor_depth], far_mesh),
-#         ([floor_width, floor_depth], far_mesh),
-#         ([0, floor_depth], mesh_size),
-#     ]
+    box_points = [
+            ([0, -floor_depth], far_mesh),
+            ([floor_width, -floor_depth], far_mesh),
+            ([floor_width, ceiling_depth], far_mesh),
+            ([floor_width/5, ceiling_depth], mesh_size),
+            ([0, ceiling_depth], mesh_size),
+        ]
 
-# phi_values = np.linspace(0, np.pi, ball_segments)
-# ball_points = ball_size * np.column_stack((np.sin(phi_values), np.cos(phi_values)))
-# mesh_boundary = np.vstack((
-#     np.array([p for p,s  in box_points])
-#     , ball_points))
+    phi_values = np.linspace(0, np.pi, ball_segments)
+    ball_points = ball_size * np.column_stack((np.sin(phi_values), np.cos(phi_values)))
+    mesh_boundary = np.vstack((
+        np.array([p for p,s  in box_points])
+        , ball_points))
 
-# # Create the geometry and mesh using pygmsh
-# with pygmsh.geo.Geometry() as geom:
-#     poly = geom.add_polygon(
-#         mesh_boundary,
-#         mesh_size=([s for p,s in box_points]) + ([mesh_size] * len(ball_points)),
-#     )
+    # Create the geometry and mesh using pygmsh
+    with pygmsh.geo.Geometry() as geom:
+        poly = geom.add_polygon(
+            mesh_boundary,
+            mesh_size=([s for p,s in box_points]) + ([mesh_size] * len(ball_points)),
+        )
 
-#     raw_mesh = geom.generate_mesh()
+        raw_mesh = geom.generate_mesh()
 
-# # Convert the mesh to a skfem MeshTri object and define boundaries
-# mesh = MeshTri(
-#     raw_mesh.points[:, :2].T, raw_mesh.cells_dict["triangle"].T
-# ).with_boundaries(
-#     {s
-#         "left": lambda x: np.isclose(x[0], 0),  # Left boundary condition
-#         "bottom": lambda x: np.isclose(x[1], -floor_depth),  # Bottom boundary condition
-#         "ball": lambda x: x[0] ** 2 + x[1] ** 2 < 1.1 * ball_size**2,
-#     }
-# )
+    # Convert the mesh to a skfem MeshTri object and define boundaries
+    mesh = MeshTri(
+        raw_mesh.points[:, :2].T, raw_mesh.cells_dict["triangle"].T
+    ).with_boundaries(
+        {
+            "left": lambda x: np.isclose(x[0], 0),  # Left boundary condition
+            "right": lambda x: np.isclose(x[0], floor_width),  # Right boundary condition
+            "top": lambda x: np.isclose(x[1], ceiling_depth),  
+            "bottom": lambda x: np.isclose(x[1], -floor_depth), 
+            "ball": lambda x: x[0] ** 2 + x[1] ** 2 < 1.01 * ball_size**2,
+        }
+    )
 
-# mesh = MeshTri.load(Path(__file__).parent / "meshes" / "cylinder_stokes.msh")
+    return mesh
+
+mesh_fine_path = Path(__file__).parent.parent / "meshes/cylinder_stokes_fine_turbo.msh"
+
+mesh_default_path = Path(__file__).parent.parent / "meshes/cylinder_stokes_fine.msh"
+
+mesh_wide_path = Path(__file__).parent.parent / "meshes/cylinder_stokes_fine_wide.msh"
 
 
-mesh_fine = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes_fine_turbo.msh")
+if mesh_fine_path.exists():
+    mesh_fine = MeshTri.load(mesh_fine_path)
+else:
+    mesh_fine = gen_mesh(mesh = 0.001)
 
-mesh_default = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes_fine.msh")
+if mesh_default.exists():
+    mesh_default = MeshTri.load(mesh_default_path)
+else:
+    mesh_default = gen_mesh()
 
-mesh_wide = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes_fine_wide.msh")
+if mesh_wide.exists():
+    mesh_wide = MeshTri.load(mesh_wide)
+else:
+    mesh_wide = gen_mesh(width = 20, mesh = 0.05)
+
+# mesh_default = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes_fine.msh")
+
+# mesh_wide = MeshTri.load(Path(__file__).parent.parent / "meshes/cylinder_stokes_fine_wide.msh")
 
 # Define the basis for the finite element method
 basis_fine = Basis(mesh_fine, ElementTriP1())
