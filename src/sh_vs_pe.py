@@ -60,7 +60,7 @@ if __name__ == "__main__":
 # Code for creating mesh which we load
 #
 
-def gen_mesh( mesh = 0.01, far_mesh = 0.5, cell_size = 1, width = 10, ceiling = 10, floor = 10,)
+def gen_mesh( mesh = 0.01, far_mesh = 0.5, cell_size = 1, width = 10, ceiling = 10, floor = 10,):
     floor_depth = floor*cell_size
     ceiling_depth = ceiling*cell_size
     floor_width = width*cell_size
