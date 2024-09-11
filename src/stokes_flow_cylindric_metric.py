@@ -32,7 +32,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--peclet",
         type=float,
-        default=100,
+        default=1000,
         help="value of Peclet number",
     )
     parser.add_argument(
@@ -146,6 +146,8 @@ u = solve(*condense(A, x=u, I=interior))
 
 if __name__ == "__main__" and not args.quiet:
     import matplotlib.pyplot as plt
+    import matplotlib as mpl
+    from matplotlib.patches import Arc
 
     # mesh.draw(boundaries=True).show()
 
@@ -166,16 +168,26 @@ if __name__ == "__main__" and not args.quiet:
 
     # basis.plot(u, shading="gouraud", cmap="viridis").show()
 
+    cmap = mpl.colormaps['viridis']
+    ball_radius = args.ball
+
     plt.figure(figsize=(8, 8))
-    plt.tripcolor(mesh.p[0], -mesh.p[1], mesh.t.T, u, shading="gouraud", cmap="viridis")
+
+    plt.tripcolor(mesh.p[0], mesh.p[1], mesh.t.T, u, shading="gouraud", cmap="viridis")
+    plt.clim(vmin=0, vmax=1)  # Set color range
+    plt.tripcolor(-mesh.p[0], mesh.p[1], mesh.t.T, u, shading="gouraud", cmap="viridis")
     # plt.colorbar()
     plt.clim(vmin=0, vmax=1)  # Set color range
     plt.gca().set_aspect('equal', 'box')  # 'equal' ensures that one unit in x is equal to one unit in y
     plt.tight_layout()
-    plt.xlim(0, 3)
-    plt.ylim(-5.5, 2.5)
+    plt.xlim(-3, 3)
+    plt.ylim(-2.5, 5.5)
+    plt.gca().add_artist(plt.Circle((0, 0), 1, color = cmap(0)))
+    plt.gca().add_artist(plt.Circle((0, 0), ball_radius, edgecolor = 'k', facecolor="#fff" , hatch = "///"))
+    plt.gca().add_artist(Arc((0, 0), 2, 2, color='w', linestyle = '--', theta1=-90, theta2=90))
 
-    plt.savefig("fem.png", format = "eps")
+    plt.savefig("graphics/fem_pe500_rsyf_03.pdf", format = "pdf")
+    plt.show()
 
 fbasis = FacetBasis(mesh, ElementTriP1(), facets="top")
 

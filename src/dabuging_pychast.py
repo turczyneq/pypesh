@@ -114,10 +114,8 @@ def visualise_trajectories(
         plt.scatter(r[-1], z[-1], s=8, color="k", zorder=5)
         plt.scatter(r[0], z[0], s=8, color="k", zorder=5)
 
-    circle = plt.Circle((0, 0), 1, color="#222", fill=False)
-    plt.gca().add_artist(circle)
-    circle = plt.Circle((0, 0), ball_radius, color="#666", fill=False)
-    plt.gca().add_artist(circle)
+    plt.gca().add_artist(plt.Circle((0, 0), 1, color="#222", fill=False))
+    plt.gca().add_artist(plt.Circle((0, 0), ball_radius, color="#666", fill=False))
 
     plt.text(1,-1, f"Pe = 10^{int(np.log10(peclet))}")
 
