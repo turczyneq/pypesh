@@ -8,23 +8,37 @@ from matplotlib.patches import Arc
 import numpy as np
 import time
 
+def construct_initial_condition(floor_r, floor_h, amount, trials):
+    # TODO: RW 2024-01-27
+    # TODO: Uniform along the radius is a terible strategy
+
+    step = (floor_r**2)/amount
+
+    initial_x = np.tile(np.arange(0, floor_r**2, step)**(1/2), trials)
+
+    initial_y = np.zeros_like(initial_x)
+    initial_z = np.zeros_like(initial_x) - floor_h
+
+    return np.vstack((initial_x, initial_y, initial_z)).T
+
 
 def visualise_trajectories(
     peclet,
     ball_radius,
     floor_r = 0.3,
     floor_h = 5,
-    r_mesh = 0.01,
+    amount = 100,
     trials = 10,
     display_traj = 10):
 
+
     if display_traj == 'all':
-        display_traj = int(trials*floor_r/r_mesh)
+        display_traj = int(trials*amount)
     else:
         pass
 
-    initial = gen_traj.construct_initial_condition(
-        floor_r=floor_r, floor_h=floor_h, r_mesh=r_mesh, trials=trials
+    initial = construct_initial_condition(
+        floor_r=floor_r, floor_h=floor_h, amount=amount, trials=trials
     )
     
     def drift(q):
@@ -78,4 +92,4 @@ def visualise_trajectories(
     plt.savefig("graphics/pychast_pe500_rsyf_03.pdf", format = "pdf")
     plt.show()
 
-visualise_trajectories(500, 0.7, floor_r = 3, r_mesh = 0.005, trials = 1, display_traj = 'all')
+visualise_trajectories(500, 0.7, floor_r = 3, amount = 100, trials = 1, display_traj = 'all')
