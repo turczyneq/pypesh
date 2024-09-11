@@ -6,3 +6,4 @@ Bibliography
  - *Electrochemical measurements of mass transfer between a sphere and liquid in motion at high Peclet numbers*; S. Kutateladze, V. Nakoryakov, M. Iskakov (1982)
  - *Mass and heat transfer from fluid spheres at low Reynolds numbers*; Z. Feng, E. Michaelides (2000)
  - *Heat transfer from spheres to flowing media*; H. Kramers (1946)
+
