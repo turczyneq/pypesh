@@ -226,7 +226,7 @@ def construct_initial_condition(floor_r, floor_h, r_mesh, trials):
     # TODO: RW 2024-01-27
     # TODO: Uniform along the radius is a terible strategy
 
-    initial_x = np.tile(np.arange(0, floor_r, r_mesh), trials)
+    initial_x = np.tile(np.arange(0, floor_r, r_mesh)**(1/2), trials)
 
     initial_y = np.zeros_like(initial_x)
     initial_z = np.zeros_like(initial_x) - floor_h

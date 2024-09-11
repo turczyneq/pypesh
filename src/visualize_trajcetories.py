@@ -52,16 +52,16 @@ def visualise_trajectories(
         z = z[:when_hit]
 
         if collision_data["ball_hit"][i]:
-            color = "#2a2"
+            color = "C0"
         elif collision_data["something_hit"][i]:
-            color = "#2a2"
+            color = "C0"
         else:
             color = "#a22"
 
         if i%2:
-            plt.plot(r, z, color=color)
+            plt.plot(r, z, color=color, linewidth = 0.2)
         else:
-            plt.plot(-r, z, color=color)
+            plt.plot(-r, z, color=color, linewidth = 0.2)
         # plt.scatter(r[-1], z[-1], s=8, color="k", zorder=5)
         # plt.scatter(r[0], z[0], s=8, color="k", zorder=5)
 
@@ -75,7 +75,7 @@ def visualise_trajectories(
     plt.xlim(-3, 3)
     plt.ylim(-2.5, 5.5)
 
-    # plt.savefig("traj_visualize.svg", format='svg')
+    plt.savefig("graphics/pychast_pe500_rsyf_03.pdf", format = "pdf")
     plt.show()
 
-visualise_trajectories(500, 0.7, floor_r = 1, r_mesh = 0.01, trials = 1, display_traj = 'all')
+visualise_trajectories(500, 0.7, floor_r = 3, r_mesh = 0.005, trials = 1, display_traj = 'all')
