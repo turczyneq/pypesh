@@ -30,10 +30,13 @@ feng = np.loadtxt(feng_path, delimiter=",", skiprows=1)
 kramers_path = parent_dir / "data/kramers.csv"
 kramers = np.loadtxt(kramers_path, delimiter=",", skiprows=1)
 
+westerberg_path = parent_dir / "data/westerberg.csv"
+westerberg = np.loadtxt(westerberg_path, delimiter=",", skiprows=1)
+
 
 # Plot all data
 
-plt.figure(figsize=(8, 5))
+plt.figure(figsize=(7, 7))
 plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
 
 # Plot our data
@@ -41,7 +44,7 @@ plt.loglog(
     numerical[:, 0],
     numerical[:, 1],
     label="This work",
-    color="C0",
+    color="k",
     linewidth=4,
     zorder=2,
 )
@@ -56,26 +59,48 @@ plt.loglog(
     linewidth=3,
     zorder=1,
 )
-plt.loglog(
+
+#
+# NUMERICAL
+# 
+
+plt.scatter(
     numerical_clift[:, 0],
     numerical_clift[:, 1],
     label="Clift et al. (numerical)",
-    color="C7",
-    dashes=[4, 0.5, 0.5, 0.5],
-    linewidth=3,
-    zorder=1,
+    color="C0",
+    marker="o",
+    s=50,
+    edgecolor="k",
+    zorder=3,
 )
-plt.loglog(
+
+plt.scatter(
     0.5 * friedlander[:, 0],
     0.5 * friedlander[:, 1],
     label="Friedlander (numerical)",
-    color="C7",
-    dashes=[4, 0.5, 0.5, 0.5, 0.5, 0.5],
-    linewidth=3,
-    zorder=1,
+    color="C4",
+    marker="D",
+    s=50,
+    edgecolor="k",
+    zorder=3,
 )
 
-# Plot Kutateladze experimental data
+plt.scatter(
+    0.5*westerberg[:, 0],
+    0.5*westerberg[:, 1],
+    label="Westerberg \& Finlayson (numerical)",
+    color="C9",
+    marker="s",
+    s=50,
+    edgecolor="k",
+    zorder=3,
+)
+
+#
+# EXPERIMENTAL
+# 
+
 plt.scatter(
     0.5 * kutateladze[:, 0],
     kutateladze[:, 1],
@@ -87,7 +112,6 @@ plt.scatter(
     zorder=3,
 )
 
-# Plot Feng experimental data
 plt.scatter(
     feng[:, 0],
     feng[:, 1],
@@ -99,7 +123,6 @@ plt.scatter(
     zorder=4,
 )
 
-# Plot Kramers experimental data
 plt.scatter(
     2*kramers[:, 0],
     kramers[:, 1],
@@ -114,7 +137,7 @@ plt.scatter(
 # Logarithmic scale
 plt.xscale("log")
 plt.yscale("log")
-plt.xlim(0.5, 10**5)
+plt.xlim(0.44, 10**5)
 plt.ylim(0.8, 30)
 plt.xticks(fontsize=15)
 plt.yticks(fontsize=15)
@@ -125,7 +148,8 @@ plt.ylabel(r"Sherwood Number $\left(\mathrm{Sh}\right)$", fontsize=15)
 
 # Legend
 plt.legend(fontsize=15, frameon=False)
-
+plt.tight_layout()
+plt.savefig("comparison.pdf")
 
 # Show plot
 plt.show()
