@@ -8,23 +8,37 @@ from matplotlib.patches import Arc
 import numpy as np
 import time
 
+def construct_initial_condition(floor_r, floor_h, amount, trials):
+    # TODO: RW 2024-01-27
+    # TODO: Uniform along the radius is a terible strategy
+
+    step = (floor_r**2)/amount
+
+    initial_x = np.tile(np.arange(0, floor_r**2, step)**(1/2), trials)
+
+    initial_y = np.zeros_like(initial_x)
+    initial_z = np.zeros_like(initial_x) - floor_h
+
+    return np.vstack((initial_x, initial_y, initial_z)).T
+
 
 def visualise_trajectories(
     peclet,
     ball_radius,
     floor_r = 0.3,
     floor_h = 5,
-    r_mesh = 0.01,
+    amount = 100,
     trials = 10,
     display_traj = 10):
 
+
     if display_traj == 'all':
-        display_traj = int(trials*floor_r/r_mesh)
+        display_traj = int(trials*amount)
     else:
         pass
 
-    initial = gen_traj.construct_initial_condition(
-        floor_r=floor_r, floor_h=floor_h, r_mesh=r_mesh, trials=trials
+    initial = construct_initial_condition(
+        floor_r=floor_r, floor_h=floor_h, amount=amount, trials=trials
     )
     
     def drift(q):
@@ -52,16 +66,16 @@ def visualise_trajectories(
         z = z[:when_hit]
 
         if collision_data["ball_hit"][i]:
-            color = "#2a2"
+            color = "C0"
         elif collision_data["something_hit"][i]:
-            color = "#2a2"
+            color = "C0"
         else:
             color = "#a22"
 
         if i%2:
-            plt.plot(r, z, color=color)
+            plt.plot(r, z, color=color, linewidth = 0.2)
         else:
-            plt.plot(-r, z, color=color)
+            plt.plot(-r, z, color=color, linewidth = 0.2)
         # plt.scatter(r[-1], z[-1], s=8, color="k", zorder=5)
         # plt.scatter(r[0], z[0], s=8, color="k", zorder=5)
 
@@ -75,7 +89,7 @@ def visualise_trajectories(
     plt.xlim(-3, 3)
     plt.ylim(-2.5, 5.5)
 
-    # plt.savefig("traj_visualize.svg", format='svg')
+    plt.savefig("graphics/pychast_pe500_rsyf_03.pdf", format = "pdf")
     plt.show()
 
-visualise_trajectories(500, 0.7, floor_r = 1, r_mesh = 0.01, trials = 1, display_traj = 'all')
+visualise_trajectories(500, 0.7, floor_r = 3, amount = 100, trials = 1, display_traj = 'all')
