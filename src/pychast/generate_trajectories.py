@@ -252,7 +252,7 @@ def simulate_until_collides(drift, noise, initial, floor_h, t_max=None):
     """
 
     if t_max == None:
-        t_max = 60 * floor_h
+        t_max = 10 * floor_h
 
     # TODO: RW 2024-01-27
     # TODO: Better implementation possible: compute part of trajectory
@@ -290,7 +290,7 @@ def simulate_with_trajectories(drift, noise, initial, floor_h, t_max=None):
     """
 
     if t_max == None:
-        t_max = 60 * floor_h
+        t_max = 10 * floor_h
 
     # TODO: RW 2024-01-27
     # TODO: Better implementation possible: compute part of trajectory

@@ -171,7 +171,9 @@ if __name__ == "__main__" and not args.quiet:
     cmap = mpl.colormaps['viridis']
     ball_radius = args.ball
 
-    plt.figure(figsize=(8, 8))
+    plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
+
+    plt.figure()
 
     plt.tripcolor(mesh.p[0], mesh.p[1], mesh.t.T, u, shading="gouraud", cmap="viridis")
     plt.clim(vmin=0, vmax=1)  # Set color range
@@ -186,7 +188,7 @@ if __name__ == "__main__" and not args.quiet:
     plt.gca().add_artist(plt.Circle((0, 0), ball_radius, edgecolor = 'k', facecolor="#fff" , hatch = "///"))
     plt.gca().add_artist(Arc((0, 0), 2, 2, color='w', linestyle = '--', theta1=-90, theta2=90))
 
-    plt.savefig("graphics/fem_pe500_rsyf_03.pdf", format = "pdf")
+    plt.savefig("graphics/fem_pe500_rsyf_03.pdf", format="pdf", bbox_inches="tight")
     plt.show()
 
 fbasis = FacetBasis(mesh, ElementTriP1(), facets="top")

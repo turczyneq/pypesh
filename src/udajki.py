@@ -57,8 +57,20 @@ def streamline(r, z, ball_radius):
         - lower then zero = inside
         - greater then zero = outside
     '''
-    u = 1
     return psi(r,z,ball_radius) - psi(1,0,ball_radius)
+
+
+def radius_of_streamline(z, ball_radius):
+    '''
+    Find radius of strealine that touches the ball at selected height z 
+    '''
+    def to_sol(x):
+        return streamline(x, z, ball_radius)
+
+    solution = binary_search(to_sol, 0, 0, 1)
+
+    return solution
+
 
 def velocities(r, z, ball_radius):
 
@@ -72,6 +84,12 @@ def velocities(r, z, ball_radius):
         (2 * a**2 + 3 * r**2) / (3 * w) - ((a * r) / w) ** 2 - 2
     )
     return v_r, v_z
+
+
+def dispersion(pe):
+
+    return 10*(1/pe)**(1/2)
+
 
 def generate_mesh(ball_radius, mesh = 0.01, far_mesh = 0.5, cell_size = 1.0, width = 10.0, ceiling = 10.0, floor = 10.0, filename = "test.msh", quiet = "False"):
     "Advection diffusion in stokes flow"

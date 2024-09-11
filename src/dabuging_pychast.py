@@ -7,50 +7,23 @@ import numpy as np
 import time
 
 
-def sherwood_from_simpson(peclet,
+def distribution(peclet,
     ball_radius,
+    mesh=10,
     trials=100,
     floor_h=5,):
+
+    r_syf = loc.radius_of_streamline(floor_h, ball_radius)
+
+    disp = loc.dispersion(peclet)
+
+    x_probs = np.linspace(max(r_syf-5*disp,0),r_syf+5*disp,mesh)
 
     def fun(x):
         value = gen_traj.hitting_propability_at_x(x, peclet, ball_radius, trials = trials)
         ver, vez = loc.velocities(x, floor_h, ball_radius)
-        return 2 * np.pi * x * value * vez
+        return value
 
-    start = time.time()
-    '''
-    find the radius where propability is around 0.01
-    bin search works only for increasing function so search is for -fun and we are looking for -0.01
-    '''
-    def to_search(x):
-        value = gen_traj.hitting_propability_at_x(x, peclet, ball_radius, trials = 400)
-        return -value
-    edge = loc.binary_search(to_search, -0.01, 0, 0.5, tol = 10**(-3) )
-    end = time.time()
-    print(f"edge {end - start}, equal {edge}")
-
-
-    absolute_tolerance = 1e-5
-
-    start = time.time()
-
-    internal = simpson.integrate_with_adaptive_simpson(fun, 0, edge , absolute_tolerance)
-
-    end = time.time()
-    print(f"internal {end - start}, equal {internal}")
-    
-    start = time.time()
-
-    external = simpson.integrate_with_adaptive_simpson(fun, edge, 0.5 , absolute_tolerance)
-
-    effective_area = internal + external
-    end = time.time()
-    print(f"external {end - start}, equal {external}")
-
-
-    r_eff = (effective_area / np.pi) ** 0.5
-
-    sherwood = (peclet / 4) * ((r_eff) ** 2)
     return sherwood
 
 def sherwood_from_peclet(
@@ -125,9 +98,6 @@ def visualise_trajectories(
     # plt.savefig("traj_visualize.svg", format='svg')
     plt.show()
 
-visualise_trajectories(10**6, 0.995, floor_r = 0.002, r_mesh = 0.0005)
-
-visualise_trajectories(10**9, 0.995, floor_r = 0.002, r_mesh = 0.0005)
 
 # print(gen_traj.hitting_propability_at_x(0.0005, 10**9, 0.999, trials = 400))
 
