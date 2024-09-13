@@ -1,11 +1,11 @@
 import pychast.generate_trajectories as gen_traj
 import pychast.process_trajectories as proc_traj
-import pychast.simpson_integration as simpson
 import udajki as loc
 import matplotlib.pyplot as plt
 import numpy as np
 import time
 
+gen_traj.hitting_propability_at_x(0, 10**9, 0.99, trials = 200)
 
 def distribution(peclet,
     ball_radius,
@@ -21,8 +21,12 @@ def distribution(peclet,
 
     def fun(x):
         value = gen_traj.hitting_propability_at_x(x, peclet, ball_radius, trials = trials)
-        ver, vez = loc.velocities(x, floor_h, ball_radius)
         return value
+
+    # def fun(x):
+    # value = gen_traj.hitting_propability_at_x(x, peclet, ball_radius, trials = trials)
+    # ver, vez = loc.velocities(x, floor_h, ball_radius)
+    # return 2 * np.pi * x * value * vez
 
     return sherwood
 
@@ -53,7 +57,8 @@ def visualise_trajectories(
     floor_h = 5,
     r_mesh = 0.01,
     trials = 10,
-    display_traj = 10):
+    display_traj = 10,
+    t_max = None):
 
     initial = gen_traj.construct_initial_condition(
         floor_r=floor_r, floor_h=floor_h, r_mesh=r_mesh, trials=trials
@@ -66,7 +71,8 @@ def visualise_trajectories(
         drift=drift,
         noise=gen_traj.diffusion_function(peclet=peclet),
         initial=initial,
-        floor_h=floor_h,        
+        floor_h=floor_h,     
+        t_max = t_max   
     )
 
     #plt.figure(figsize=(12, 10))
@@ -97,6 +103,7 @@ def visualise_trajectories(
 
     # plt.savefig("traj_visualize.svg", format='svg')
     plt.show()
+
 
 
 # print(gen_traj.hitting_propability_at_x(0.0005, 10**9, 0.999, trials = 400))

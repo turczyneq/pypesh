@@ -74,7 +74,6 @@ def hitting_propability_at_x(
     ball_radius,
     trials=100,
     floor_h=5,
-    t_max=None,
 ):
     """
     Generate trajectories of particles in a simulation for certain x position. Than calculates the propability of hitting for this position.
@@ -104,6 +103,29 @@ def hitting_propability_at_x(
     float - value of propability 
 
     """
+
+
+    def drift(q):
+        return stokes_around_sphere(q, ball_radius)
+
+    #begin with short time and test the outcome
+
+    t_max = floor_h
+
+    ratio = 1
+    initial = construct_initial_trials_at_x(floor_h, x_position, 100)
+
+    while ratio > 0.01:
+        t_max = t_max*2
+
+        collision_data = simulate_until_collides(
+            drift=drift,
+            noise=diffusion_function(peclet=peclet),
+            initial=initial,
+            floor_h=floor_h,
+            t_max=t_max,
+        )
+        ratio = (100-sum(collision_data["something_hit"]))/100
 
     initial = construct_initial_trials_at_x(floor_h, x_position, trials)
 
@@ -283,6 +305,8 @@ def simulate_until_collides(drift, noise, initial, floor_h, t_max=None):
         "something_hit": something_hit,
         # "trajectories": trajectories,  # for debug only
     }
+
+
 
 def simulate_with_trajectories(drift, noise, initial, floor_h, t_max=None):
     """
