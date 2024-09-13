@@ -110,7 +110,7 @@ def hitting_propability_at_x(
 
     #begin with short time and test the outcome
 
-    t_max = floor_h
+    t_max = floor_h/2
 
     ratio = 1
     initial = construct_initial_trials_at_x(floor_h, x_position, 100)
@@ -295,7 +295,7 @@ def simulate_until_collides(drift, noise, initial, floor_h, t_max=None):
     ball_distances = jnp.linalg.norm(trajectories, axis=2)
     ball_hit = jnp.min(ball_distances, axis=1) < 1
 
-    roof_hit = jnp.max(trajectories[:, :, -1], axis=1) > floor_h
+    roof_hit = jnp.max(trajectories[:, :, -1], axis=1) > 2
 
     something_hit = np.logical_or(ball_hit, roof_hit)
 
