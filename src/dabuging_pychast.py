@@ -1,5 +1,6 @@
 import pychast.generate_trajectories as gen_traj
-import pychast.process_trajectories as proc_traj
+import pychast.generate_trajectories as gen_traj
+import pychast.collision_kernels as coll_ker
 import udajki as loc
 import matplotlib.pyplot as plt
 import numpy as np
@@ -27,7 +28,7 @@ def distribution(peclet,
 
     to_ret = []
     for x in tqdm.tqdm(x_probs):
-        to_ret = [] + [fun(x)]
+        to_ret = to_ret + [fun(x)]
 
     # def fun(x):
     # value = gen_traj.hitting_propability_at_x(x, peclet, ball_radius, trials = trials)
@@ -111,16 +112,18 @@ def visualise_trajectories(
     plt.show()
 
 
-distribution(10**8, 0.999, trials = 10**3)
+print(coll_ker.distribution(10**5, 0.9))
+
 
 # print(gen_traj.hitting_propability_at_x(0.0005, 10**9, 0.999, trials = 400))
 
-# pe_list = [10**i for i in range(3,10)]
+# pe_list = [10**i for i in range(3,9)]
 
 # ball_list = []
 # for i in range(-3,0):
 #     ball_list = ball_list + [(10**i)*ball for ball in [1, 2, 5]]
 # ball_list = ball_list[:-1]
+
 
 
 # output_file = f"numerical_results/pych_test.txt"

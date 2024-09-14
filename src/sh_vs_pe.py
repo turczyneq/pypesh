@@ -119,13 +119,13 @@ if mesh_fine_path.exists():
 else:
     mesh_fine = gen_mesh(mesh = 0.001)
 
-if mesh_default.exists():
+if mesh_default_path.exists():
     mesh_default = MeshTri.load(mesh_default_path)
 else:
     mesh_default = gen_mesh()
 
-if mesh_wide.exists():
-    mesh_wide = MeshTri.load(mesh_wide)
+if mesh_wide_path.exists():
+    mesh_wide = MeshTri.load(mesh_wide_path)
 else:
     mesh_wide = gen_mesh(width = 20, mesh = 0.05)
 
@@ -269,34 +269,36 @@ def sherwood(peclet, ball_radius):
 
     return result
 
-'''
-For high peclets, relevant scaling is peclet*r_syf**2 so values calculated for equal xi = peclet*r_syf**2 for all r_syf
-'''
 
 pe_list = []
-for i in range(0,10):
-    pe_list = pe_list + [round((10**i)*float(round(xi,1)),2) for xi in np.logspace(0, 1, 3)[:-1]]
+for i in range(1,9):
+    pe_list = pe_list + [round((10**i)*float(round(xi,1)),2) for xi in np.logspace(0, 1, 3)[:-2]]
 # pe_list = [0.1, 0.2, 0.5] + pe_list
 
 ball_list = []
 for i in range(-3,0):
     ball_list = ball_list + [(10**i)*ball for ball in [1, 2, 5]]
 
+ball_list.reverse()
+
 print(ball_list)
 print(pe_list)
-from tqdm import tqdm
 
 output_file = f"numerical_results/sh_vs_pe_and_ball.txt"
 with open(output_file, 'w') as f:
-    f.write("Peclet\tr_syf\tSherwood_fem\tSherwood_pychast\n")
+    f.write("Peclet\tball_radius\tSherwood_fem\tSherwood_pychast\txargs(list)\tsolutions(list)\n")
 
 for j in range(len(ball_list)):
     for n in range(len(pe_list)):
         peclet = pe_list[n]
         ball_radius = 1 - ball_list[j]
-        print(f"radius = {ball_radius}, peclet = {peclet}")
+        # print(f"radius = {ball_radius}, peclet = {peclet}")
         femsol = sherwood(peclet, ball_radius)
-        trajsol = coll_ker.sherwood_from_peclet(peclet, ball_radius, trials = 400, floor_r = ball_list[j]*2, r_mesh = ball_list[j]*2/100)
+        integral, xargs, sol = coll_ker.distribution(peclet, ball_radius, trials = 10**4, mesh = 20)
         with open(output_file, 'a') as f:
-            f.write(f"{peclet}\t{ball_list[j]}\t{femsol}\t{trajsol}\n")
-
+            f.write(f"{peclet}\t{ball_radius}\t{femsol}\t{integral}")
+            for arg in xargs:
+                f.write(f"\t{arg}")
+            for arg in sol:
+                f.write(f"\t{arg}")
+            f.write(f"\n")

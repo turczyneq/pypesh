@@ -87,8 +87,27 @@ def velocities(r, z, ball_radius):
 
 
 def dispersion(pe):
+    '''
+    estimated dispersion of step function in probabilities
+    '''
 
     return 10*(1/pe)**(1/2)
+
+
+def internal_integral(ball_radius, z, r0):
+    '''
+    calculated integral of flux from 0 to r0 assuming probability of hit = 1 from 0 to r0.
+    expresion to integrate is:
+        2 pi r vz(r) 
+    '''
+    return (np.pi * r0**2 * (4 * z**5 + 3 * ball_radius * z**2 * (r0**2 - 2 * z**2) + ball_radius**3 * (-3 * r0**2 + 2 * z**2))) / (4 * z**5)
+
+
+def sherwood_from_flux(flux, peclet):
+    '''
+    sherwood is defined as flux_dimesional/(4 pi D R) = U R^2 flux / (4 pi D R) = flux*(Pe/4 pi)
+    '''
+    return flux*(peclet/(4*np.pi))
 
 
 def generate_mesh(ball_radius, mesh = 0.01, far_mesh = 0.5, cell_size = 1.0, width = 10.0, ceiling = 10.0, floor = 10.0, filename = "test.msh", quiet = "False"):

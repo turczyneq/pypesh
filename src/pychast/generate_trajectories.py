@@ -114,8 +114,10 @@ def hitting_propability_at_x(
 
     ratio = 1
     initial = construct_initial_trials_at_x(floor_h, x_position, 100)
-
     while ratio > 0.01:
+        '''
+        loops increasing time until almost all of particles hit either ball or roof
+        '''
         t_max = t_max*2
 
         collision_data = simulate_until_collides(
