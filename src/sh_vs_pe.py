@@ -61,6 +61,7 @@ if __name__ == "__main__":
 #
 
 def gen_mesh( mesh = 0.01, far_mesh = 0.5, cell_size = 1, width = 10, ceiling = 10, floor = 10,):
+    import pygmsh
     floor_depth = floor*cell_size
     ceiling_depth = ceiling*cell_size
     floor_width = width*cell_size
