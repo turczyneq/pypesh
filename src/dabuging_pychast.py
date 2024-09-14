@@ -17,7 +17,9 @@ def distribution(peclet,
 
     disp = loc.dispersion(peclet)
 
-    x_probs = np.linspace(max(r_syf-5*disp,0), r_syf+5*disp,mesh)
+    x_probs = np.linspace(max(r_syf-5*disp,0), r_syf+5*disp, mesh)
+
+    print(x_probs)
 
     def fun(x):
         value = gen_traj.hitting_propability_at_x(x, peclet, ball_radius, trials = trials)
@@ -109,33 +111,35 @@ def visualise_trajectories(
     plt.show()
 
 
+distribution(10**8, 0.999, trials = 10**3)
+
 # print(gen_traj.hitting_propability_at_x(0.0005, 10**9, 0.999, trials = 400))
 
-pe_list = [10**i for i in range(3,10)]
+# pe_list = [10**i for i in range(3,10)]
 
-ball_list = []
-for i in range(-3,0):
-    ball_list = ball_list + [(10**i)*ball for ball in [1, 2, 5]]
-ball_list = ball_list[:-1]
+# ball_list = []
+# for i in range(-3,0):
+#     ball_list = ball_list + [(10**i)*ball for ball in [1, 2, 5]]
+# ball_list = ball_list[:-1]
 
 
-output_file = f"numerical_results/pych_test.txt"
-with open(output_file, 'w') as f:
-    f.write("Peclet\tball_radius\txargs\tsolutions\n")
+# output_file = f"numerical_results/pych_test.txt"
+# with open(output_file, 'w') as f:
+#     f.write("Peclet\tball_radius\txargs\tsolutions\n")
 
-for j in range(len(ball_list)):
-    for n in range(len(pe_list)):
-        peclet = pe_list[n]
-        ball_radius = 1 - ball_list[j]
-        print(f"radius = {ball_radius}, peclet = {peclet}")
-        xargs, sol = distribution(peclet, ball_radius, trials = 10**4)
-        with open(output_file, 'a') as f:
-            f.write(f"{peclet}\t{ball_list[j]}")
-            for arg in xargs:
-                f.write(f"\t{arg}")
-            for arg in sol:
-                f.write(f"\t{arg}")
-            f.write(f"\n")
+# for j in range(len(ball_list)):
+#     for n in range(len(pe_list)):
+#         peclet = pe_list[n]
+#         ball_radius = 1 - ball_list[j]
+#         print(f"radius = {ball_radius}, peclet = {peclet}")
+#         xargs, sol = distribution(peclet, ball_radius, trials = 10**4)
+#         with open(output_file, 'a') as f:
+#             f.write(f"{peclet}\t{ball_list[j]}")
+#             for arg in xargs:
+#                 f.write(f"\t{arg}")
+#             for arg in sol:
+#                 f.write(f"\t{arg}")
+#             f.write(f"\n")
 
 
 # print(f"{sherwood_from_simpson(100000, 0.999, trials = 400)}, {sherwood_from_peclet(100000, 0.999, trials = 400, floor_r = 0.001*50, r_mesh = 0.001*50/50)}")
