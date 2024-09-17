@@ -217,7 +217,7 @@ def generate_trajectories_multiply(
 
 def diffusion_function(peclet):
     def diffusion(q):
-        return ((1 / peclet) ** 0.5) * jnp.eye(3)
+        return ((2 / peclet) ** 0.5) * jnp.eye(3)
 
     return diffusion
 

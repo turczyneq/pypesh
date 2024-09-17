@@ -1,5 +1,5 @@
 import pychast.generate_trajectories as gen_traj
-import pychast.generate_trajectories as gen_traj
+import pychast.process_trajectories as proc_traj
 import pychast.collision_kernels as coll_ker
 import udajki as loc
 import matplotlib.pyplot as plt
@@ -112,7 +112,7 @@ def visualise_trajectories(
     plt.show()
 
 
-print(coll_ker.distribution(10**3, 0.999))
+print(coll_ker.distribution(10**6, 0.999, trials=10**3 ))
 
 
 # print(gen_traj.hitting_propability_at_x(0.0005, 10**9, 0.999, trials = 400))
