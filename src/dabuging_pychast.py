@@ -112,7 +112,7 @@ def visualise_trajectories(
     plt.show()
 
 
-print(coll_ker.distribution(10**5, 0.9))
+print(coll_ker.distribution(10**3, 0.999))
 
 
 # print(gen_traj.hitting_propability_at_x(0.0005, 10**9, 0.999, trials = 400))

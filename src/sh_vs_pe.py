@@ -170,10 +170,7 @@ def sherwood(peclet, ball_radius):
         r, z = m.x
         return dot(grad(u), grad(v)) * 2 * np.pi * r
 
-    if peclet > 10**7:
-        return 1
-
-    elif peclet > 50000:
+    if peclet > 50000:
         '''
         For big peclets use finer mesh
         '''
@@ -272,7 +269,7 @@ def sherwood(peclet, ball_radius):
 
 
 pe_list = []
-for i in range(1,9):
+for i in range(3,10):
     pe_list = pe_list + [round((10**i)*float(round(xi,1)),2) for xi in np.logspace(0, 1, 3)[:-2]]
 # pe_list = [0.1, 0.2, 0.5] + pe_list
 
@@ -281,11 +278,12 @@ for i in range(-3,0):
     ball_list = ball_list + [(10**i)*ball for ball in [1, 2, 5]]
 
 ball_list.reverse()
+ball_list = ball_list[1:]
 
 print(ball_list)
 print(pe_list)
 
-output_file = f"numerical_results/sh_vs_pe_and_ball.txt"
+output_file = f"numerical_results/pytest.txt"
 with open(output_file, 'w') as f:
     f.write("Peclet\tball_radius\tSherwood_fem\tSherwood_pychast\txargs(list)\tsolutions(list)\n")
 
@@ -295,7 +293,7 @@ for j in range(len(ball_list)):
         ball_radius = 1 - ball_list[j]
         # print(f"radius = {ball_radius}, peclet = {peclet}")
         femsol = sherwood(peclet, ball_radius)
-        integral, xargs, sol = coll_ker.distribution(peclet, ball_radius, trials = 10**4, mesh = 20)
+        integral, xargs, sol = coll_ker.distribution(peclet, ball_radius, trials = 10**3, mesh_out = 6, mesh_jump = 10)
         with open(output_file, 'a') as f:
             f.write(f"{peclet}\t{ball_radius}\t{femsol}\t{integral}")
             for arg in xargs:

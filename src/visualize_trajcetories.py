@@ -1,6 +1,5 @@
 import pychast.generate_trajectories as gen_traj
 import pychast.process_trajectories as proc_traj
-import pychast.simpson_integration as simpson
 import udajki as loc
 import matplotlib.pyplot as plt
 import matplotlib as mpl
