@@ -29,7 +29,8 @@ def distribution(peclet,
     def fun(x):
         return gen_traj.hitting_propability_at_x(x, peclet, ball_radius, trials = trials)
 
-    sol_dict = {x: fun(x) for x in tqdm.tqdm(x_probs)}
+    # sol_dict = {x: fun(x) for x in tqdm.tqdm(x_probs)}
+    sol_dict = {x: fun(x) for x in x_probs}
 
     '''
     now perform simpe numerical integration, first assume from 0 to max(r_syf-spread*disp,0) propability is one

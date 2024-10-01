@@ -36,7 +36,7 @@ westerberg = np.loadtxt(westerberg_path, delimiter=",", skiprows=1)
 
 # Plot all data
 
-plt.figure(figsize=(7, 7))
+plt.figure(figsize=(12, 7))
 plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
 
 # Plot our data
@@ -139,17 +139,18 @@ plt.xscale("log")
 plt.yscale("log")
 plt.xlim(0.44, 10**5)
 plt.ylim(0.8, 30)
-plt.xticks(fontsize=15)
-plt.yticks(fontsize=15)
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
 
 # Labels and Title
-plt.xlabel(r"Peclet Number $\left(\mathrm{Pe}\right)$", fontsize=15)
-plt.ylabel(r"Sherwood Number $\left(\mathrm{Sh}\right)$", fontsize=15)
+plt.xlabel(r"Peclet Number $\left(\mathrm{Pe}\right)$", fontsize=20)
+plt.ylabel(r"Sherwood Number $\left(\mathrm{Sh}\right)$", fontsize=20)
 
 # Legend
-plt.legend(fontsize=15, frameon=False)
+plt.legend(fontsize=20, frameon=False)
 plt.tight_layout()
-plt.savefig("comparison.pdf")
+tosave = parent_dir.parent / "graphics/ignore/literature_sh_vs_pe.pdf"
+plt.savefig(tosave)
 
 # Show plot
 plt.show()

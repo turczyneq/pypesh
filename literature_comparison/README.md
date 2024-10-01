@@ -7,3 +7,8 @@ Bibliography
  - *Mass and heat transfer from fluid spheres at low Reynolds numbers*; Z. Feng, E. Michaelides (2000)
  - *Heat transfer from spheres to flowing media*; H. Kramers (1946)
  - *Mass or heat transfer from spheroidal gas bubbles rising through a stationary liquid*; B. Figueroa-Espinoza, D. Legendre (2010)
+
+
+Definitions of peclet and sherwood in following publications were as follows:
+
+ - Clift: 

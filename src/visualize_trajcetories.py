@@ -67,14 +67,14 @@ def visualise_trajectories(
         if collision_data["ball_hit"][i]:
             color = "C0"
         elif collision_data["something_hit"][i]:
-            color = "C0"
+            color = "C1"
         else:
             color = "#a22"
 
         if i%2:
-            plt.plot(r, z, color=color, linewidth = 0.2)
+            plt.plot(r, z, color=color, linewidth = 0.4)
         else:
-            plt.plot(-r, z, color=color, linewidth = 0.2)
+            plt.plot(-r, z, color=color, linewidth = 0.4)
         # plt.scatter(r[-1], z[-1], s=8, color="k", zorder=5)
         # plt.scatter(r[0], z[0], s=8, color="k", zorder=5)
 
@@ -85,10 +85,10 @@ def visualise_trajectories(
 
     plt.gca().set_aspect('equal', 'box')  # 'equal' ensures that one unit in x is equal to one unit in y
     plt.tight_layout()
-    plt.xlim(-3, 3)
-    plt.ylim(-2.5, 5.5)
+    plt.xlim(-2, 2)
+    plt.ylim(-5.1, 2)
 
-    plt.savefig("graphics/pychast_pe500_rsyf_03.pdf", format = "pdf")
+    plt.savefig(f"graphics/ignore/py_more_trials_pe_{peclet}.pdf", format = "pdf")
     plt.show()
 
-visualise_trajectories(500, 0.7, floor_r = 3, amount = 100, trials = 1, display_traj = 'all')
+visualise_trajectories(1000, 0.8, floor_r = 0.5, amount = 1, trials = 10, display_traj = 'all')

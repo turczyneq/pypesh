@@ -163,6 +163,9 @@ cython_debug/
 
 meshes/
 
-graphics/
+graphics/old/
+graphics/ignore/
+
+src/old_scripts
 
 numerical_results/

@@ -45,8 +45,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "--ball",
         type=float,
-        default=1,
+        default=0.8,
         help="radius of the ball in absorbing radius",
+    )
+
+    parser.add_argument(
+        "--output",
+        type = str,
+        default = "dummy_figure.pdf",
+        help = "where to save the figure",
     )
 
     parser.add_argument("--quiet", action="store_true")
@@ -182,13 +189,14 @@ if __name__ == "__main__" and not args.quiet:
     plt.clim(vmin=0, vmax=1)  # Set color range
     plt.gca().set_aspect('equal', 'box')  # 'equal' ensures that one unit in x is equal to one unit in y
     plt.tight_layout()
-    plt.xlim(-3, 3)
+    plt.xlim(-2, 2)
     plt.ylim(-2.5, 5.5)
     plt.gca().add_artist(plt.Circle((0, 0), 1, color = cmap(0)))
     plt.gca().add_artist(plt.Circle((0, 0), ball_radius, edgecolor = 'k', facecolor="#fff" , hatch = "///"))
     plt.gca().add_artist(Arc((0, 0), 2, 2, color='w', linestyle = '--', theta1=-90, theta2=90))
+    plt.tight_layout()
 
-    plt.savefig("graphics/fem_pe500_rsyf_03.pdf", format="pdf", bbox_inches="tight")
+    plt.savefig("graphics/ignore/" + args.output, format="pdf", bbox_inches="tight")
     plt.show()
 
 fbasis = FacetBasis(mesh, ElementTriP1(), facets="top")
