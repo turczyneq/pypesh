@@ -30,7 +30,8 @@ analytic_clift = clift_approximation(peclet_values)
 
 # Plot all data
 
-plt.figure(figsize=(12, 7))
+fontsize=27
+plt.figure(figsize=(12, 9))
 plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
 
 # Plot Clift data
@@ -41,7 +42,7 @@ plt.loglog(
     color="k",
     linestyle="-",
     linewidth=2,
-    zorder = 0
+    zorder = 1
 )
 
 num = 0
@@ -50,8 +51,9 @@ for data in fem_plt.values():
     plt.scatter(
         data[:, 0],
         data[:, 2],
-        label=f"$r_{{particle}} = {round(10000*(1-data[1,1]))/10000}$",
-        color=f"C{num}"
+        label=f"$\\beta = {round(10000*(1-data[1,1]))/10000}$",
+        color=f"C{num}",
+        zorder = 0
     )
     num +=1
 
@@ -62,7 +64,8 @@ for data in py_plt.values():
         data[:, 0],
         data[:, 2],
         color=f"C{num}",
-        facecolors='none'
+        facecolors='none',
+        zorder = 0
     )
     num +=1
 
@@ -88,15 +91,15 @@ plt.xscale("log")
 plt.yscale("log")
 plt.xlim(1, 2*10**9)
 plt.ylim(0.9, 10**7)
-plt.xticks(fontsize=20)
-plt.yticks(fontsize=20)
+plt.xticks(fontsize=fontsize)
+plt.yticks(fontsize=fontsize)
 
 # Labels and Title
-plt.xlabel(r"Peclet Number $\left(\mathrm{Pe}\right)$", fontsize=20)
-plt.ylabel(r"Sherwood Number $\left(\mathrm{Sh}\right)$", fontsize=20)
+plt.xlabel(r"Peclet Number $\left(\mathrm{Pe}\right)$", fontsize=fontsize)
+plt.ylabel(r"Sherwood Number $\left(\mathrm{Sh}\right)$", fontsize=fontsize)
 
 # Legend
-plt.legend(fontsize=20, frameon=False)
+plt.legend(fontsize=fontsize, frameon=False)
 plt.tight_layout()
 tosave = parent_dir.parent / "ignore/sh_vs_pe.pdf"
 plt.savefig(tosave)

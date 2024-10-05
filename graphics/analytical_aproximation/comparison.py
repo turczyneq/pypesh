@@ -16,7 +16,8 @@ fem = np.loadtxt(fem_path, delimiter=",", skiprows=1)
 # we have to split into listst wiht different r_syf
 fem_sorted = fem[fem[:, 1].argsort()]
 fem_grouped = groupby(fem_sorted, key=lambda x: x[1])
-fem_plt = {k: np.array([[x, y, z/(clift_approximation(x) + x*((2 + y)*(1 - y)**2)/8)] for x, y, z in g]) for k, g in fem_grouped}
+# fem_plt = {k: np.array([[x, y, z/(clift_approximation(x) + x*((2 + y)*(1 - y)**2)/8)] for x, y, z in g]) for k, g in fem_grouped}
+fem_plt = {k: np.array([[x, y, z] for x, y, z in g]) for k, g in fem_grouped}
 # fem_plt = {k: np.array([[x, y, z/(1 + x*((2 + y)*(1 - y)**2)/8)] for x, y, z in g]) for k, g in fem_grouped}
 
 
@@ -25,8 +26,9 @@ py = np.loadtxt(py_path, delimiter=",", skiprows=1)
 # we have to split into listst wiht different r_syf
 py_sorted = py[py[:, 1].argsort()]
 py_grouped = groupby(py_sorted, key=lambda x: x[1])
-# py_plt = {k: np.array([[x, y, z/(1 + x*((2 + y)*(1 - y)**2)/8)] for x, y, z in g]) for k, g in py_grouped}
-py_plt = {k: np.array([[x, y, z/(clift_approximation(x) + x*((2 + y)*(1 - y)**2)/8)] for x, y, z in g]) for k, g in py_grouped}
+# # py_plt = {k: np.array([[x, y, z/(1 + x*((2 + y)*(1 - y)**2)/8)] for x, y, z in g]) for k, g in py_grouped}
+# py_plt = {k: np.array([[x, y, z/(clift_approximation(x) + x*((2 + y)*(1 - y)**2)/8)] for x, y, z in g]) for k, g in py_grouped}
+py_plt = {k: np.array([[x, y, z] for x, y, z in g]) for k, g in py_grouped}
 
 
 peclet_values = np.logspace(-1, 13, 300)
@@ -35,8 +37,7 @@ analytic_clift = clift_approximation(peclet_values)
 
 # Plot all data
 
-fontsize=27
-plt.figure(figsize=(12, 7))
+plt.figure(figsize=(10, 7))
 plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
 
 # # Plot Clift data
@@ -56,9 +57,12 @@ for data in fem_plt.values():
     plt.scatter(
         data[:, 0],
         data[:, 2],
-        label=f"$\\beta = {round(10000*(1-data[1,1]))/10000}$",
+        label=f"$r_{{particle}} = {round(10000*(1-data[1,1]))/10000}$",
         color=f"C{num}"
     )
+
+    plt.plot()
+
     num +=1
 
 num = 0
@@ -103,16 +107,16 @@ plt.scatter(
 # Logarithmic scale
 plt.xscale("log")
 plt.xlim(0.1, 10**12)
-plt.ylim(0.9, 1.4)
-plt.xticks(fontsize=fontsize)
-plt.yticks(fontsize=fontsize)
+plt.ylim(0.8, 1.4)
+plt.xticks(fontsize=15)
+plt.yticks(fontsize=15)
 
 # Labels and Title
-plt.xlabel(r"Peclet Number $\left(Pe\right)$", fontsize=fontsize)
-plt.ylabel(r"Proposed approach $\Phi/\left(\Phi_{\textrm{D}} Sh_{\textrm{Cl}}+\Phi_{\textrm{A}}\right)$", fontsize=fontsize)
+plt.xlabel(r"Peclet Number $\left(\mathrm{Pe}\right)$", fontsize=15)
+plt.ylabel(r"Modified Sherwood Number with fix from clift $\left(\overline{\mathrm{Sh}}\right)$", fontsize=15)
 
 # Legend
-plt.legend(fontsize=fontsize, frameon=False, loc = 1)
+plt.legend(fontsize=15, frameon=False, loc = 1)
 plt.tight_layout()
 tosave = parent_dir.parent / "ignore/mod_better_sh_vs_pe.pdf"
 plt.savefig(tosave)

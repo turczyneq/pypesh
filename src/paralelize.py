@@ -252,7 +252,7 @@ def sherwood(peclet, ball_radius):
         r, z = m.x
 
         u = 1  # velocity scale
-        a = args.ball  # ball size
+        a = ball_radius  # ball size
 
         w = r**2 + z**2
 

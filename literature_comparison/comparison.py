@@ -15,19 +15,19 @@ def clift_approximation(pe):
 peclet_values = np.logspace(-1, 5, 300)
 analytic_clift = clift_approximation(peclet_values)
 
-numerical_clift_path = parent_dir / "data/clift.csv"
+numerical_clift_path = parent_dir / "data/clift_new.csv"
 numerical_clift = np.loadtxt(numerical_clift_path, delimiter=",", skiprows=1)
 
 friedlander_path = parent_dir / "data/friedlander.csv"
 friedlander = np.loadtxt(friedlander_path, delimiter=",", skiprows=1)
 
-kutateladze_path = parent_dir / "data/kutateladze.csv"
+kutateladze_path = parent_dir / "data/kutateladze_new.csv"
 kutateladze = np.loadtxt(kutateladze_path, delimiter=",", skiprows=1)
 
-feng_path = parent_dir / "data/feng.csv"
+feng_path = parent_dir / "data/feng_new.csv"
 feng = np.loadtxt(feng_path, delimiter=",", skiprows=1)
 
-kramers_path = parent_dir / "data/kramers.csv"
+kramers_path = parent_dir / "data/kramers_new.csv"
 kramers = np.loadtxt(kramers_path, delimiter=",", skiprows=1)
 
 westerberg_path = parent_dir / "data/westerberg.csv"
@@ -35,8 +35,8 @@ westerberg = np.loadtxt(westerberg_path, delimiter=",", skiprows=1)
 
 
 # Plot all data
-
-plt.figure(figsize=(12, 7))
+fontsize=15
+plt.figure(figsize=(7, 7))
 plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
 
 # Plot our data
@@ -62,11 +62,11 @@ plt.loglog(
 
 #
 # NUMERICAL
-# 
+#
 
 plt.scatter(
-    numerical_clift[:, 0],
-    numerical_clift[:, 1],
+    0.5 * numerical_clift[:, 0],
+    0.5 * numerical_clift[:, 1],
     label="Clift et al. (numerical)",
     color="C0",
     marker="o",
@@ -87,8 +87,8 @@ plt.scatter(
 )
 
 plt.scatter(
-    0.5*westerberg[:, 0],
-    0.5*westerberg[:, 1],
+    0.5 * westerberg[:, 0],
+    0.5 * westerberg[:, 1],
     label="Westerberg \& Finlayson (numerical)",
     color="C9",
     marker="s",
@@ -97,14 +97,25 @@ plt.scatter(
     zorder=3,
 )
 
+plt.scatter(
+    feng[:, 0],
+    0.5 * feng[:, 1],
+    label="Feng et al. (numerical)",
+    color="C3",
+    marker="D",
+    s=50,
+    edgecolor="k",
+    zorder=3,
+)
+
 #
 # EXPERIMENTAL
-# 
+#
 
 plt.scatter(
     0.5 * kutateladze[:, 0],
-    kutateladze[:, 1],
-    label="Kutateladze et al.",
+    0.5 * kutateladze[:, 1],
+    label="Kutateladze et al. (experimental)",
     color="C1",
     marker="o",
     s=50,
@@ -113,20 +124,9 @@ plt.scatter(
 )
 
 plt.scatter(
-    feng[:, 0],
-    feng[:, 1],
-    label="Feng et al.",
-    color="C3",
-    marker="D",
-    s=50,
-    edgecolor="k",
-    zorder=4,
-)
-
-plt.scatter(
-    2*kramers[:, 0],
-    kramers[:, 1],
-    label="Kramers et al.",
+    0.5*kramers[:, 0],
+    0.5*kramers[:, 1],
+    label="Kramers et al. (experimental)",
     color="C6",
     marker="s",
     s=50,
@@ -137,19 +137,19 @@ plt.scatter(
 # Logarithmic scale
 plt.xscale("log")
 plt.yscale("log")
-plt.xlim(0.44, 10**5)
+plt.xlim(0.44, 5*10**4)
 plt.ylim(0.8, 30)
-plt.xticks(fontsize=20)
-plt.yticks(fontsize=20)
+plt.xticks(fontsize=fontsize)
+plt.yticks(fontsize=fontsize)
 
 # Labels and Title
-plt.xlabel(r"Peclet Number $\left(\mathrm{Pe}\right)$", fontsize=20)
-plt.ylabel(r"Sherwood Number $\left(\mathrm{Sh}\right)$", fontsize=20)
+plt.xlabel(r"Peclet Number $\left(\mathrm{Pe}\right)$", fontsize=fontsize)
+plt.ylabel(r"Sherwood Number $\left(\mathrm{Sh}\right)$", fontsize=fontsize)
 
 # Legend
-plt.legend(fontsize=20, frameon=False)
+plt.legend(fontsize=fontsize, frameon=False)
 plt.tight_layout()
-tosave = parent_dir.parent / "graphics/ignore/literature_sh_vs_pe.pdf"
+tosave = parent_dir.parent / "graphics/ignore/literature_comparison.pdf"
 plt.savefig(tosave)
 
 # Show plot
