@@ -18,14 +18,15 @@ def test_integrating():
         return 2 * np.pi * x * vz(x)
 
     xargs = np.linspace(0, np.pi / 4, 20)
+
     def square(x):
-        return 1 - (x/2)**2
+        return 1 - (x / 2) ** 2
 
     def tanh_expression(x):
         x0 = 0.1
         a = 0.1
         return 0.5 * (-np.tanh((x - x0) / a) + np.tanh((x + x0) / a))
-    
+
     function_list = [np.cos, np.tanh, square, tanh_expression]
 
     for fun in function_list:
@@ -38,44 +39,25 @@ def test_integrating():
             traj.weighted_trapezoidal(dictionary, ball_radius, z),
             quad(to_check, 0, np.pi / 4)[0],
             rtol=1e-05,
-            atol=5*1e-04,
+            atol=5 * 1e-04,
         ), f"test if implemented integration of {str(fun)} is correct"
 
 
-# def inf_radius(ball_radius, r_start):
-#     """
-#     psi at z -> infinity has to be r**2/2, for z = 0, psi = (2*r_start + R)*(r_start - R)**2/(4*r_start), then the radius at infinty is sqrt((2 * r_start + R) * (r_start - R) ** 2 / (2 * r_start))
-
-#     Compare:
-#     https://en.wikipedia.org/wiki/Stokes%27_law#Transversal_flow_around_a_sphere
-
-#     Parameters
-#     ---------
-#     ball_radius: float
-#         Radius of ball.
-#     r_start: float
-#         Radius of searched streamline for z = 0
-
-#     Returns
-#     --------
-#     float
-#         radius of streamline at infinity
-#     """
-
-#     R = ball_radius
-#     return np.sqrt((2 * r_start + R) * (r_start - R) ** 2 / (2 * r_start))
-
-
-# def test_infinity():
-#     pars = itertools.product(np.linspace(0.1, 1, 10), np.linspace(0, 0.5, 10))
-#     positions = np.array([[R, R + r_syf] for R, r_syf in pars])
-
-#     heigh_inf = 10**8
-
-#     for pos in positions:
-#         assert np.isclose(
-#             sf.streamline_radius(heigh_inf, pos[0], pos[1]),
-#             inf_radius(pos[0], pos[1]),
-#             rtol=1e-05,
-#             atol=1e-08,
-#         ), "test if numerical radius of streamline is good at infinity"
+def test_probability_at_x():
+    ball_list = [0.8, 0.9, 0.95]
+    peclet = 10**9
+    for ball_radius in ball_list:
+        r_psi = sf.streamline_radius(5, ball_radius)
+        yargs = [
+            traj.hitting_propability_at_x(x_pos, peclet, ball_radius, trials=10**3)
+            for x_pos in [
+                r_psi - (1 - ball_radius) / 10,
+                r_psi + (1 - ball_radius) / 10,
+            ]
+        ]
+        assert np.allclose(
+            yargs,
+            [1, 0],
+            rtol=1e-10,
+            atol=1e-08,
+        ), "test if for very heigh peclets inside stream radius is 1 and outside is 0"

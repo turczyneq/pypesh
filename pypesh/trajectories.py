@@ -35,11 +35,11 @@ def construct_initial_trials_at_x(x_position, floor_h, trials):
         [ 2.,  0., -5.]], dtype=float32
     """
 
-    initial_x = x_position * jnp.ones(trials)
+    initial_x = x_position * np.ones(trials)
 
-    initial_y = jnp.zeros_like(initial_x)
-    initial_z = jnp.zeros_like(initial_x) - floor_h
-    return jnp.vstack((initial_x, initial_y, initial_z)).T
+    initial_y = np.zeros_like(initial_x)
+    initial_z = np.zeros_like(initial_x) - floor_h
+    return np.vstack((initial_x, initial_y, initial_z)).T
 
 
 def diffusion_function(peclet):
