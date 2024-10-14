@@ -2,9 +2,8 @@ import pypesh.stokes_flow as sf
 import pypesh.trajectories as traj
 import pypesh.analytic as analytic
 import numpy as np
-import jax.numpy as jnp
-import itertools
 from scipy.integrate import quad
+import pytest
 
 
 def test_integrating():
@@ -63,57 +62,85 @@ def test_probability_at_x():
             atol=1e-08,
         ), "test if for very heigh peclets inside stream radius is 1 and outside is 0"
 
-def test_traj_vs_clift_pe_1():
-    peclet = 10**1
+
+@pytest.mark.parametrize(
+    "peclet, expected",
+    [(10**i, analytic.clift_approximation(10**i)) for i in range(1, 5)],
+)
+def test_traj_vs_clift(peclet, expected):
     trials = 10**3
     sherwood, xargs, yargs = traj.distribution(
-        peclet, 1, trials=trials, mesh_jump=10, mesh_out=10, spread = 2,
+        peclet,
+        1,
+        trials=trials,
+        mesh_jump=10,
+        mesh_out=10,
+        spread=2,
     )
     assert np.isclose(
         sherwood,
-        analytic.clift_approximation(peclet),
+        expected,
         rtol=np.sqrt(trials) / trials,
         atol=0.5,
     ), f"test if for ball_radius = 1, peclet = {peclet} pychastic is consistent with Clift et. al."
 
-def test_traj_vs_clift_pe_2():
-    peclet = 10**2
-    trials = 10**3
-    sherwood, xargs, yargs = traj.distribution(
-        peclet, 1, trials=trials, mesh_jump=10, mesh_out=10, spread = 2,
-    )
-    assert np.isclose(
-        sherwood,
-        analytic.clift_approximation(peclet),
-        rtol=np.sqrt(trials) / trials,
-        atol=0.5,
-    ), f"test if for ball_radius = 1, peclet = {peclet} pychastic is consistent with Clift et. al."
 
-def test_traj_vs_clift_pe_3():
-    peclet = 10**3
-    trials = 10**3
-    sherwood, xargs, yargs = traj.distribution(
-        peclet, 1, trials=trials, mesh_jump=10, mesh_out=10, spread = 2,
-    )
-    assert np.isclose(
-        sherwood,
-        analytic.clift_approximation(peclet),
-        rtol=np.sqrt(trials) / trials,
-        atol=0.5,
-    ), f"test if for ball_radius = 1, peclet = {peclet} pychastic is consistent with Clift et. al."
+# def test_traj_vs_clift_pe_2():
+#     peclet = 10**2
+#     trials = 10**3
+#     sherwood, xargs, yargs = traj.distribution(
+#         peclet,
+#         1,
+#         trials=trials,
+#         mesh_jump=10,
+#         mesh_out=10,
+#         spread=2,
+#     )
+#     assert np.isclose(
+#         sherwood,
+#         analytic.clift_approximation(peclet),
+#         rtol=np.sqrt(trials) / trials,
+#         atol=0.5,
+#     ), f"test if for ball_radius = 1, peclet = {peclet} pychastic is consistent with Clift et. al."
 
-def test_traj_vs_clift_pe_4():
-    peclet = 10**4
-    trials = 10**3
-    sherwood, xargs, yargs = traj.distribution(
-        peclet, 1, trials=trials, mesh_jump=10, mesh_out=10, spread = 2,
-    )
-    assert np.isclose(
-        sherwood,
-        analytic.clift_approximation(peclet),
-        rtol=np.sqrt(trials) / trials,
-        atol=0.5,
-    ), f"test if for ball_radius = 1, peclet = {peclet} pychastic is consistent with Clift et. al."
+
+# def test_traj_vs_clift_pe_3():
+#     peclet = 10**3
+#     trials = 10**3
+#     sherwood, xargs, yargs = traj.distribution(
+#         peclet,
+#         1,
+#         trials=trials,
+#         mesh_jump=10,
+#         mesh_out=10,
+#         spread=2,
+#     )
+#     assert np.isclose(
+#         sherwood,
+#         analytic.clift_approximation(peclet),
+#         rtol=np.sqrt(trials) / trials,
+#         atol=0.5,
+#     ), f"test if for ball_radius = 1, peclet = {peclet} pychastic is consistent with Clift et. al."
+
+
+# def test_traj_vs_clift_pe_4():
+#     peclet = 10**4
+#     trials = 10**3
+#     sherwood, xargs, yargs = traj.distribution(
+#         peclet,
+#         1,
+#         trials=trials,
+#         mesh_jump=10,
+#         mesh_out=10,
+#         spread=2,
+#     )
+#     assert np.isclose(
+#         sherwood,
+#         analytic.clift_approximation(peclet),
+#         rtol=np.sqrt(trials) / trials,
+#         atol=0.5,
+#     ), f"test if for ball_radius = 1, peclet = {peclet} pychastic is consistent with Clift et. al."
+
 
 # def test_traj_vs_clift_pe_2():
 #     pelist = [10**i for i in range(1, 5)]
