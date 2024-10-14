@@ -1,6 +1,9 @@
 import pypesh.stokes_flow as sf
+import pypesh.analytic as analytic
 import jax.numpy as jnp
+import numpy as np
 import pychastic
+from scipy.integrate import quad
 
 
 def construct_initial_trials_at_x(x_position, floor_h, trials):
@@ -15,7 +18,7 @@ def construct_initial_trials_at_x(x_position, floor_h, trials):
     x_postition : float
         Position to generate initial conditions
 
-    trials : int, optional
+    trials : int
         Number of trajectories per initial condition.
 
     Returns
@@ -25,8 +28,11 @@ def construct_initial_trials_at_x(x_position, floor_h, trials):
 
     Example
     -------
-    >>> construct_initial_trials_at_x(2, 5, 3)
-    jnp.array([[2, 0, -5], [2, 0, -5], [2, 0, -5]])
+    >>> import pypesh.trajectories as traj
+    >>> traj.construct_initial_trials_at_x(2, 5, 3)
+    Array([[ 2.,  0., -5.],
+        [ 2.,  0., -5.],
+        [ 2.,  0., -5.]], dtype=float32
     """
 
     initial_x = x_position * jnp.ones(trials)
@@ -50,14 +56,19 @@ def diffusion_function(peclet):
 
     Returns
     --------
-    jnp.array
-        Array [x_position, 0, -floor_h] trials times
+    callable
+        jnp.array, Identity matrix times drift coeficient, dimensionalized sqrt(2 D)*dW, where D - diffusion, dW - wiener process
 
     Example
     -------
-    >>> construct_initial_trials_at_x(2, 5, 3)
-    jnp.array([[2, 0, -5], [2, 0, -5], [2, 0, -5]])
+    >>> import pypesh.trajectories as traj
+    >>> fun = traj.diffusion_function(100)
+    >>> fun([0,0,1])
+    Array([[0.14142136, 0.        , 0.        ],
+        [0.        , 0.14142136, 0.        ],
+        [0.        , 0.        , 0.14142136]], dtype=float32)
     """
+
     def diffusion(q):
         return ((2 / peclet) ** 0.5) * jnp.eye(3)
 
@@ -91,7 +102,13 @@ def simulate_trajectory(drift, noise, initial, t_max):
 
     Example
     -------
-    TODO
+    >>> import pypesh.trajectories as traj
+    >>> import pypesh.stokes_flow as sf
+    >>> def drift(q):
+    ...     return sf.stokes_around_sphere_jnp(q, 0.9)
+    >>> noise = traj.diffusion_function(100)
+    >>> traj.simulate_trajectory(drift, noise, init, 20)
+    {'ball_hit': Array([ True, False, False], dtype=bool), 'roof_hit': Array([False,  True,  True], dtype=bool), 'something_hit': Array([ True,  True,  True], dtype=bool)}
     """
 
     problem = pychastic.sde_problem.SDEProblem(
@@ -135,7 +152,7 @@ def hitting_propability_at_x(
     x_postition : float
         Radius where probability is evaluated (simulation initiation point)
 
-    peclet : float, optional
+    peclet : float
         Peclet number defined as R u / D.
 
     ball_radius : float
@@ -149,13 +166,14 @@ def hitting_propability_at_x(
 
     Returns
     -------
-    float - value of propability
-
+    float
+        value of propability
 
     Example
     --------
-    >>> hitting_propability_at_x(0.1, 10**4, 0.9)
-    TODO
+    >>> import pypesh.trajectories as traj
+    >>> traj.hitting_propability_at_x(0.1, 10**4, 0.9)
+    0.91
     """
 
     def drift(q):
@@ -165,7 +183,7 @@ def hitting_propability_at_x(
     t_max = floor_h / 2
 
     ratio = 1
-    initial = construct_initial_trials_at_x(floor_h, x_position, 100)
+    initial = construct_initial_trials_at_x(x_position, floor_h, 100)
     while ratio > 0.01:
         """
         loops increasing time until almost all of particles hit either ball or roof
@@ -176,21 +194,16 @@ def hitting_propability_at_x(
             drift=drift,
             noise=diffusion_function(peclet=peclet),
             initial=initial,
-            floor_h=floor_h,
             t_max=t_max,
         )
         ratio = (100 - sum(collision_data["something_hit"])) / 100
 
-    initial = construct_initial_trials_at_x(floor_h, x_position, trials)
+    initial = construct_initial_trials_at_x(x_position, floor_h, trials)
 
-    def drift(q):
-        return stokes_around_sphere(q, ball_radius)
-
-    collision_data = simulate_until_collides(
+    collision_data = simulate_trajectory(
         drift=drift,
         noise=diffusion_function(peclet=peclet),
         initial=initial,
-        floor_h=floor_h,
         t_max=t_max,
     )
 
@@ -198,3 +211,141 @@ def hitting_propability_at_x(
     propab = sum(trajectory_outcome) / trials
 
     return propab
+
+
+def weighted_trapezoidal(function, ball_radius, z):
+    """
+    Calculate integral of function with weight, expresion to integrate is: 2*pi*r*vz(r)*function(r). On each step assume function(r) is a*r + b and then integrate.
+
+    Parameters
+    ----------
+    function : dict
+        Keys are xargs and values are yargs of function to integrate
+
+    ball_radius : float
+        Radius of the big ball.
+
+    z : float
+        Height where integration is taking place
+
+    Returns
+    -------
+    float
+        value of integral
+
+    Example
+    --------
+    >>> import pypesh.trajectories as traj
+    >>> import numpy as np
+    >>> dict = {x: np.cos(x) for x in np.linspace(0, np.pi/2, 10)}
+    >>> traj.weighted_trapezoidal(dict, 1, 5)
+    2.5493506321093182
+    """
+
+    def vz(x):
+        velocities = sf.stokes_around_sphere_np(np.array([x, 0, z]), ball_radius)
+        return velocities[2]
+
+    def weight(x):
+        return 2 * np.pi * x * vz(x)
+
+    xargs = list(function.keys())
+
+    integral, error = quad(weight, 0, xargs[0])
+    for i in range(len(xargs) - 1):
+        x0 = xargs[i]
+        x1 = xargs[i + 1]
+        a = (function[x1] - function[x0]) / (x1 - x0)
+        b = (function[x0] * x1 - function[x1] * x0) / (x1 - x0)
+
+        def function_to_integrate(x):
+            return weight(x) * (a * x + b)
+
+        element, error = quad(function_to_integrate, x0, x1)
+
+        integral = integral + element
+
+    return integral
+
+
+def distribution(
+    peclet,
+    ball_radius,
+    mesh_out=4,
+    mesh_jump=6,
+    trials=10**2,
+    floor_h=5,
+    spread=4,
+):
+    """
+    Calculates the distribution of probability of hitting as a function of radius, at depth floor_h. Addaptive sampling is implemented to ensure effective calculation. Position of greatest slope is assumed to be at streamline that pass position [1, 0, 0], then spread is scaled as sqrt(1/peclet) \sim sqrt(D).
+
+    Parameters
+    ----------
+    peclet : float, optional
+        Peclet number defined as R u / D.
+
+    ball_radius : float
+        Radius of the big ball.
+
+    mesh_out : int, optional
+        Amount of samples outside the region of highest slope
+
+    mesh_jump : int, optional
+        Amount of samples in the region of highest slope
+
+    trials : int, optional
+        Number of trajectories per position, uncertainty of propability estimation is sqrt(trials)/trials.
+
+    floor_h : int, optional
+        Initial depth for simulation
+
+    spread: int, optional
+        How far in sqrt(1/peclet), mesh_out will reach
+
+    Returns
+    -------
+    float
+        Estimation of resulting sherwood number (flux/advective_flux)
+
+    list
+        Radius samples
+
+    list
+        Probability values ordered as radius samples
+
+
+    Example
+    --------
+    >>> traj.distribution(10**6, 0.9)
+    (18557.92284339992, [0.10064564758776434, 0.11064564758776434, 0.12064564758776435, 0.13064564758776434, 0.13464564758776434, 0.13864564758776435, 0.14264564758776435, 0.14664564758776436, 0.15064564758776436, 0.16064564758776437, 0.17064564758776435, 0.18064564758776436], [1.0, 1.0, 1.0, 0.99, 0.94, 0.76, 0.39, 0.19, 0.07, 0.0, 0.0, 0.0])
+    """
+
+    # define the spread of testing range
+    r_syf = sf.streamline_radius(floor_h, ball_radius)
+
+    dispersion = 10 * (1 / peclet) ** (1 / 2)
+
+    # generate the mesh to calculate the probability distribution
+    if r_syf - dispersion > 0:
+        x_probs = list(
+            np.linspace(max(r_syf - spread * dispersion, 0), r_syf - dispersion, mesh_out)
+        )
+    else:
+        x_probs = [0]
+    x_probs = x_probs + list(np.linspace(max(r_syf - dispersion, 0), r_syf + dispersion, mesh_jump))
+    x_probs = x_probs + list(np.linspace(r_syf + dispersion, r_syf + spread * dispersion, mesh_out))
+
+    def fun(x):
+        return hitting_propability_at_x(x, peclet, ball_radius, trials=trials)
+
+    # sol_dict = {x: fun(x) for x in tqdm.tqdm(x_probs)}
+    sol_dict = {x: fun(x) for x in x_probs}
+
+    integral = weighted_trapezoidal(sol_dict, ball_radius, floor_h)
+
+    return (
+        analytic.sherwood_from_flux(integral, peclet),
+        list(sol_dict.keys()),
+        list(sol_dict.values()),
+    )
