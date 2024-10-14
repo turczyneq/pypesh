@@ -15,19 +15,19 @@ def clift_approximation(pe):
 peclet_values = np.logspace(-1, 5, 300)
 analytic_clift = clift_approximation(peclet_values)
 
-numerical_clift_path = parent_dir / "data/clift_new.csv"
+numerical_clift_path = parent_dir / "data/clift.csv"
 numerical_clift = np.loadtxt(numerical_clift_path, delimiter=",", skiprows=1)
 
 friedlander_path = parent_dir / "data/friedlander.csv"
 friedlander = np.loadtxt(friedlander_path, delimiter=",", skiprows=1)
 
-kutateladze_path = parent_dir / "data/kutateladze_new.csv"
+kutateladze_path = parent_dir / "data/kutateladze.csv"
 kutateladze = np.loadtxt(kutateladze_path, delimiter=",", skiprows=1)
 
-feng_path = parent_dir / "data/feng_new.csv"
+feng_path = parent_dir / "data/feng.csv"
 feng = np.loadtxt(feng_path, delimiter=",", skiprows=1)
 
-kramers_path = parent_dir / "data/kramers_new.csv"
+kramers_path = parent_dir / "data/kramers.csv"
 kramers = np.loadtxt(kramers_path, delimiter=",", skiprows=1)
 
 westerberg_path = parent_dir / "data/westerberg.csv"

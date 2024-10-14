@@ -45,14 +45,8 @@ def diffusion_function(peclet):
 
     Parameters
     ----------
-    floor_h : float
-        Initial depth for simulation
-
-    x_postition : float
-        Position to generate initial conditions
-
-    trials : int, optional
-        Number of trajectories per initial condition.
+    peclet : float
+        dimesnionless number defined as U R / D
 
     Returns
     --------
@@ -68,6 +62,7 @@ def diffusion_function(peclet):
         return ((2 / peclet) ** 0.5) * jnp.eye(3)
 
     return diffusion
+
 
 def simulate_trajectory(drift, noise, initial, t_max):
     """
