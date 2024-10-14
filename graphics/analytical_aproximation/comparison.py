@@ -8,7 +8,7 @@ def clift_approximation(pe):
     return (1 / 2) * (1 + (1 + 2 * pe) ** (1 / 3))
 
 def our_approx(pe, r_particle):
-    return clift_approximation(pe) + (pe/4)*(r_particle**2)*((3-r_particle)/2)
+    return clift_approximation(pe) + (pe/(4*np.pi))*(r_particle**2)*((3-r_particle)/2)
 
 parent_dir = Path(__file__).parent
 fem_path = parent_dir / "fem_pe_vs_sh.csv"
@@ -40,16 +40,16 @@ analytic_clift = clift_approximation(peclet_values)
 plt.figure(figsize=(10, 7))
 plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
 
-# # Plot Clift data
-# plt.plot(
-#     peclet_values,
-#     analytic_clift,
-#     label="Clift et al. (analytic)",
-#     color="k",
-#     linestyle="-",
-#     linewidth=2,
-#     zorder = 0
-# )
+# Plot Clift data
+plt.plot(
+    peclet_values,
+    analytic_clift,
+    label="Clift et al. (analytic)",
+    color="k",
+    linestyle="-",
+    linewidth=2,
+    zorder = 0
+)
 
 num = 0
 for data in fem_plt.values():
@@ -57,11 +57,16 @@ for data in fem_plt.values():
     plt.scatter(
         data[:, 0],
         data[:, 2],
-        label=f"$r_{{particle}} = {round(10000*(1-data[1,1]))/10000}$",
+        label=f"$\\beta = {round(10000*(1-data[1,1]))/10000}$",
         color=f"C{num}"
     )
 
-    plt.plot()
+    plt.plot(
+        peclet_values,
+        our_approx(peclet_values, data[1,1]),
+        color=f"C{num}"
+
+    )
 
     num +=1
 
@@ -73,6 +78,13 @@ for data in py_plt.values():
         data[:, 2],
         color=f"C{num}",
         facecolors='none'
+    )
+
+    plt.plot(
+        peclet_values,
+        our_approx(peclet_values,data[1,1]),
+        color=f"C{num}"
+
     )
     num +=1
 
@@ -106,19 +118,20 @@ plt.scatter(
 
 # Logarithmic scale
 plt.xscale("log")
-plt.xlim(0.1, 10**12)
-plt.ylim(0.8, 1.4)
+plt.yscale("log")
+plt.xlim(1, 2*10**9)
+plt.ylim(0.9, 10**7)
 plt.xticks(fontsize=15)
 plt.yticks(fontsize=15)
 
 # Labels and Title
 plt.xlabel(r"Peclet Number $\left(\mathrm{Pe}\right)$", fontsize=15)
-plt.ylabel(r"Modified Sherwood Number with fix from clift $\left(\overline{\mathrm{Sh}}\right)$", fontsize=15)
+plt.ylabel(r"Sherwood Number $\left(\mathrm{Sh}\right)$", fontsize=15)
 
 # Legend
-plt.legend(fontsize=15, frameon=False, loc = 1)
+plt.legend(fontsize=15, frameon=False, loc = 0)
 plt.tight_layout()
-tosave = parent_dir.parent / "ignore/mod_better_sh_vs_pe.pdf"
+tosave = parent_dir.parent / "ignore/analytical_approx.pdf"
 plt.savefig(tosave)
 
 # Show plot

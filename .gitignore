@@ -169,3 +169,5 @@ graphics/ignore/
 src/old_scripts
 
 numerical_results/
+
+ashes/
