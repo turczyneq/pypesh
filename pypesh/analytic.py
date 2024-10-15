@@ -4,6 +4,14 @@ def sherwood_from_flux(flux, peclet):
     '''
     sherwood is defined as flux_dimesional/(4 pi D R) = U R^2 flux / (4 pi D R) = flux*(Pe/4 pi)
 
+    Parameters
+    ----------
+    flux: float
+        Flux passing the ceiling
+    
+    peclet: float
+        Peclet number defined as R u / D.
+
     Returns
     --------
     float

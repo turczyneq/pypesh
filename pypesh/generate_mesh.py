@@ -1,6 +1,7 @@
 from skfem import MeshTri
 import numpy as np
 import pygmsh
+from pathlib import Path
 
 def gen_mesh(
     mesh=0.01,
@@ -40,7 +41,19 @@ def gen_mesh(
     Returns
     -------
     MeshTri
-        skfem object, that is used than by scikit-fem
+        skfem object, used by scikit-fem
+
+    Example
+    --------
+    >>> import pypesh.generate_mesh as msh
+    >>> msh.gen_mesh()
+    Transforming over 1000 vertices to C_CONTIGUOUS.
+    Transforming over 1000 elements to C_CONTIGUOUS.
+    <skfem MeshTri1 object>
+    Number of elements: 90756
+    Number of vertices: 46225
+    Number of nodes: 46225
+    Named boundaries [# facets]: left [972], right [40], top [264], bottom [20], ball [396]
     '''
     floor_depth = floor * cell_size
     ceiling_depth = ceiling * cell_size
@@ -72,7 +85,7 @@ def gen_mesh(
         raw_mesh = geom.generate_mesh()
 
     # Convert the mesh to a skfem MeshTri object and define boundaries
-    mesh = MeshTri(
+    triangural_mesh = MeshTri(
         raw_mesh.points[:, :2].T, raw_mesh.cells_dict["triangle"].T
     ).with_boundaries(
         {
@@ -87,7 +100,10 @@ def gen_mesh(
     )
 
     if save:
-        filname = f"meshes/mesh_{mesh}__width_{width}__ceiling_{ceiling}"
-        mesh.save(filname)
+        filname = Path(__file__).parent.parent / f"meshes/mesh_{str(mesh).replace('.', '_')}__width_{str(width).replace('.', '_')}.msh"
+        if filname.exists():
+            print("file exists, not saving")
+        else:
+            triangural_mesh.save(filname)
 
-    return mesh
+    return triangural_mesh

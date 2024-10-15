@@ -268,7 +268,7 @@ def weighted_trapezoidal(function, ball_radius, z):
     return integral
 
 
-def distribution(
+def sherwood_trajectories(
     peclet,
     ball_radius,
     mesh_out=4,
@@ -278,7 +278,7 @@ def distribution(
     spread=4,
 ):
     """
-    Calculates the distribution of probability of hitting as a function of radius, at depth floor_h. Addaptive sampling is implemented to ensure effective calculation. Position of greatest slope is assumed to be at streamline that pass position [1, 0, 0], then spread is scaled as sqrt(1/peclet) \sim sqrt(D).
+    Calculates the distribution of probability of hitting as a function of radius, at depth floor_h. Addaptive sampling is implemented to ensure effective calculation. Position of greatest slope is assumed to be at streamline that pass position [1, 0, 0], then spread is scaled as sqrt(1/peclet) \sim sqrt(D). Then integrates with weigth and finds the 
 
     Parameters
     ----------
