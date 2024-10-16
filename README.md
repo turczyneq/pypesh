@@ -1,3 +1,5 @@
+![Tests](https://github.com/turczyneq/fem_advection_diffusion/actions/workflows/tests.yml/badge.svg)
+
 FEM advection diffusion solver
 ==============================
 
