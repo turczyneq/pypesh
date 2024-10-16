@@ -5,8 +5,8 @@ gmsh
 kiwisolver
 markdown-it-py
 matplotlib
-mdurl
-meshio5
+# mdurl
+meshio
 numpy
 packaging
 pillow
