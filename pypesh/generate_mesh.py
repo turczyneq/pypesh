@@ -40,7 +40,7 @@ def gen_mesh(
     
     Returns
     -------
-    MeshTri
+    <skfem MeshTri1 object>
         skfem object, used by scikit-fem
 
     Example

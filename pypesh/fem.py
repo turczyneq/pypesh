@@ -29,8 +29,21 @@ def _get_mesh(mesh_type):
 
     Returns
     --------
-    MeshTri
-        skfem object, used by scikit-fem
+    tuple
+        skfem object <skfem MeshTri1 object>, used by scikit-fem and <skfem CellBasis(MeshTri1, ElementTriP1) object> boundaries of mesh
+
+    Example
+    -------
+    >>> import pypesh.fem as fem
+    >>> fem._get_mesh('default')
+    (<skfem MeshTri1 object>
+    Number of elements: 90756
+    Number of vertices: 46225
+    Number of nodes: 46225
+    Named boundaries [# facets]: left [972], right [40], top [264], bottom [20], ball [396], <skfem CellBasis(MeshTri1, ElementTriP1) object>
+    Number of elements: 90756
+    Number of DOFs: 46225
+    Size: 19603296 B)
     """
     mesh_fine_path = (
         Path(__file__).parent.parent
@@ -88,8 +101,22 @@ def get_mesh(peclet):
 
     Returns
     --------
-    MeshTri
-        skfem object, used by scikit-fem
+    tuple
+        skfem object <skfem MeshTri1 object> used by scikit-fem, <skfem CellBasis(MeshTri1, ElementTriP1) object> boundaries of mesh
+
+
+    Example
+    -------
+    >>> import pypesh.fem as fem
+    >>> fem.get_mesh(1000)
+    (<skfem MeshTri1 object>
+    Number of elements: 90756
+    Number of vertices: 46225
+    Number of nodes: 46225
+    Named boundaries [# facets]: left [972], right [40], top [264], bottom [20], ball [396], <skfem CellBasis(MeshTri1, ElementTriP1) object>
+    Number of elements: 90756
+    Number of DOFs: 46225
+    Size: 19603296 B)
     """
     if peclet > 50000:
         # For big peclets use finer mesh
@@ -123,18 +150,22 @@ def sherwood_fem(peclet, ball_radius):
     Returns
     --------
     float
-        sherwood from dimensionless flux
+        Sherwood calcualted for selected peclet and ball radius using fem approach.
 
     Example
     -------
-    TODO
+    >>> import pypesh.fem as fem
+    >>> fem.sherwood_fem(10000, 0.9)
+
+    54.93467214954524
     """
 
     @BilinearForm
     def advection(k, l, m):
         # Coordinate fields
         r, z = m.x
-        v_r, v_y, v_z = sf.stokes_around_sphere_np(np.array([r, 0, z]), ball_radius)
+
+        v_r, v_y, v_z = sf.stokes_around_sphere_explicite(r, z, ball_radius)
 
         return (l * v_r * grad(k)[0] + l * v_z * grad(k)[1]) * 2 * np.pi * r
 
@@ -163,8 +194,8 @@ def sherwood_fem(peclet, ball_radius):
     def intercepted(m):
         # Coordinate fields
         r, z = m.x
-
-        v_r, v_y, v_z = sf.stokes_around_sphere_np(np.array([r, 0, z]), ball_radius)
+        
+        v_r, v_y, v_z = sf.stokes_around_sphere_explicite(r, z, ball_radius)
 
         phi = m["u"]
 
