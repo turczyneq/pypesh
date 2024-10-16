@@ -1,4 +1,4 @@
-![Tests](https://github.com/turczyneq/fem_advection_diffusion/actions/workflows/test.yml/badge.svg)
+![Tests](https://github.com/turczyneq/pypesh/actions/workflows/test.yml/badge.svg)
 
 FEM advection diffusion solver
 ==============================
