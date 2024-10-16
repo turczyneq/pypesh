@@ -5,11 +5,15 @@ This repository attempts to find a solution to advection diffusion problem
 
 $$ 0 = \Delta \phi - \mathrm{Pe} (u \cdot \nabla \phi) $$
 
-with $\phi = 1$ for $z \to \infty$ and $\phi = 0$ on a surface of the sphere and $\mathrm{Pe}$ denoting Peclet number.
+with $\phi = 1$ for $z \to \infty$ and $\phi = 0$ on a surface of the sphere and $\mathrm{Pe}$ denoting Peclet number. Final determined value is Sherwood number defined as 
+
+$$ \mathrm{Sh} = \frac{\mathrm{flux falling onto the sphere}}{ 4 \pi D R}$$
+
+Where $D$ is diffusion constant.
 
 ![Some solution of advection diffusion type problem](/graphics/sample_image.png)
 
-We use `scikit-fem` package to handle solving which requires rewriting equations in weak form.
+We use two approaches: `scikit-fem` package to handle solving which requires rewriting equations in weak form for smaller peclets and `pychastic` to generate and trace trajcetories of single particles and .
 
 License
 -------

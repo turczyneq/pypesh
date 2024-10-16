@@ -13,12 +13,12 @@ def test_compatibility():
         ball_radius,
         trials=trials,
         mesh_jump=5,
-        mesh_out=4,
+        mesh_out=5,
         spread=2,
     )
     fem_sherwood = fem.sherwood_fem(peclet, ball_radius)
 
-    assert np.isclose(pychastic, fem_sherwood, rtol=0.5), 'if fem and trajetories give simmilar sherwood'
+    assert np.isclose(pychastic, fem_sherwood, rtol=0.03), 'if fem and trajetories give simmilar sherwood'
 
 
 # @pytest.mark.parametrize(
