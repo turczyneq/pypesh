@@ -24,6 +24,12 @@ jobs:
       - name: Install package in edit mode
         run: |
           python -m pip install -e .
+
+      - name: Install OpenGL dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglu1-mesa
+          
       - name: Test with pytest
         run: |
           pytest tests/
