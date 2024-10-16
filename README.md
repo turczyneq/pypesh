@@ -7,9 +7,9 @@ $$ 0 = \Delta \phi - \mathrm{Pe} (u \cdot \nabla \phi) $$
 
 with $\phi = 1$ for $z \to \infty$ and $\phi = 0$ on a surface of the sphere and $\mathrm{Pe}$ denoting Peclet number. Final determined value is Sherwood number defined as 
 
-$$ \mathrm{Sh} = \frac{flux\_ on\_ sphere}{ 4 \pi D R}$$
+$$ \mathrm{Sh} = \frac{\Phi}{ 4 \pi D R}$$
 
-Where $D$ is diffusion constant.
+Where $D$ is diffusion constant and $\Phi$ is flux falling onto the sphere.
 
 ![Some solution of advection diffusion type problem](/graphics/sample_image.png)
 
