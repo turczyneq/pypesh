@@ -278,7 +278,7 @@ def sherwood_trajectories(
     spread=4,
 ):
     """
-    Calculates the distribution of probability of hitting as a function of radius, at depth floor_h. Addaptive sampling is implemented to ensure effective calculation. Position of greatest slope is assumed to be at streamline that pass position [1, 0, 0], then spread is scaled as sqrt(1/peclet) \sim sqrt(D). Then integrates with weigth and finds the 
+    Calculates the distribution of probability of hitting as a function of radius, at depth floor_h. Addaptive sampling is implemented to ensure effective calculation. Position of greatest slope is assumed to be at streamline that pass position [1, 0, 0], then spread is scaled as sqrt(1/peclet) \sim sqrt(D). Then integrates with weigth and finds the Sherwood number
 
     Parameters
     ----------
@@ -305,18 +305,13 @@ def sherwood_trajectories(
 
     Returns
     -------
-    float
-        Estimation of resulting sherwood number (flux/advective_flux)
-
-    list
-        Radius samples
-
-    list
-        Probability values ordered as radius samples
+    tuple
+        float - estimation of resulting sherwood number (flux/advective_flux), list - Radius samples, list - Probability values ordered as radius samples
 
 
     Example
     --------
+    >>> import pypesh.trajectories as traj
     >>> traj.distribution(10**6, 0.9)
     (18557.92284339992, [0.10064564758776434, 0.11064564758776434, 0.12064564758776435, 0.13064564758776434, 0.13464564758776434, 0.13864564758776435, 0.14264564758776435, 0.14664564758776436, 0.15064564758776436, 0.16064564758776437, 0.17064564758776435, 0.18064564758776436], [1.0, 1.0, 1.0, 0.99, 0.94, 0.76, 0.39, 0.19, 0.07, 0.0, 0.0, 0.0])
     """
@@ -329,12 +324,18 @@ def sherwood_trajectories(
     # generate the mesh to calculate the probability distribution
     if r_syf - dispersion > 0:
         x_probs = list(
-            np.linspace(max(r_syf - spread * dispersion, 0), r_syf - dispersion, mesh_out)
+            np.linspace(
+                max(r_syf - spread * dispersion, 0), r_syf - dispersion, mesh_out
+            )
         )
     else:
         x_probs = [0]
-    x_probs = x_probs + list(np.linspace(max(r_syf - dispersion, 0), r_syf + dispersion, mesh_jump))
-    x_probs = x_probs + list(np.linspace(r_syf + dispersion, r_syf + spread * dispersion, mesh_out))
+    x_probs = x_probs + list(
+        np.linspace(max(r_syf - dispersion, 0), r_syf + dispersion, mesh_jump)
+    )
+    x_probs = x_probs + list(
+        np.linspace(r_syf + dispersion, r_syf + spread * dispersion, mesh_out)
+    )
 
     def fun(x):
         return hitting_propability_at_x(x, peclet, ball_radius, trials=trials)

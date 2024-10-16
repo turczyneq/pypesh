@@ -28,9 +28,11 @@ def stokes_around_sphere_jnp(q, ball_radius):
 
     Example
     --------
-    >>> position = jnp.array([1,1,1])
-    >>> stokes_around_sphere(position, 0.7)
-    [-0.0845337019138477, -0.0845337019138477, 0.595854811567262]
+    >>> import jax.numpy as jnp
+    >>> import pypesh.stokes_flow as sf
+    >>> posjnp = jnp.array([1,1,1])
+    >>> sf.stokes_around_sphere_jnp(posjnp, 0.9) 
+    Array([-0.0948298, -0.0948298,  0.4803847], dtype=float32, weak_type=True)
     """
 
     big_r = ball_radius
@@ -69,9 +71,11 @@ def stokes_around_sphere_np(q, ball_radius):
 
     Example
     --------
-    >>> position = np.array([1,1,1])
-    >>> stokes_around_sphere(position, 0.7)
-    [-0.0845337019138477, -0.0845337019138477, 0.595854811567262]
+    >>> import pypesh.stokes_flow as sf
+    >>> import numpy as np
+    >>> posnp = np.array([1,1,1])
+    >>> sf.stokes_around_sphere_np(posnp, 0.9)
+    array([-0.09482978, -0.09482978,  0.48038476])
     """
 
     big_r = ball_radius
@@ -157,7 +161,8 @@ def psi(r, z, ball_radius):
 
     Example
     --------
-    >>> psi(1, 1, 1)
+    >>> import pypesh.stokes_flow as sf
+    >>> sf.psi(1, 1, 1)
     0.05805826175840782
     """
 
@@ -197,7 +202,8 @@ def streamline_radius(z, ball_radius, r_start=1):
 
     Example
     --------
-    >>> streamline_radius(5, 0.8)
+    >>> import pypesh.stokes_flow as sf
+    >>> sf.streamline_radius(5, 0.8)
     0.2710224007612492
     """
 
