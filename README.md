@@ -13,7 +13,9 @@ $$ \mathrm{Sh} = \frac{\Phi}{ 4 \pi D R}$$
 
 Where $D$ is diffusion constant and $\Phi$ is flux falling onto the sphere.
 
-![Both approaches solving the same problem](/graphics/sample_image.png)
+<p align="center">
+  <img src="/graphics/visualisation/visual_comparison.png" alt="Both approaches solving the same problem">
+</p>
 
 We use two approaches: `scikit-fem` package to handle solving which requires rewriting equations in weak form for smaller peclets and `pychastic` to generate and trace trajcetories of single particles and .
 
