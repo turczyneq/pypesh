@@ -1,6 +1,6 @@
 ![Tests](https://github.com/turczyneq/pypesh/actions/workflows/test.yml/badge.svg)
 
-FEM advection diffusion solver
+advection diffusion solver
 ==============================
 
 This repository attempts to find a solution to advection diffusion problem
@@ -13,7 +13,7 @@ $$ \mathrm{Sh} = \frac{\Phi}{ 4 \pi D R}$$
 
 Where $D$ is diffusion constant and $\Phi$ is flux falling onto the sphere.
 
-![Some solution of advection diffusion type problem](/graphics/sample_image.png)
+![Both approaches solving the same problem](/graphics/sample_image.png)
 
 We use two approaches: `scikit-fem` package to handle solving which requires rewriting equations in weak form for smaller peclets and `pychastic` to generate and trace trajcetories of single particles and .
 
