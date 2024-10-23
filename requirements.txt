@@ -1,23 +1,6 @@
-contourpy
-cycler
-fonttools
-gmsh
-kiwisolver
-markdown-it-py
-matplotlib
-# mdurl
-meshio
 numpy
-packaging
-pillow
-Pygments
+matplotlib
 pygmsh
-pyparsing
-python-dateutil
-rich
-scikit-fem
-scipy
-six
-tqdm
 pychastic
+scikit-fem
 scipy
