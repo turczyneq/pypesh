@@ -35,7 +35,7 @@ westerberg = np.loadtxt(westerberg_path, delimiter=",", skiprows=1)
 
 
 # Plot all data
-fontsize=15
+fontsize = 15
 plt.figure(figsize=(7, 7))
 plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
 
@@ -65,8 +65,8 @@ plt.loglog(
 #
 
 plt.scatter(
-    0.5 * numerical_clift[:, 0],
-    0.5 * numerical_clift[:, 1],
+    numerical_clift[:, 2],
+    numerical_clift[:, 3],
     label="Clift et al. (numerical)",
     color="C0",
     marker="o",
@@ -76,8 +76,8 @@ plt.scatter(
 )
 
 plt.scatter(
-    0.5 * friedlander[:, 0],
-    0.5 * friedlander[:, 1],
+    friedlander[:, 2],
+    friedlander[:, 3],
     label="Friedlander (numerical)",
     color="C4",
     marker="D",
@@ -87,8 +87,8 @@ plt.scatter(
 )
 
 plt.scatter(
-    0.5 * westerberg[:, 0],
-    0.5 * westerberg[:, 1],
+    westerberg[:, 2],
+    westerberg[:, 3],
     label="Westerberg \& Finlayson (numerical)",
     color="C9",
     marker="s",
@@ -98,8 +98,8 @@ plt.scatter(
 )
 
 plt.scatter(
-    feng[:, 0],
-    0.5 * feng[:, 1],
+    feng[:, 2],
+    feng[:, 3],
     label="Feng et al. (numerical)",
     color="C3",
     marker="D",
@@ -113,8 +113,8 @@ plt.scatter(
 #
 
 plt.scatter(
-    0.5 * kutateladze[:, 0],
-    0.5 * kutateladze[:, 1],
+    kutateladze[:, 2],
+    kutateladze[:, 3],
     label="Kutateladze et al. (experimental)",
     color="C1",
     marker="o",
@@ -124,8 +124,8 @@ plt.scatter(
 )
 
 plt.scatter(
-    0.5*kramers[:, 0],
-    0.5*kramers[:, 1],
+    kramers[:, 2],
+    kramers[:, 3],
     label="Kramers et al. (experimental)",
     color="C6",
     marker="s",
@@ -137,7 +137,7 @@ plt.scatter(
 # Logarithmic scale
 plt.xscale("log")
 plt.yscale("log")
-plt.xlim(0.44, 5*10**4)
+plt.xlim(0.44, 5 * 10**4)
 plt.ylim(0.8, 30)
 plt.xticks(fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
