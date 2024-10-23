@@ -132,3 +132,69 @@ def sherwood(
         )
 
     return sherwood
+
+def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(
+    description=(
+        "Calculates Sherwood Number for sphere with:\n"
+        + "given Peclet number and absorptive diameter\n"))
+
+    parser.add_argument(
+    "--peclet",
+    type=float,
+    required=True,
+    help="Peclet number of a problem")
+    
+    parser.add_argument(
+    "--ball_radius",
+    type=float,
+    required=True,
+    help="Radius of ball that affects the stokes flow",)
+
+    parser.add_argument(
+    "--mesh_out",
+    type=int,
+    default=4,
+    help="For trajectories, amount of samples outside the region of highest slope.",)
+
+    parser.add_argument(
+    "--mesh_jump",
+    type=int,
+    default=6,
+    help="For trajectories, amount of samples in the region of highest slope.",)
+
+    parser.add_argument(
+    "--trials",
+    type=int,
+    default=10**2,
+    help="For trajectories, number of trajectories per position, uncertainty of propability estimation is sqrt(trials)/trials.")
+
+    parser.add_argument(
+    "--floor_h",
+    type=float,
+    default=5,
+    help="For trajectories, initial depth for simulation.",)
+
+    parser.add_argument(
+    "--spread",
+    type=float,
+    default=4,
+    help="For trajectories, how far in sqrt(1/peclet), mesh_out will reach.",)
+
+    args = parser.parse_args()
+
+    result = sherwood(
+    peclet = args.peclet,
+    ball_radius = args.ball_radius,
+    mesh_out = args.mesh_out,
+    mesh_jump = args.mesh_jump,
+    trials = args.trials,
+    floor_h = args.floor_h,
+    spread = args.spread,)
+
+    print(f"Sherwood for given parameters is {result}")
+
+if __name__ == "__main__":
+    main()

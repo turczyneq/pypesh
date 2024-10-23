@@ -19,6 +19,30 @@ Where $D$ is diffusion constant and $\Phi$ is flux falling onto the sphere.
 
 We use two approaches: `scikit-fem` package to handle solving which requires rewriting equations in weak form for smaller peclets and `pychastic` to generate and trace trajcetories of single particles and .
 
+# Usage as module
+
+Basic usage
+```Python
+python3 -m pypesh --peclet 1000 --ball_radius 0.9
+
+```
+
+Sample output:
+```
+Sherwood for given parameters is 12.033892568100546
+```
+
+# Usage as package
+
+Basic usage
+
+```Python
+import pypesh.pesh as psh
+psh.sherwood(peclet = 10**4, ball_radius = 0.9)
+```
+
+For advance options go to: TODO
+
 License
 -------
 Copyright (C) 2024  Radost Waszkiewicz and Jan Turczynowicz.
