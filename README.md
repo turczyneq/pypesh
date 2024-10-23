@@ -41,7 +41,7 @@ import pypesh.pesh as psh
 psh.sherwood(peclet = 10**4, ball_radius = 0.9)
 ```
 
-For advance options go to: TODO
+For advanced options go to: https://pypesh.readthedocs.io/en/latest/
 
 License
 -------
