@@ -1,0 +1,19 @@
+pydata-sphinx-theme==0.6.3
+sphinx-copybutton==0.3.1
+sphinx-prompt==1.4.0
+sphinxcontrib-applehelp==1.0.2
+sphinxcontrib-devhelp==1.0.2
+sphinxcontrib-htmlhelp==2.0.0
+sphinxcontrib-jsmath==1.0.1
+sphinxcontrib-napoleon==0.7
+sphinxcontrib-qthelp==1.0.3
+sphinxcontrib-serializinghtml==1.1.5
+
+numpy>=1.20.3
+scipy>=1.5.4
+# MDAnalysis>=2.7.0
+
+jax>=0.2.13
+jaxlib
+
+docutils>=0.16

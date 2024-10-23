@@ -237,8 +237,8 @@ def weighted_trapezoidal(function, ball_radius, z):
     --------
     >>> import pypesh.trajectories as traj
     >>> import numpy as np
-    >>> dict = {x: np.cos(x) for x in np.linspace(0, np.pi/2, 10)}
-    >>> traj.weighted_trapezoidal(dict, 1, 5)
+    >>> dictionary = {x: np.cos(x) for x in np.linspace(0, np.pi/2, 10)}
+    >>> traj.weighted_trapezoidal(dictionary, 1, 5)
     2.5493506321093182
     """
 
