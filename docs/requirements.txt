@@ -9,11 +9,9 @@ sphinxcontrib-napoleon==0.7
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.5
 
-numpy>=1.20.3
-scipy>=1.5.4
-# MDAnalysis>=2.7.0
-
-jax>=0.2.13
-jaxlib
-
-docutils>=0.16
+numpy
+matplotlib
+pygmsh
+pychastic
+scikit-fem
+scipy
