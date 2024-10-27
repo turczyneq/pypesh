@@ -63,6 +63,13 @@ Using package: https://pychastic.readthedocs.io/en/latest/
 .. automodule:: pypesh.trajectories
    :members:
 
+Visualisation
+------------------------------
+Visualisation of different results from code.
+
+.. automodule:: pypesh.visualisation
+   :members:
+
 Pe vs Sh
 ------------------------------
 Final package ``pesh`` that calculates the value of :math:`Sh` for given Peclet and radius of rigid ball.
