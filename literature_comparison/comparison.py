@@ -35,8 +35,9 @@ westerberg = np.loadtxt(westerberg_path, delimiter=",", skiprows=1)
 
 
 # Plot all data
-fontsize = 15
-plt.figure(figsize=(7, 7))
+fontsize = 24
+marker_size = 80
+plt.figure(figsize=(16 * 0.85, 9 * 0.85))
 plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
 
 # Plot our data
@@ -70,7 +71,7 @@ plt.scatter(
     label="Clift et al. (numerical)",
     color="C0",
     marker="o",
-    s=50,
+    s = marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -81,7 +82,7 @@ plt.scatter(
     label="Friedlander (numerical)",
     color="C4",
     marker="D",
-    s=50,
+    s = marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -92,7 +93,7 @@ plt.scatter(
     label="Westerberg \& Finlayson (numerical)",
     color="C9",
     marker="s",
-    s=50,
+    s = marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -103,7 +104,7 @@ plt.scatter(
     label="Feng et al. (numerical)",
     color="C3",
     marker="D",
-    s=50,
+    s = marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -118,7 +119,7 @@ plt.scatter(
     label="Kutateladze et al. (experimental)",
     color="C1",
     marker="o",
-    s=50,
+    s = marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -129,7 +130,7 @@ plt.scatter(
     label="Kramers et al. (experimental)",
     color="C6",
     marker="s",
-    s=50,
+    s = marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -138,7 +139,7 @@ plt.scatter(
 plt.xscale("log")
 plt.yscale("log")
 plt.xlim(0.44, 5 * 10**4)
-plt.ylim(0.8, 30)
+plt.ylim(0.8, 50)
 plt.xticks(fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
 
@@ -149,7 +150,7 @@ plt.ylabel(r"Sherwood Number $\left(\mathrm{Sh}\right)$", fontsize=fontsize)
 # Legend
 plt.legend(fontsize=fontsize, frameon=False)
 plt.tight_layout()
-tosave = parent_dir.parent / "graphics/ignore/literature_comparison.pdf"
+tosave = parent_dir / "literature_comparison.pdf"
 plt.savefig(tosave)
 
 # Show plot

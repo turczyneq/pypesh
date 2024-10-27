@@ -217,5 +217,5 @@ def streamline_radius(z, ball_radius, r_start=1):
     r_guess = r_start - ball_radius
 
     # Numerical solver for r
-    r_solution = fsolve(difference, r_guess)
+    r_solution = fsolve(difference, 1)
     return r_solution[0]

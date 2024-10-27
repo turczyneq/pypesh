@@ -34,7 +34,7 @@ def test_integrating():
             return weight(x) * fun(x)
 
         assert np.isclose(
-            traj.weighted_trapezoidal(dictionary, ball_radius, z),
+            traj._weighted_trapezoidal(dictionary, ball_radius, z),
             quad(to_check, 0, np.pi / 4)[0],
             rtol=1e-05,
             atol=5 * 1e-04,

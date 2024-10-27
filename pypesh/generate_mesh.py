@@ -3,6 +3,7 @@ import numpy as np
 import pygmsh
 from pathlib import Path
 
+
 def gen_mesh(
     mesh=0.01,
     far_mesh=0.5,
@@ -10,19 +11,20 @@ def gen_mesh(
     width=10,
     ceiling=10,
     floor=10,
-    save = False
+    save=False,
+    show_mesh=False,
 ):
-    '''
+    """
     Generates mesh used then by sciki-fem to solve advection-diffusion in Stokes Flow.
 
     Parameters
     ----------
     mesh: float, optional
         Density of triangles in most interesting region
-    
+
     far mesh: float, optional
         Density of triangles in region far away from axis, ceiling and sphere
-    
+
     cell_size: float, optional
         Scales cell size, keeping ratio of walls to ceiling
 
@@ -36,8 +38,11 @@ def gen_mesh(
         Distance from 0 to lower boundary of cell
 
     save: Bool, optional
-        If True than mesh will be saved in /meshes/
-    
+        Default False, if True than mesh will be saved in /meshes/
+
+    show : bool, optional
+        Default False, if True mesh is shown
+
     Returns
     -------
     <skfem MeshTri1 object>
@@ -54,7 +59,7 @@ def gen_mesh(
     Number of vertices: 46225
     Number of nodes: 46225
     Named boundaries [# facets]: left [972], right [40], top [264], bottom [20], ball [396]
-    '''
+    """
     floor_depth = floor * cell_size
     ceiling_depth = ceiling * cell_size
     floor_width = width * cell_size
@@ -100,10 +105,16 @@ def gen_mesh(
     )
 
     if save:
-        filname = Path(__file__).parent.parent / f"meshes/mesh_{str(mesh).replace('.', '_')}__width_{str(width).replace('.', '_')}.msh"
+        filname = (
+            Path(__file__).parent.parent
+            / f"meshes/mesh_{str(mesh).replace('.', '_')}__width_{str(width).replace('.', '_')}.msh"
+        )
         if filname.exists():
             print("file exists, not saving")
         else:
             triangural_mesh.save(filname)
+
+    if show_mesh:
+        triangural_mesh.draw(boundaries=True).show()
 
     return triangural_mesh

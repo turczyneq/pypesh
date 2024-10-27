@@ -156,7 +156,6 @@ def sherwood_fem(peclet, ball_radius):
     -------
     >>> import pypesh.fem as fem
     >>> fem.sherwood_fem(10000, 0.9)
-
     54.93467214954524
     """
 

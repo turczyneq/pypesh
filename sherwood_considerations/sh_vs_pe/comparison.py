@@ -24,14 +24,14 @@ def clift_approximation(pe):
     return (1 / 2) * (1 + (1 + 2 * pe) ** (1 / 3))
 
 
-peclet_values = np.logspace(-1, 10, 300)
+peclet_values = np.logspace(-1, 12, 300)
 analytic_clift = clift_approximation(peclet_values)
 
 
 # Plot all data
 
-fontsize=27
-plt.figure(figsize=(12, 9))
+fontsize = 26
+plt.figure(figsize=(10, 9))
 plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
 
 # Plot Clift data
@@ -42,7 +42,7 @@ plt.loglog(
     color="k",
     linestyle="-",
     linewidth=2,
-    zorder = 1
+    zorder=1,
 )
 
 num = 0
@@ -53,44 +53,27 @@ for data in fem_plt.values():
         data[:, 2],
         label=f"$\\beta = {round(10000*(1-data[1,1]))/10000}$",
         color=f"C{num}",
-        zorder = 0
+        zorder=0,
     )
-    num +=1
+    num += 1
 
 num = 0
 for data in py_plt.values():
     # Plot our data
-    plt.scatter(
-        data[:, 0],
-        data[:, 2],
-        color=f"C{num}",
-        facecolors='none',
-        zorder = 0
-    )
-    num +=1
+    plt.scatter(data[:, 0], data[:, 2], color=f"C{num}", facecolors="none", zorder=0)
+    num += 1
 
-#add dummy plt to make legend
+# add dummy plt to make legend
 
-plt.scatter(
-    [0],
-    [0],
-    label="FEM",
-    color="k"
-)
+plt.scatter([0], [0], label="FEM", color="k")
 
-plt.scatter(
-    [0],
-    [0],
-    label=r"pychastic",
-    color="k",
-    facecolors='none'
-)
+plt.scatter([0], [0], label=r"pychastic", color="k", facecolors="none")
 
 # Logarithmic scale
 plt.xscale("log")
 plt.yscale("log")
-plt.xlim(1, 2*10**9)
-plt.ylim(0.9, 10**7)
+plt.xlim(0.5, 0.7 * 10**11)
+plt.ylim(0.9, 10**8)
 plt.xticks(fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
 
@@ -101,7 +84,7 @@ plt.ylabel(r"Sherwood Number $\left(\mathrm{Sh}\right)$", fontsize=fontsize)
 # Legend
 plt.legend(fontsize=fontsize, frameon=False)
 plt.tight_layout()
-tosave = parent_dir.parent / "ignore/sh_vs_pe.pdf"
+tosave = parent_dir.parent / "graphics/sh_vs_pe.pdf"
 plt.savefig(tosave)
 
 # Show plot
