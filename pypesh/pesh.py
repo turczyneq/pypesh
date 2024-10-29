@@ -64,7 +64,9 @@ def all_sherwood(
 
     sherwood_clift = analytic.clift_approximation(peclet)
 
-    return sherwood_clift, sherwood_fem, sherwood_traj
+    sherwood_us = analytic.our_approximation(peclet, ball_radius)
+
+    return sherwood_clift, sherwood_us, sherwood_fem, sherwood_traj
 
 
 def sherwood(

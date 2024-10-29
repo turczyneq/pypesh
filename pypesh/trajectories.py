@@ -428,6 +428,9 @@ def sherwood_trajectories(
     x_probs = x_probs + list(
         np.linspace(r_syf + dispersion, r_syf + spread * dispersion, mesh_out)
     )
+    
+    #delete duplicates
+    x_probs = list(dict.fromkeys(x_probs))
 
     def fun(x):
         return hitting_propability_at_x(x, peclet, ball_radius, trials=trials)

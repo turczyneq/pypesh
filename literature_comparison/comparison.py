@@ -35,10 +35,10 @@ westerberg = np.loadtxt(westerberg_path, delimiter=",", skiprows=1)
 
 
 # Plot all data
-fontsize = 24
+fontsize = 26
 marker_size = 80
 plt.figure(figsize=(16 * 0.85, 9 * 0.85))
-plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
+plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 
 # Plot our data
 plt.loglog(
@@ -71,7 +71,7 @@ plt.scatter(
     label="Clift et al. (numerical)",
     color="C0",
     marker="o",
-    s = marker_size,
+    s=marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -82,7 +82,7 @@ plt.scatter(
     label="Friedlander (numerical)",
     color="C4",
     marker="D",
-    s = marker_size,
+    s=marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -93,7 +93,7 @@ plt.scatter(
     label="Westerberg \& Finlayson (numerical)",
     color="C9",
     marker="s",
-    s = marker_size,
+    s=marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -104,7 +104,7 @@ plt.scatter(
     label="Feng et al. (numerical)",
     color="C3",
     marker="D",
-    s = marker_size,
+    s=marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -119,7 +119,7 @@ plt.scatter(
     label="Kutateladze et al. (experimental)",
     color="C1",
     marker="o",
-    s = marker_size,
+    s=marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -130,7 +130,7 @@ plt.scatter(
     label="Kramers et al. (experimental)",
     color="C6",
     marker="s",
-    s = marker_size,
+    s=marker_size,
     edgecolor="k",
     zorder=3,
 )
@@ -144,11 +144,16 @@ plt.xticks(fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
 
 # Labels and Title
-plt.xlabel(r"Peclet Number $\left(\mathrm{Pe}\right)$", fontsize=fontsize)
-plt.ylabel(r"Sherwood Number $\left(\mathrm{Sh}\right)$", fontsize=fontsize)
+plt.xlabel(r"Peclet number $\left(Pe\right)$", fontsize=fontsize)
+plt.ylabel(r"Sherwood number $\left(Sh\right)$", fontsize=fontsize)
 
 # Legend
-plt.legend(fontsize=fontsize, frameon=False)
+plt.legend(
+    fontsize=fontsize,
+    frameon=False,
+    labelspacing=0.3,
+    handlelength=0.8,
+)
 plt.tight_layout()
 tosave = parent_dir / "literature_comparison.pdf"
 plt.savefig(tosave)

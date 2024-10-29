@@ -30,19 +30,19 @@ analytic_clift = clift_approximation(peclet_values)
 
 
 # Plot all data
-fontsize=26
-plt.figure(figsize=(10, 9))
-plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
+fontsize = 28
+plt.figure(figsize=(7.5, 6.75))
+plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 
 # Plot Clift data
-plt.loglog(
+plt.plot(
     peclet_values,
     analytic_clift,
     label="Clift et al.",
     color="k",
     linestyle="-",
     linewidth=2,
-    zorder = 1
+    zorder=0,
 )
 
 num = 0
@@ -53,64 +53,50 @@ for data in fem_plt.values():
         data[:, 2],
         label=f"$\\beta = {round(10000*(1-data[1,1]))/10000}$",
         color=f"C{num}",
-        zorder = 0
+        zorder=1,
     )
-    num +=1
+    num += 1
 
 num = 0
 for data in py_plt.values():
     # Plot our data
-    plt.scatter(
-        data[:, 0],
-        data[:, 2],
-        color=f"C{num}",
-        facecolors='none',
-        zorder = 0
-    )
-    num +=1
+    plt.scatter(data[:, 0], data[:, 2], color=f"C{num}", facecolors="none", zorder=0)
+    num += 1
 
 # for limits, modified sherwood should be 1
-plt.loglog(
+plt.plot(
     peclet_values,
     [1 for x in peclet_values],
     color="k",
     linestyle="--",
     linewidth=2,
-    zorder = 0
+    zorder=0,
 )
 
 
-#add dummy plt to make legend
+# add dummy plt to make legend
 
-plt.scatter(
-    [0],
-    [0],
-    label="FEM",
-    color="k"
-)
+plt.scatter([0], [0], label="FEM", color="k")
 
-plt.scatter(
-    [0],
-    [0],
-    label=r"pychastic",
-    color="k",
-    facecolors='none'
-)
+plt.scatter([0], [0], label=r"pychastic", color="k", facecolors="none")
 
 # Logarithmic scale
 plt.xscale("log")
 plt.yscale("log")
-plt.xlim(5, 10**13)
-plt.ylim(0.9, 100)
+plt.xlim(0.5, 10**12)
+plt.ylim(0.9, 80)
 plt.xticks(fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
 
 # Labels and Title
-plt.xlabel(r"Peclet Number $\left(\mathrm{Pe}\right)$", fontsize=fontsize)
-plt.ylabel(r"Modified Sherwood Number $\left(\widetilde{\mathrm{Sh}}\right)$", fontsize=fontsize)
+plt.xlabel(r"Peclet number $\left(Pe\right)$", fontsize=fontsize)
+plt.ylabel(
+    r"Modified Sherwood number $\left(\widetilde{Sh}\right)$",
+    fontsize=fontsize,
+)
 
-# Legend
-plt.legend(fontsize=fontsize, frameon=False, loc = 1)
+# # Legend
+# plt.legend(fontsize=fontsize, frameon=False, loc=1)
 plt.tight_layout()
 tosave = parent_dir.parent / "graphics/modsh_vs_pe.pdf"
 plt.savefig(tosave)

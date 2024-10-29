@@ -18,7 +18,7 @@ def draw_cross_section_fem(
     ball_radius,
     downstream_distance=5,
     show=False,
-    density=200,
+    density=400,
     maximal_radius=1,
 ):
     """
@@ -116,7 +116,7 @@ def draw_cross_section_fem(
         # create the operator that will act on solution object to get function value
         probes = basis.probes(query_pts)
 
-        xargs = np.linspace(0, 1, N_query_pts)
+        xargs = np.linspace(0, maximal_radius, N_query_pts)
         yargs = 1 - probes @ u
 
     if show:
@@ -149,9 +149,10 @@ def draw_cross_section_traj(
     ball_radius,
     downstream_distance=5,
     show=False,
-    density=200,
-    maximal_radius=1,
-    trials=500,
+    mesh_out=4,
+    mesh_jump=6,
+    spread=4,
+    trials=200,
 ):
     """
     Draws cross section of hitting probability at selected height using pychastic.
@@ -171,13 +172,22 @@ def draw_cross_section_traj(
         Default False, if True plot is shown
 
     denstity : int, optional
-        Default 200, how many points in result
+        Default 10, how many points in result
 
     maximal_radius : float, optional
         Default 1, maximal radius to place in result
 
+    mesh_out : int, optional
+        Amount of samples outside the region of highest slope
+
+    mesh_jump : int, optional
+        Amount of samples in the region of highest slope
+    
+    spread: int, optional
+        How far in sqrt(1/peclet), mesh_out will reach
+
     trials : int, optional
-        Default 500, Number of trajectories.
+        Default 200, Number of trajectories.
 
     Returns
     --------
@@ -187,21 +197,38 @@ def draw_cross_section_traj(
     Example
     -------
     >>> import pypesh.visualisation as visual
-    >>> visual.draw_cross_section_traj(1000, 0.9, density = 10)
-    array([[0.        , 0.794     ],
-        [0.11111111, 0.714     ],
-        [0.22222222, 0.454     ],
-        [0.33333333, 0.202     ],
-        [0.44444444, 0.072     ],
-        [0.55555556, 0.014     ],
-        [0.66666667, 0.002     ],
-        [0.77777778, 0.        ],
-        [0.88888889, 0.        ],
-        [1.        , 0.        ]])
+    >>> visual.draw_cross_section_traj(1000, 0.9)
+    array([[0.        , 0.8       ],
+        [0.09137468, 0.675     ],
+        [0.18274937, 0.505     ],
+        [0.27412405, 0.285     ],
+        [0.36549873, 0.155     ],
+        [0.45687341, 0.07      ],
+        [0.93121506, 0.        ],
+        [1.40555671, 0.        ]])
     """
 
-    N_query_pts = density
-    query_pts = np.linspace(0, maximal_radius, N_query_pts)
+    r_syf = sf.streamline_radius(downstream_distance, ball_radius)
+
+    dispersion = 10 * (1 / peclet) ** (1 / 2)
+
+    # generate the mesh to calculate the probability distribution
+    if r_syf - dispersion > 0:
+        x_probs = list(
+            np.linspace(
+                max(r_syf - spread * dispersion, 0), r_syf - dispersion, mesh_out
+            )
+        )
+    else:
+        x_probs = [0]
+    x_probs = x_probs + list(
+        np.linspace(max(r_syf - dispersion, 0), r_syf + dispersion, mesh_jump)
+    )
+    x_probs = x_probs + list(
+        np.linspace(r_syf + dispersion, r_syf + spread * dispersion, mesh_out)
+    )
+
+    x_probs = list(dict.fromkeys(x_probs))
 
     to_return = np.array(
         [
@@ -217,7 +244,7 @@ def draw_cross_section_traj(
                     ),
                 ]
             )
-            for x in query_pts
+            for x in x_probs
         ]
     )
 
@@ -237,7 +264,7 @@ def draw_cross_section_traj(
             linestyles="--",
         )
 
-        plt.xlim(0, maximal_radius)
+        plt.xlim(0, x_probs[-1])
         plt.ylim(-0.05, 1.1)
 
         # Show the plot
