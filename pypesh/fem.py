@@ -45,18 +45,21 @@ def _get_mesh(mesh_type):
     Number of DOFs: 46225
     Size: 19603296 B)
     """
+
+    parent_dir = Path(__file__).parent.parent if "__file__" in globals() else Path.cwd()
+
     mesh_fine_path = (
-        Path(__file__).parent.parent
+        parent_dir
         / f"meshes/mesh_{str(0.001).replace('.', '_')}__width_{10}.msh"
     )
 
     mesh_default_path = (
-        Path(__file__).parent.parent
+        parent_dir
         / f"meshes/mesh_{str(0.01).replace('.', '_')}__width_{10}.msh"
     )
 
     mesh_wide_path = (
-        Path(__file__).parent.parent
+        parent_dir
         / f"meshes/mesh_{str(0.05).replace('.', '_')}__width_{20}.msh"
     )
 
@@ -193,7 +196,7 @@ def sherwood_fem(peclet, ball_radius):
     def intercepted(m):
         # Coordinate fields
         r, z = m.x
-        
+
         v_r, v_y, v_z = sf.stokes_around_sphere_explicite(r, z, ball_radius)
 
         phi = m["u"]

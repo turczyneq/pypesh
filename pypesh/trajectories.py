@@ -1,6 +1,7 @@
 import pypesh.stokes_flow as sf
 import pypesh.analytic as analytic
 import jax.numpy as jnp
+import jax
 import numpy as np
 import pychastic
 from scipy.integrate import quad
@@ -35,11 +36,11 @@ def _construct_initial_trials_at_x(x_position, floor_h, trials):
         [ 2.,  0., -5.]], dtype=float32
     """
 
-    initial_x = x_position * np.ones(trials)
+    initial_x = x_position * jnp.ones(trials)
 
-    initial_y = np.zeros_like(initial_x)
-    initial_z = np.zeros_like(initial_x) - floor_h
-    return np.vstack((initial_x, initial_y, initial_z)).T
+    initial_y = jnp.zeros_like(initial_x)
+    initial_z = jnp.zeros_like(initial_x) - floor_h
+    return jnp.vstack((initial_x, initial_y, initial_z)).T
 
 
 def _diffusion_function(peclet):
@@ -137,7 +138,7 @@ def simulate_trajectory(drift, noise, initial, t_max, whole_trajectory=False):
             "ball_hit": ball_hit,
             "roof_hit": roof_hit,
             "something_hit": something_hit,
-            "trajectories": trajectories, 
+            "trajectories": trajectories,
         }
     else:
         return {
@@ -146,13 +147,14 @@ def simulate_trajectory(drift, noise, initial, t_max, whole_trajectory=False):
             "something_hit": something_hit,
         }
 
+
 def draw_trajectory_at_x(
     x_position,
     peclet,
     ball_radius,
     trials=5,
     floor_h=5,
-    t_max = 10,
+    t_max=10,
 ):
     """
     Generate trajectories of particles in a simulation for certain x position amd returns whole trajectory.
@@ -223,7 +225,7 @@ def draw_trajectory_at_x(
         noise=_diffusion_function(peclet=peclet),
         initial=initial,
         t_max=t_max,
-        whole_trajectory = True
+        whole_trajectory=True,
     )
 
     return collision_data
@@ -271,36 +273,41 @@ def hitting_propability_at_x(
     def drift(q):
         return sf.stokes_around_sphere_jnp(q, ball_radius)
 
+    _drift = jax.jit(drift)
+
+    _diffusion_at_peclet = jax.jit(_diffusion_function(peclet=peclet))
+
     # begin with short time and test the outcome
-    t_max = floor_h / 2
+    # t_max = floor_h / 2
 
-    ratio = 1
-    initial = _construct_initial_trials_at_x(x_position, floor_h, 100)
-    while ratio > 0.01:
-        """
-        loops increasing time until almost all of particles hit either ball or roof
-        """
-        t_max = t_max * 2
+    # ratio = 1
+    # initial = _construct_initial_trials_at_x(x_position, floor_h, 100)
+    # while ratio > 0.01:
+    #     """
+    #     loops increasing time until almost all of particles hit either ball or roof
+    #     """
+    #     t_max = t_max * 2
 
-        collision_data = simulate_trajectory(
-            drift=drift,
-            noise=_diffusion_function(peclet=peclet),
-            initial=initial,
-            t_max=t_max,
-        )
-        ratio = (100 - sum(collision_data["something_hit"])) / 100
+    #     collision_data = simulate_trajectory(
+    #         drift=drift,
+    #         noise=_diffusion_function(peclet=peclet),
+    #         initial=initial,
+    #         t_max=t_max,
+    #     )
+    #     ratio = (100 - sum(collision_data["something_hit"])) / 100
+
+    t_max = 40.0
 
     initial = _construct_initial_trials_at_x(x_position, floor_h, trials)
 
     collision_data = simulate_trajectory(
-        drift=drift,
-        noise=_diffusion_function(peclet=peclet),
+        drift=_drift,
+        noise=_diffusion_at_peclet,
         initial=initial,
         t_max=t_max,
     )
 
-    trajectory_outcome = [int(val) for val in collision_data["ball_hit"]]
-    propab = sum(trajectory_outcome) / trials
+    propab = sum(1.0 * collision_data["ball_hit"]) / trials
 
     return propab
 
@@ -428,15 +435,17 @@ def sherwood_trajectories(
     x_probs = x_probs + list(
         np.linspace(r_syf + dispersion, r_syf + spread * dispersion, mesh_out)
     )
-    
-    #delete duplicates
+
+    # delete duplicates
     x_probs = list(dict.fromkeys(x_probs))
 
     def fun(x):
         return hitting_propability_at_x(x, peclet, ball_radius, trials=trials)
+    
+    _fun = jax.jit(fun)
 
     # sol_dict = {x: fun(x) for x in tqdm.tqdm(x_probs)}
-    sol_dict = {x: fun(x) for x in x_probs}
+    sol_dict = {x: _fun(x) for x in x_probs}
 
     integral = _weighted_trapezoidal(sol_dict, ball_radius, floor_h)
 

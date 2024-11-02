@@ -1,7 +1,6 @@
 from skfem import MeshTri
 import numpy as np
 import pygmsh
-from pathlib import Path
 
 
 def gen_mesh(
@@ -105,8 +104,19 @@ def gen_mesh(
     )
 
     if save:
+        import os
+        import sys
+        from pathlib import Path
+
+        base_dir = (
+            Path(__file__).parent.parent if "__file__" in globals() else Path.cwd()
+        )
+
+        meshes_dir = base_dir / "meshes"
+        meshes_dir.mkdir(parents=True, exist_ok=True)
+
         filname = (
-            Path(__file__).parent.parent
+            base_dir
             / f"meshes/mesh_{str(mesh).replace('.', '_')}__width_{str(width).replace('.', '_')}.msh"
         )
         if filname.exists():
