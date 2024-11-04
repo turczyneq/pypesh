@@ -105,21 +105,18 @@ def gen_mesh(
 
     if save:
         import os
-        import sys
-        from pathlib import Path
 
-        base_dir = (
-            Path(__file__).parent.parent if "__file__" in globals() else Path.cwd()
+        base_dir = os.getcwd()
+
+        meshes_dir = os.path.join(base_dir, "meshes")
+        os.makedirs(meshes_dir, exist_ok=True)
+
+        filname = os.path.join(
+            meshes_dir,
+            f"mesh_{str(mesh).replace('.', '_')}__width_{str(width).replace('.', '_')}.msh",
         )
 
-        meshes_dir = base_dir / "meshes"
-        meshes_dir.mkdir(parents=True, exist_ok=True)
-
-        filname = (
-            base_dir
-            / f"meshes/mesh_{str(mesh).replace('.', '_')}__width_{str(width).replace('.', '_')}.msh"
-        )
-        if filname.exists():
+        if os.path.exists(filname):
             print("file exists, not saving")
         else:
             triangural_mesh.save(filname)

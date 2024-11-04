@@ -46,25 +46,24 @@ def _get_mesh(mesh_type):
     Size: 19603296 B)
     """
 
-    parent_dir = Path(__file__).parent.parent if "__file__" in globals() else Path.cwd()
+    import os
 
-    mesh_fine_path = (
-        parent_dir
-        / f"meshes/mesh_{str(0.001).replace('.', '_')}__width_{10}.msh"
+    parent_dir = os.getcwd()
+
+    mesh_fine_path = os.path.join(
+        parent_dir, "meshes", f"mesh_{str(0.001).replace('.', '_')}__width_{10}.msh"
     )
 
-    mesh_default_path = (
-        parent_dir
-        / f"meshes/mesh_{str(0.01).replace('.', '_')}__width_{10}.msh"
+    mesh_default_path = os.path.join(
+        parent_dir, "meshes", f"mesh_{str(0.01).replace('.', '_')}__width_{10}.msh"
     )
 
-    mesh_wide_path = (
-        parent_dir
-        / f"meshes/mesh_{str(0.05).replace('.', '_')}__width_{20}.msh"
+    mesh_wide_path = os.path.join(
+        parent_dir, "meshes", f"mesh_{str(0.05).replace('.', '_')}__width_{20}.msh"
     )
 
     if mesh_type == "default":
-        if mesh_default_path.exists():
+        if os.path.exists(mesh_default_path):
             mesh = MeshTri.load(mesh_default_path)
         else:
             mesh = msh.gen_mesh(save=True)
@@ -72,7 +71,7 @@ def _get_mesh(mesh_type):
         basis = Basis(mesh, ElementTriP1())
 
     elif mesh_type == "fine":
-        if mesh_fine_path.exists():
+        if os.path.exists(mesh_fine_path):
             mesh = MeshTri.load(mesh_fine_path)
         else:
             mesh = msh.gen_mesh(mesh=0.001, save=True)
@@ -80,7 +79,7 @@ def _get_mesh(mesh_type):
         basis = Basis(mesh, ElementTriP1())
 
     elif mesh_type == "coarse":
-        if mesh_wide_path.exists():
+        if os.path.exists(mesh_wide_path):
             mesh = MeshTri.load(mesh_wide_path)
         else:
             mesh = msh.gen_mesh(width=20, mesh=0.05, save=True)
