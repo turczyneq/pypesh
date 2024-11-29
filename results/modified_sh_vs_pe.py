@@ -4,16 +4,18 @@ from pathlib import Path
 from itertools import groupby
 
 parent_dir = Path(__file__).parent
-fem_path = parent_dir / "mod_fem_pe_vs_sh.csv"
+fem_path = parent_dir / "data" / "mod_fem_pe_vs_sh.csv"
 fem = np.loadtxt(fem_path, delimiter=",", skiprows=1)
+fem = fem[fem[:,0] < 10**6]
 # we have to split into listst wiht different r_syf
 fem_sorted = fem[fem[:, 1].argsort()]
 # fem_sorted = fem_sorted[fem_sorted[:,1] != 1.]
 fem_grouped = groupby(fem_sorted, key=lambda x: x[1])
 fem_plt = {k: np.array(list(g)) for k, g in fem_grouped}
 
-py_path = parent_dir / "mod_py_pe_vs_sh.csv"
+py_path = parent_dir / "data" / "mod_py_pe_vs_sh.csv"
 py = np.loadtxt(py_path, delimiter=",", skiprows=1)
+py = py[py[:,0] > 10**5]
 # we have to split into listst wiht different r_syf
 py_sorted = py[py[:, 1].argsort()]
 py_grouped = groupby(py_sorted, key=lambda x: x[1])
@@ -98,7 +100,7 @@ plt.ylabel(
 # # Legend
 # plt.legend(fontsize=fontsize, frameon=False, loc=1)
 plt.tight_layout()
-tosave = parent_dir.parent / "graphics/modsh_vs_pe.pdf"
+tosave = parent_dir / "graphics/modsh_vs_pe.pdf"
 plt.savefig(tosave)
 
 # Show plot

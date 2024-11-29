@@ -112,7 +112,7 @@ plt.legend(
     fontsize=fontsize, frameon=True, facecolor="white", framealpha=1, edgecolor="none"
 )
 plt.tight_layout()
-tosave = parent_dir.parent / "graphics/regions.pdf"
+tosave = parent_dir / "graphics/regions.pdf"
 plt.savefig(tosave)
 
 # Show the plot

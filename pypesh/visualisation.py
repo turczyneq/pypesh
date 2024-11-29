@@ -182,7 +182,7 @@ def draw_cross_section_traj(
 
     mesh_jump : int, optional
         Amount of samples in the region of highest slope
-    
+
     spread: int, optional
         How far in sqrt(1/peclet), mesh_out will reach
 
@@ -383,11 +383,158 @@ def visualise_trajectories(
         )  # 'equal' ensures that one unit in x is equal to one unit in y
         plt.tight_layout()
         plt.xlim(-2, 2)
-        plt.ylim(-5.1, 2)
+        plt.ylim(-downstream_distance, 2)
         plt.xlabel(
             r"Radius (negative values for better visbility) $(\rho)$", fontsize=fontsize
         )
         plt.ylabel(r"Height $(z)$", fontsize=fontsize)
+
+        plt.show()
+
+    return collision_data
+
+
+def visualise_trajectories_with_streamplot(
+    peclet,
+    ball_radius,
+    positions,
+    t_max=20,
+    downstream_distance=5,
+    show=False,
+    save="no",
+):
+    """
+    Draws trajectories simulated by pychastic.
+
+    Parameters
+    ----------
+    peclet : float
+        Peclet number defined as R u / D.
+
+    ball_radius : float
+        Radius of the big ball.
+
+    positions: dict
+        Keys: position where simulate, Values: how many times
+
+    t_max : float, optional
+        Default 20, time of simulation
+
+    downstream_distance : float, optional
+        Default 5, downstream distance in ball radius where distribution is plotted
+
+    show : bool, optional
+        Default False, if True plot is shown
+
+    Returns
+    --------
+    list
+        list of outcomes from pychastic for each position
+
+    Example
+    -------
+    >>> visual.visualise_trajectories(1000, 0.9, {0.1: 2, 0.2: 1}, t_max=0.05)
+    [{'ball_hit': Array([False, False], dtype=bool), 'roof_hit': Array([False, False], dtype=bool), 'something_hit': Array([False, False], dtype=bool), 'trajectories': Array([[[ 9.8736316e-02, -7.5448438e-04, -4.9963560e+00],
+            [ 9.6689783e-02, -4.3136943e-03, -4.9961877e+00],
+            [ 9.7639665e-02, -5.3856885e-03, -4.9852118e+00],
+            [ 9.8702230e-02, -7.6030511e-03, -4.9785647e+00],
+            [ 9.1684863e-02,  7.3614251e-04, -4.9669151e+00]],
+
+        [[ 1.0136999e-01, -1.1048245e-02, -4.9944925e+00],
+            [ 1.0074968e-01, -3.2547791e-03, -4.9900651e+00],
+            [ 1.0723757e-01, -6.1367834e-03, -4.9799914e+00],
+            [ 1.1393108e-01, -1.7973720e-03, -4.9786887e+00],
+            [ 1.1445464e-01, -7.9164971e-03, -4.9739923e+00]]], dtype=float32)}, {'ball_hit': Array([False], dtype=bool), 'roof_hit': Array([False], dtype=bool), 'something_hit': Array([False], dtype=bool), 'trajectories': Array([[[ 2.0366783e-01, -2.2119847e-03, -5.0009050e+00],
+            [ 2.0216057e-01, -7.5238775e-03, -4.9919944e+00],
+            [ 2.0585570e-01, -5.9383763e-03, -4.9826236e+00],
+            [ 2.1121313e-01, -7.7165901e-03, -4.9811354e+00],
+            [ 2.1137653e-01, -7.2739599e-03, -4.9675722e+00]]], dtype=float32)}]
+    """
+
+    collision_data = [
+        traj.draw_trajectory_at_x(
+            x,
+            peclet,
+            ball_radius,
+            trials=amount,
+            floor_h=downstream_distance,
+            t_max=t_max,
+        )
+        for x, amount in positions.items()
+    ]
+
+    fontsize = 15
+    if show:
+
+        import pypesh.stokes_flow as sf
+
+        r_list = np.linspace(-2, 2, 100)
+        z_list = np.linspace(-downstream_distance, 2, 100)
+
+        RR, ZZ = np.meshgrid(r_list, z_list)
+
+        psi_list = sf.psi(RR, ZZ, ball_radius)
+        mask = RR**2 + ZZ**2 < (ball_radius) ** 2
+        psi_list = np.ma.masked_where(mask, psi_list)
+
+        plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
+        plt.figure(figsize=(12, 8))
+
+        plt.contour(
+            RR,
+            ZZ,
+            psi_list,
+            levels=[10 ** (-3), 10 ** (-2), 0.1, 0.5],
+            alpha=0.3,
+            linewidths=3,
+            colors="k",
+        )
+
+        for data in collision_data:
+            trajectories = data["trajectories"]
+            for i in range(len(trajectories)):
+
+                r = (trajectories[i, :, 0] ** 2 + trajectories[i, :, 1] ** 2) ** 0.5
+                z = trajectories[i, :, -1]
+                when_hit = np.concatenate((np.where(r**2 + z**2 < 1)[0], [-1]))[0]
+
+                r = r[:when_hit]
+                z = z[:when_hit]
+
+                if data["ball_hit"][i]:
+                    color = "C0"
+                elif data["something_hit"][i]:
+                    color = "C1"
+                else:
+                    color = "#a22"
+
+                if i % 2:
+                    plt.plot(r, z, color=color, linewidth=0.4)
+                else:
+                    plt.plot(-r, z, color=color, linewidth=0.4)
+
+        plt.gca().add_artist(
+            plt.Circle(
+                (0, 0), ball_radius, edgecolor="k", facecolor="#fff", hatch="///"
+            )
+        )
+        plt.gca().add_artist(
+            Arc((0, 0), 2, 2, color="k", linestyle="--", theta1=-180, theta2=180)
+        )
+
+        plt.gca().set_aspect(
+            "equal", "box"
+        )  # 'equal' ensures that one unit in x is equal to one unit in y
+        plt.xlim(-2, 2)
+        plt.ylim(-downstream_distance, 2)
+        plt.xlabel(
+            r"Radius (negative values for better visbility) $(\rho)$", fontsize=fontsize
+        )
+        plt.ylabel(r"Height $(z)$", fontsize=fontsize)
+        plt.tight_layout()
+
+        if save != "no":
+            plt.savefig(save)
 
         plt.show()
 

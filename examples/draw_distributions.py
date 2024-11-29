@@ -163,7 +163,7 @@ def draw_distributions_fem(
     plt.tight_layout()
     plt.xlim(x_min, x_max)
     plt.ylim(z_min, z_max)
-    tosave = parent_dir.parent / "graphics/fem_pe500_rsyf_03.pdf"
+    tosave = parent_dir/ "graphics/fem_pe500_rsyf_03.pdf"
 
     x_labels = np.linspace(-3, 3, 7)  # Adjust as needed
     y_labels = np.linspace(-2, 5, 8)

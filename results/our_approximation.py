@@ -6,19 +6,31 @@ import pypesh.analytic as analytic
 
 parent_dir = Path(__file__).parent
 
-fem_path = parent_dir / "fem_pe_vs_sh.csv"
+boundary = 10**3
+
+fem_path = parent_dir / "data" / "fem_pe_vs_sh.csv"
 fem = np.loadtxt(fem_path, delimiter=",", skiprows=1)
+# test = np.array([pe * (1 - rb) ** 1.4 for pe, rb, sh in fem])
+# fem = fem[test < boundary]
+fem = fem[fem[:, 0] < 5 * 10**4]
 # we have to split into listst wiht different r_syf
 fem_sorted = fem[fem[:, 1].argsort()]
 fem_grouped = groupby(fem_sorted, key=lambda x: x[1])
 fem_plt = {k: np.array(list(g)) for k, g in fem_grouped}
+for i in [1,0.999, 0.998]:
+    del fem_plt[i]
 
-py_path = parent_dir / "py_pe_vs_sh.csv"
+py_path = parent_dir / "data" / "py_pe_vs_sh.csv"
 py = np.loadtxt(py_path, delimiter=",", skiprows=1)
+# test = np.array([pe * (1 - rb) ** 1.4 for pe, rb, sh in py])
+# py = py[test > boundary]
+py = py[py[:,0] > 10**4]
 # we have to split into listst wiht different r_syf
 py_sorted = py[py[:, 1].argsort()]
 py_grouped = groupby(py_sorted, key=lambda x: x[1])
 py_plt = {k: np.array(list(g)) for k, g in py_grouped}
+for i in [1,0.999, 0.998]:
+    del py_plt[i]
 
 
 fem_difference = {
@@ -63,7 +75,7 @@ femdots = [
         data[:, 2],
         label=f"${1-data[1,1]:5.3f}$",
         color=f"C{i}",
-        zorder=1,
+        zorder=-i,
     )
     for i, data in enumerate(fem_difference.values())
 ]
@@ -117,16 +129,18 @@ plt.gca().add_artist(legend1)
 # Logarithmic scale
 plt.xscale("log")
 plt.xlim(0.5, 10**12)
-plt.ylim(-0.2, 0.4)
+plt.ylim(-0.1, 0.4)
 plt.xticks(fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
 
 # Labels and Title
 plt.xlabel(r"Peclet number $\left(Pe\right)$", fontsize=fontsize)
-plt.ylabel(r"Relative error $\left(\frac{Sh - Sh_{\mathrm{f}}}{Sh}\right)$", fontsize=fontsize)
+plt.ylabel(
+    r"Relative error $\left(\frac{Sh - Sh_{\mathrm{f}}}{Sh}\right)$", fontsize=fontsize
+)
 
 plt.tight_layout()
-tosave = parent_dir.parent / "graphics/numerical_vs_analytic.pdf"
+tosave = parent_dir / "graphics/numerical_vs_analytic.pdf"
 plt.savefig(tosave)
 
 # Show plot

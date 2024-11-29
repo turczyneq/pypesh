@@ -63,7 +63,7 @@ plt.ylabel(r"Hitting probability $(p)$", fontsize=fontsize)
 
 plt.legend(fontsize=fontsize, frameon=False)
 plt.tight_layout()
-tosave = parent_dir.parent / "graphics/cross_sections.pdf"
+tosave = parent_dir / "graphics/cross_sections.pdf"
 plt.savefig(tosave)
 
 # Show the plot

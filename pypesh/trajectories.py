@@ -405,14 +405,17 @@ def sherwood_trajectories(
     Returns
     -------
     tuple
-        float - estimation of resulting sherwood number (flux/advective_flux), list - Radius samples, list - Probability values ordered as radius samples
+        float - estimation of resulting sherwood number (flux/advective_flux), array - Radius samples, array - Probability values ordered as radius samples
 
 
     Example
     --------
     >>> import pypesh.trajectories as traj
-    >>> traj.distribution(10**6, 0.9)
-    (18557.92284339992, [0.10064564758776434, 0.11064564758776434, 0.12064564758776435, 0.13064564758776434, 0.13464564758776434, 0.13864564758776435, 0.14264564758776435, 0.14664564758776436, 0.15064564758776436, 0.16064564758776437, 0.17064564758776435, 0.18064564758776436], [1.0, 1.0, 1.0, 0.99, 0.94, 0.76, 0.39, 0.19, 0.07, 0.0, 0.0, 0.0])
+    >>> traj.sherwood_trajectories(10**6, 0.9)
+    (3714.4541773411393, array([0.10064565, 0.11064565, 0.12064565, 0.13064565, 0.13464565,
+       0.13864565, 0.14264565, 0.14664565, 0.15064565, 0.16064565,
+       0.17064565, 0.18064565]), array([1.  , 1.  , 1.  , 1.  , 0.94, 0.76, 0.39, 0.19, 0.07, 0.  , 0.  ,
+       0.  ], dtype=float32))
     """
 
     # define the spread of testing range
@@ -451,6 +454,6 @@ def sherwood_trajectories(
 
     return (
         analytic.sherwood_from_flux(integral, peclet),
-        list(sol_dict.keys()),
-        list(sol_dict.values()),
+        np.array(list(sol_dict.keys())),
+        np.array(list(sol_dict.values())),
     )

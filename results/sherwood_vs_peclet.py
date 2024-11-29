@@ -5,17 +5,21 @@ from itertools import groupby
 
 parent_dir = Path(__file__).parent
 
-fem_path = parent_dir / "fem_pe_vs_sh.csv"
+fem_path = parent_dir / "data" / "fem_pe_vs_sh.csv"
 fem = np.loadtxt(fem_path, delimiter=",", skiprows=1)
+fem_radius_zero = fem[fem[:, 1] == 1]
 # we have to split into listst wiht different r_syf
+fem = fem[fem[:, 0] < 10**6]
 fem_sorted = fem[fem[:, 1].argsort()]
+fem_sorted = fem_sorted[fem_sorted[:, 1] != 1]
 fem_grouped = groupby(fem_sorted, key=lambda x: x[1])
 fem_plt = {k: np.array(list(g)) for k, g in fem_grouped}
 
-py_path = parent_dir / "py_pe_vs_sh.csv"
+py_path = parent_dir / "data" / "py_pe_vs_sh.csv"
 py = np.loadtxt(py_path, delimiter=",", skiprows=1)
 # we have to split into listst wiht different r_syf
 py_sorted = py[py[:, 1].argsort()]
+py_sorted = py_sorted[py_sorted[:, 1] != 1]
 py_grouped = groupby(py_sorted, key=lambda x: x[1])
 py_plt = {k: np.array(list(g)) for k, g in py_grouped}
 
@@ -48,6 +52,14 @@ femdots = [
     for i, data in enumerate(fem_plt.values())
 ]
 
+beta_zero = plt.scatter(
+    fem_radius_zero[:, 0],
+    fem_radius_zero[:, 2],
+    label=f"${1-fem_radius_zero[1,1]:5.3f}$",
+    color=f"C{len(fem_plt.values())}",
+    zorder=1,
+)
+
 num = 0
 for data in py_plt.values():
     # Plot our data
@@ -72,7 +84,7 @@ fem = plt.scatter([0], [0], label="scikit-fem", color="k")
 
 traj = plt.scatter([0], [0], label=r"pychastic", color="k", facecolors="none")
 
-femdots = [empty] + femdots
+femdots = [empty] + femdots + [beta_zero]
 
 # femlegend
 legend1 = plt.legend(
@@ -119,7 +131,7 @@ plt.xlabel(r"Peclet number $\left(Pe\right)$", fontsize=fontsize)
 plt.ylabel(r"Sherwood number $\left(Sh\right)$", fontsize=fontsize)
 
 plt.tight_layout()
-tosave = parent_dir.parent / "graphics/sh_vs_pe.pdf"
+tosave = parent_dir / "graphics/sh_vs_pe.pdf"
 plt.savefig(tosave)
 
 # Show plot
