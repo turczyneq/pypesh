@@ -31,12 +31,12 @@ def stokes_around_sphere_jnp(q, ball_radius):
     >>> import jax.numpy as jnp
     >>> import pypesh.stokes_flow as sf
     >>> posjnp = jnp.array([1,1,1])
-    >>> sf.stokes_around_sphere_jnp(posjnp, 0.9) 
+    >>> sf.stokes_around_sphere_jnp(posjnp, 0.9)
     Array([-0.0948298, -0.0948298,  0.4803847], dtype=float32, weak_type=True)
     """
 
     big_r = ball_radius
-    u_inf = jnp.array([0, 0, 1])
+    u_inf = jnp.array([0.0, 0.0, 1.0])
 
     abs_x = (q[0] ** 2 + q[1] ** 2 + q[2] ** 2) ** 0.5
 
@@ -79,7 +79,7 @@ def stokes_around_sphere_np(q, ball_radius):
     """
 
     big_r = ball_radius
-    u_inf = np.array([0, 0, 1])
+    u_inf = np.array([0.0, 0.0, 1.0])
 
     abs_x = (q[0] ** 2 + q[1] ** 2 + q[2] ** 2) ** 0.5
 
@@ -123,7 +123,7 @@ def stokes_around_sphere_explicite(r, z, ball_radius):
     (-0.14013972519640885, 0, 0.4583120114372806)
     """
 
-    u = 1  # velocity scale
+    u = 1.0  # velocity scale
     a = ball_radius  # ball size
 
     w = r**2 + z**2

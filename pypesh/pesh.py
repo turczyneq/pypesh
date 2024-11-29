@@ -6,6 +6,8 @@ def all_sherwood(
     trials=10**2,
     floor_h=5,
     spread=4,
+    t_max=40.0,
+    partition=1,
 ):
     """
     Calculates the sherwood number using clift approximation, fem approach and trajectories approach.
@@ -36,14 +38,14 @@ def all_sherwood(
     Returns
     -------
     tuple
-        float - Clift et. al., float - fem approach, float - trajectories approach
+        float - Clift et. al., float - our approximation, float - fem approach, float - trajectories approach
 
 
     Example
     --------
     >>> import pypesh.pesh as pesh
     >>> pesh.all_sherwood(1000, 0.9)
-    (6.800655008742168, 12.033892568100546, 14.19422279233235)
+    (6.800655008742168, 10.425655008742165, np.float64(12.033892568100546), 14.194223139015682)
     """
 
     import pypesh.fem as fem
@@ -58,6 +60,8 @@ def all_sherwood(
         trials=trials,
         floor_h=floor_h,
         spread=spread,
+        t_max=t_max,
+        partition=partition,
     )
 
     sherwood_fem = fem.sherwood_fem(peclet, ball_radius)
@@ -110,8 +114,15 @@ def _sherwood(
     pe_list = np.unique(to_interpolate[:, [0]])
     ball_list = np.unique(to_interpolate[:, [1]])
 
-    if pe_list[0] > peclet or peclet > pe_list[-1] or ball_list[0] > ball_radius or ball_radius > ball_list[-1]:
-        print("requested vaule is outside so far calculated regime, you can calculate value yourself using all_sherwood\n or contact package admins with requested expansion of region")
+    if (
+        pe_list[0] > peclet
+        or peclet > pe_list[-1]
+        or ball_list[0] > ball_radius
+        or ball_radius > ball_list[-1]
+    ):
+        print(
+            "requested vaule is outside so far calculated regime, you can calculate value yourself using all_sherwood\n or contact package admins with requested expansion of region"
+        )
         return None
 
     points = (pe_list, ball_list)
@@ -122,7 +133,7 @@ def _sherwood(
 
     return interpn(points, sherwood_matrix, np.array([peclet, ball_radius]))[0]
 
-    
+
 def sherwood_heatmap():
     """
     Interpolate the sherwood number for given peclet and ball_radius and returns a function.
@@ -165,6 +176,7 @@ def sherwood_heatmap():
     ]
 
     return RegularGridInterpolator(points, sherwood_matrix)
+
 
 # def sherwood(
 #     peclet,
@@ -248,7 +260,10 @@ def main():
     )
 
     parser.add_argument(
-        "--peclet", type=float, required=True, help="Peclet number of a problem"
+        "--peclet",
+        type=float,
+        required=True,
+        help="Peclet number of a problem",
     )
 
     parser.add_argument(
@@ -258,51 +273,11 @@ def main():
         help="Radius of ball that affects the stokes flow",
     )
 
-    parser.add_argument(
-        "--mesh_out",
-        type=int,
-        default=4,
-        help="For trajectories, amount of samples outside the region of highest slope.",
-    )
-
-    parser.add_argument(
-        "--mesh_jump",
-        type=int,
-        default=6,
-        help="For trajectories, amount of samples in the region of highest slope.",
-    )
-
-    parser.add_argument(
-        "--trials",
-        type=int,
-        default=10**2,
-        help="For trajectories, number of trajectories per position, uncertainty of propability estimation is sqrt(trials)/trials.",
-    )
-
-    parser.add_argument(
-        "--floor_h",
-        type=float,
-        default=5,
-        help="For trajectories, initial depth for simulation.",
-    )
-
-    parser.add_argument(
-        "--spread",
-        type=float,
-        default=4,
-        help="For trajectories, how far in sqrt(1/peclet), mesh_out will reach.",
-    )
-
     args = parser.parse_args()
 
     result = _sherwood(
         peclet=args.peclet,
         ball_radius=args.ball_radius,
-        # mesh_out = args.mesh_out,
-        # mesh_jump = args.mesh_jump,
-        # trials = args.trials,
-        # floor_h = args.floor_h,
-        # spread = args.spread,
     )
 
     print(f"Sherwood for given parameters is {result}")

@@ -76,7 +76,7 @@ def _diffusion_function(peclet):
     return diffusion
 
 
-def simulate_trajectory(drift, noise, initial, t_max, whole_trajectory=False):
+def simulate_trajectory(drift, noise, initial, t_max, whole_trajectory=False, seed=0):
     """
     Simulates trajectories starting from initial conditions, affected by noise and moved via drift.
 
@@ -96,6 +96,9 @@ def simulate_trajectory(drift, noise, initial, t_max, whole_trajectory=False):
 
     whole_trajectory : boole, optional
         Deafult False, if True than also returns whole trajectory (Warning expensive in memory)
+
+    seed: int
+        Default 0, if diferent than 0, different random seed is used for SDE.
 
     Returns
     --------
@@ -123,7 +126,12 @@ def simulate_trajectory(drift, noise, initial, t_max, whole_trajectory=False):
     )
 
     solver = pychastic.sde_solver.SDESolver(dt=0.01)
-    solution = solver.solve_many(problem, None, progress_bar=None)
+    solution = solver.solve_many(
+        problem,
+        None,
+        progress_bar=None,
+        seed=seed,
+    )
     trajectories = solution["solution_values"]
 
     ball_distances = jnp.linalg.norm(trajectories, axis=2)
@@ -237,6 +245,8 @@ def hitting_propability_at_x(
     ball_radius,
     trials=100,
     floor_h=5,
+    partition=1,
+    t_max=40,
 ):
     """
     Generate trajectories of particles in a simulation for certain x position. Than calculates the propability of hitting for this position.
@@ -256,7 +266,13 @@ def hitting_propability_at_x(
         Number of trajectories.
 
     floor_h : int, optional
-        Initial depth for simulation
+        Initial depth for simulation.
+
+    parition : int, optional
+        Default 1, if to expensive in RAM partition into 'partition' parts.
+
+    t_max: float, optional
+        Default 40.0, select time of simmulation
 
     Returns
     -------
@@ -296,18 +312,35 @@ def hitting_propability_at_x(
     #     )
     #     ratio = (100 - sum(collision_data["something_hit"])) / 100
 
-    t_max = 40.0
+    if partition == 1:
+        initial = _construct_initial_trials_at_x(x_position, floor_h, trials)
 
-    initial = _construct_initial_trials_at_x(x_position, floor_h, trials)
+        collision_data = simulate_trajectory(
+            drift=_drift,
+            noise=_diffusion_at_peclet,
+            initial=initial,
+            t_max=t_max,
+        )
 
-    collision_data = simulate_trajectory(
-        drift=_drift,
-        noise=_diffusion_at_peclet,
-        initial=initial,
-        t_max=t_max,
-    )
+        propab = sum(1.0 * collision_data["ball_hit"]) / trials
+    else:
+        propab = 0
+        for i in range(partition):
+            initial = _construct_initial_trials_at_x(
+                x_position, floor_h, round(trials / partition)
+            )
 
-    propab = sum(1.0 * collision_data["ball_hit"]) / trials
+            collision_data = simulate_trajectory(
+                drift=_drift,
+                noise=_diffusion_at_peclet,
+                initial=initial,
+                t_max=t_max,
+                seed=i,
+            )
+
+            propab += sum(1.0 * collision_data["ball_hit"]) / (
+                partition * round(trials / partition)
+            )
 
     return propab
 
@@ -375,6 +408,8 @@ def sherwood_trajectories(
     trials=10**2,
     floor_h=5,
     spread=4,
+    t_max=40.0,
+    partition=1,
 ):
     """
     Calculates the distribution of probability of hitting as a function of radius, at depth floor_h. Addaptive sampling is implemented to ensure effective calculation. Position of greatest slope is assumed to be at streamline that pass position [1, 0, 0], then spread is scaled as sqrt(1/peclet) \sim sqrt(D). Then integrates with weigth and finds the Sherwood number
@@ -401,6 +436,12 @@ def sherwood_trajectories(
 
     spread: int, optional
         How far in sqrt(1/peclet), mesh_out will reach
+
+    parition : int, optional
+        Default 1, if to expensive in RAM partition into 'partition' parts.
+
+    t_max: float, optional
+        Default 40.0, select time of simmulation
 
     Returns
     -------
@@ -443,11 +484,18 @@ def sherwood_trajectories(
     x_probs = list(dict.fromkeys(x_probs))
 
     def fun(x):
-        return hitting_propability_at_x(x, peclet, ball_radius, trials=trials)
-    
+        return hitting_propability_at_x(
+            x,
+            peclet,
+            ball_radius,
+            trials=trials,
+            t_max=t_max,
+            partition=partition,
+        )
+
     _fun = jax.jit(fun)
 
-    # sol_dict = {x: fun(x) for x in tqdm.tqdm(x_probs)}
+    # sol_dict = {x: _fun(x) for x in tqdm.tqdm(x_probs)}
     sol_dict = {x: _fun(x) for x in x_probs}
 
     integral = _weighted_trapezoidal(sol_dict, ball_radius, floor_h)
