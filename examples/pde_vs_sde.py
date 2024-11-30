@@ -214,6 +214,15 @@ def draw_pde_vs_sde(
 
     axes[0].set_ylabel(r"Height $(z)$", fontsize=fontsize)
 
+    for i, x in enumerate([r"(a)", r"(b)"]):
+        axes[i].text(
+            0.02,
+            0.95,
+            x,
+            transform=axes[i].transAxes,
+            fontsize=fontsize,
+        )
+
     cbar_ax = fig.add_axes([0.92, 0.2, 0.02, 0.6])  # [left, bottom, width, height]
     cbar = fig.colorbar(tric1, cax=cbar_ax)
     cbar.ax.tick_params(labelsize=fontsize)
