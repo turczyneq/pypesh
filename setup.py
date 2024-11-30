@@ -11,7 +11,7 @@ with open("README.md") as f:
 
 setup(
     name="pypesh",
-    version="0.1.3",
+    version="0.1.4",
     description="Sherwood number in Stokes flow",
     url="https://github.com/turczyneq/pypesh",
     author="Jan Turczynowicz and Radost Waszkiewicz",

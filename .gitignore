@@ -174,5 +174,6 @@ numerical_results/
 ashes/
 old/
 graphics/
+!graphics/.gitkeep
 
 workinprogres/
