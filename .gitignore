@@ -162,7 +162,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-meshes/
+meshes/*
 
 src/old_scripts
 
@@ -170,9 +170,8 @@ numerical_results/
 
 ashes/
 old/
-graphics/
-!examples/graphics/two_approaches.png
-!meshes/.gitkeep
-!graphics/.gitkeep
+
+# !examples/graphics/two_approaches.png
+# !meshes/.gitkeep
 
 workinprogres/
