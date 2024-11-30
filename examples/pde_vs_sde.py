@@ -10,6 +10,8 @@ from skfem import (
 from skfem import asm, solve, condense
 from skfem.helpers import grad, dot
 import numpy as np
+import jax
+import jax.numpy as jnp
 
 
 def draw_pde_vs_sde(
@@ -55,17 +57,37 @@ def draw_pde_vs_sde(
     """
 
     # # # calculate multiple trajectories
-    collision_data = [
-        traj.draw_trajectory_at_x(
-            x,
-            peclet,
-            ball_radius,
-            trials=amount,
-            floor_h=downstream_distance,
-            t_max=t_max,
-        )
-        for x, amount in positions.items()
-    ]
+
+    def drift(q):
+        return sf.stokes_around_sphere_jnp(q, ball_radius)
+
+    _drift = jax.jit(drift)
+
+    _diffusion_at_peclet = jax.jit(traj._diffusion_function(peclet=peclet))
+
+    initial = jnp.array(
+        [
+            [
+                [
+                    x,
+                    0,
+                    -downstream_distance,
+                ]
+                for i in range(amount)
+            ]
+            for x, amount in positions.items()
+        ]
+    )
+
+    initial = jnp.concatenate(initial, axis=0)
+
+    collision_data = collision_data = traj.simulate_trajectory(
+        drift=_drift,
+        noise=_diffusion_at_peclet,
+        initial=initial,
+        t_max=t_max,
+        whole_trajectory=True,
+    )
 
     # # # calculate solution by fem
     @BilinearForm
@@ -130,40 +152,39 @@ def draw_pde_vs_sde(
     tric1.set_clim(vmin=0, vmax=1)
     tric2.set_clim(vmin=0, vmax=1)
 
-    for data in collision_data:
-        trajectories = data["trajectories"]
-        for i in range(len(trajectories)):
+    trajectories = collision_data["trajectories"]
+    for i in range(len(trajectories)):
 
-            r = (trajectories[i, :, 0] ** 2 + trajectories[i, :, 1] ** 2) ** 0.5
-            z = trajectories[i, :, -1]
-            when_hit = np.concatenate((np.where(r**2 + z**2 < 1)[0], [-1]))[0]
+        r = (trajectories[i, :, 0] ** 2 + trajectories[i, :, 1] ** 2) ** 0.5
+        z = trajectories[i, :, -1]
+        when_hit = np.concatenate((np.where(r**2 + z**2 < 1)[0], [-1]))[0]
 
-            r = r[:when_hit]
-            z = z[:when_hit]
+        r = r[:when_hit]
+        z = z[:when_hit]
 
-            if data["ball_hit"][i]:
-                color = "C0"
-            elif data["something_hit"][i]:
-                color = "C1"
-            else:
-                color = "#a22"
+        if collision_data["ball_hit"][i]:
+            color = "C0"
+        elif collision_data["something_hit"][i]:
+            color = "C1"
+        else:
+            color = "#a22"
 
-            if i % 2:
-                axes[0].plot(
-                    r,
-                    z,
-                    color=color,
-                    linewidth=0.4,
-                    zorder=1,
-                )
-            else:
-                axes[0].plot(
-                    -r,
-                    z,
-                    color=color,
-                    linewidth=0.4,
-                    zorder=1,
-                )
+        if i % 2:
+            axes[0].plot(
+                r,
+                z,
+                color=color,
+                linewidth=0.4,
+                zorder=1,
+            )
+        else:
+            axes[0].plot(
+                -r,
+                z,
+                color=color,
+                linewidth=0.4,
+                zorder=1,
+            )
 
     for ax in axes:
         ax.set_xlim(x_min, x_max)
@@ -232,7 +253,7 @@ def draw_pde_vs_sde(
     if save != "no":
         tosave = str(save)
         plt.savefig(
-            tosave + "png",
+            tosave + ".png",
             bbox_inches="tight",
             pad_inches=0.02,
             dpi=600,
@@ -247,5 +268,10 @@ from pathlib import Path
 
 parent_dir = Path(__file__).parent
 
-tosave = parent_dir / "graphics/some_trajectiories"
-draw_pde_vs_sde(1000, 0.8, {0.1: 2, 0.2: 1}, save=tosave)
+tosave = parent_dir / "graphics/two_approaches"
+draw_pde_vs_sde(
+    500,
+    0.8,
+    {0: 4, 0.1: 4, 0.2: 4, 0.3: 4, 0.4: 4, 0.5: 4, 0.6: 4, 0.7: 4},
+    save=tosave,
+)

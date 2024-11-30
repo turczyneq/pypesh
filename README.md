@@ -14,10 +14,10 @@ $$ \mathrm{Sh} = \frac{\Phi}{ 4 \pi D R}$$
 Where $D$ is diffusion constant and $\Phi$ is flux falling onto the sphere.
 
 <p align="center">
-  <img src="/graphics/visualisation/visual_comparison.png" alt="Both approaches solving the same problem">
+  <img src="examples/graphics/two_approaches.png" alt="Both approaches solving the same problem">
 </p>
 
-We use two approaches: `scikit-fem` package to handle solving which requires rewriting equations in weak form for smaller peclets and `pychastic` to generate and trace trajcetories of single particles and .
+We use two approaches: (a) `pychastic` to generate and trace trajcetories of single particles and estimate the probability of hitting, which allows to calculate sherwood number. This however is expenive in time, so for spaller $\mathrm{Pe}$ we used (b) `scikit-fem` package to handle solving which requires rewriting equations in weak form.
 
 # Usage as module
 
@@ -33,6 +33,12 @@ Sherwood for given parameters is 12.033892568100546
 ```
 
 # Usage as package
+
+Install
+
+```Bash
+python3 -m pip install pypesh
+```
 
 Basic usage
 
