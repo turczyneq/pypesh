@@ -118,7 +118,8 @@ def draw_pde_vs_sde(
     # Solve the problem
     u = solve(*condense(A, x=u, I=interior))
 
-    fontsize = 15 * 1.3
+    #artefacts of past text size changes to fit text in paper
+    fontsize = 15 * 1.3 * 11.5 / 16
     x_min, x_max, z_min, z_max = limits
     plt.rcParams.update(
         {"text.usetex": True, "font.family": "Times", "savefig.dpi": 300}
@@ -248,18 +249,18 @@ def draw_pde_vs_sde(
     # )
 
     axes[0].set_ylabel(r"Along the flow $(z)$ [$a + b$]", fontsize=fontsize)
-    axes[1].set_xlabel(r"Acros the flow (negative values for better visibility) $(\rho)$ [$a+b$]", fontsize=fontsize)
+    axes[1].set_xlabel(r"Acros the flow $(\rho)$ [$a+b$]", fontsize=fontsize)
 
     for i, x in enumerate([r"(a)", r"(b)", r"(c)"]):
         axes[i].text(
             0.02,
-            0.95,
+            0.94,
             x,
             transform=axes[i].transAxes,
             fontsize=fontsize,
         )
 
-    cbar_ax = fig.add_axes([0.92, 0.2, 0.02, 0.6])  # [left, bottom, width, height]
+    cbar_ax = fig.add_axes([0.92, 0.218, 0.02, 0.555])  # [left, bottom, width, height]
     cbar = fig.colorbar(tric1, cax=cbar_ax)
     cbar.ax.tick_params(labelsize=fontsize)
     cbar.set_label(r"Concentration ($\varphi$)", fontsize=fontsize)
@@ -287,6 +288,6 @@ draw_pde_vs_sde(
     500,
     0.7,
     {0: 4, 0.1: 4, 0.2: 4, 0.3: 4, 0.4: 4, 0.5: 4, 0.6: 4, 0.7: 4},
-    limits=[-2.4, 2.4, -2.5, 5],
+    limits=[-2.8, 2.8, -2.5, 4],
     save=tosave,
 )
