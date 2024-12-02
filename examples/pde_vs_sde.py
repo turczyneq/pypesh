@@ -19,7 +19,7 @@ def draw_pde_vs_sde(
     ball_radius,
     positions,
     limits=[-2.5, 2.5, -2.5, 5],
-    t_max=20,
+    t_max=30,
     downstream_distance=2.5,
     save="no",
 ):
@@ -71,7 +71,7 @@ def draw_pde_vs_sde(
                 [
                     x,
                     0,
-                    -downstream_distance,
+                    -5,
                 ]
                 for i in range(amount)
             ]
@@ -118,18 +118,20 @@ def draw_pde_vs_sde(
     # Solve the problem
     u = solve(*condense(A, x=u, I=interior))
 
-    fontsize = 15
+    fontsize = 15 * 1.3
     x_min, x_max, z_min, z_max = limits
-    plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
+    plt.rcParams.update(
+        {"text.usetex": True, "font.family": "Times", "savefig.dpi": 300}
+    )
     fig, axes = plt.subplots(
         1,
-        2,
-        figsize=(13 * 0.6, 10.5 * 0.6),
+        3,
+        figsize=(19.5 * 0.6, 10.5 * 0.6),
         sharey=True,
-        gridspec_kw={"width_ratios": [1, 1]},
+        gridspec_kw={"width_ratios": [1, 1, 1]},
     )
 
-    tric1 = axes[1].tripcolor(
+    tric1 = axes[2].tripcolor(
         mesh.p[0],
         mesh.p[1],
         mesh.t.T,
@@ -137,9 +139,10 @@ def draw_pde_vs_sde(
         shading="gouraud",
         cmap="viridis",
         zorder=1,
+        rasterized=True,
     )
 
-    tric2 = axes[1].tripcolor(
+    tric2 = axes[2].tripcolor(
         -mesh.p[0],
         mesh.p[1],
         mesh.t.T,
@@ -147,6 +150,7 @@ def draw_pde_vs_sde(
         shading="gouraud",
         cmap="viridis",
         zorder=1,
+        rasterized=True,
     )
 
     tric1.set_clim(vmin=0, vmax=1)
@@ -165,77 +169,88 @@ def draw_pde_vs_sde(
         if collision_data["ball_hit"][i]:
             color = "C0"
         elif collision_data["something_hit"][i]:
-            color = "C1"
+            color = "C0"
         else:
             color = "#a22"
 
         if i % 2:
-            axes[0].plot(
-                r,
-                z,
-                color=color,
-                linewidth=0.4,
-                zorder=1,
-            )
+            axes[1].plot(r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
         else:
-            axes[0].plot(
-                -r,
-                z,
-                color=color,
-                linewidth=0.4,
-                zorder=1,
-            )
+            axes[1].plot(-r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
 
     for ax in axes:
         ax.set_xlim(x_min, x_max)
         ax.set_ylim(z_min, z_max)
-        ax.set_xlabel(r"Radius $(\rho)$", fontsize=fontsize)
         ax.set_aspect(1)
         ax.tick_params(axis="x", labelsize=fontsize, top=True)
-        ax.add_artist(
-            plt.Circle(
-                (0, 0),
-                ball_radius,
-                edgecolor="k",
-                facecolor="#fff",
-                hatch="///",
-                zorder=2,
-            )
-        )
-        ax.add_artist(
-            Arc(
-                (0, 0),
-                2,
-                2,
-                color="k",
-                linestyle="--",
-                theta1=0,
-                theta2=360,
-                zorder=2,
-                linewidth=2,
-            )
-        )
 
-    cmap = plt.get_cmap("viridis")
     axes[1].add_artist(
         plt.Circle(
             (0, 0),
-            1,
-            edgecolor=None,
-            facecolor=cmap(0),
-            zorder=1,
+            ball_radius,
+            edgecolor="k",
+            facecolor="#fff",
+            hatch="///",
+            zorder=2,
+            linewidth=1,
+        )
+    )
+    axes[1].add_artist(
+        Arc(
+            (0, 0),
+            2,
+            2,
+            color="k",
+            linestyle="--",
+            theta1=0,
+            theta2=360,
+            zorder=2,
+            linewidth=1,
         )
     )
 
+    axes[2].add_artist(
+        plt.Circle(
+            (0, 0),
+            ball_radius,
+            edgecolor="k",
+            facecolor="#fff",
+            hatch="///",
+            zorder=2,
+            linewidth=1,
+        )
+    )
+    axes[2].add_artist(
+        Arc(
+            (0, 0),
+            2,
+            2,
+            color="w",
+            linestyle="--",
+            theta1=-90,
+            theta2=90,
+            zorder=2,
+            linewidth=1,
+        )
+    )
+
+    cmap = plt.get_cmap("viridis")
+    axes[2].add_artist(
+        plt.Circle(
+            (0, 0), 1, edgecolor=None, facecolor=cmap(0), zorder=1, rasterized=True
+        )
+    )
     axes[0].tick_params(axis="y", labelsize=fontsize)
     axes[1].tick_params(axis="y", labelsize=fontsize, left=False)
+    axes[2].tick_params(axis="y", labelsize=fontsize, left=False)
     # plt.xlabel(
     #     r"Radius (negative values for better visbility) $(\rho)$", fontsize=fontsize
     # )
 
-    axes[0].set_ylabel(r"Height $(z)$", fontsize=fontsize)
+    axes[0].set_ylabel(r"Along the flow $(z)$ [$a + b$]", fontsize=fontsize)
+    axes[1].set_xlabel(r"Acros the flow (negative values for better visibility) $(\rho)$ [$a+b$]", fontsize=fontsize)
 
-    for i, x in enumerate([r"(a)", r"(b)"]):
+    for i, x in enumerate([r"(a)", r"(b)", r"(c)"]):
         axes[i].text(
             0.02,
             0.95,
@@ -253,10 +268,9 @@ def draw_pde_vs_sde(
     if save != "no":
         tosave = str(save)
         plt.savefig(
-            tosave + ".png",
+            tosave + ".pdf",
             bbox_inches="tight",
             pad_inches=0.02,
-            dpi=600,
         )
 
     plt.show()
@@ -271,7 +285,8 @@ parent_dir = Path(__file__).parent
 tosave = parent_dir / "graphics/two_approaches"
 draw_pde_vs_sde(
     500,
-    0.8,
+    0.7,
     {0: 4, 0.1: 4, 0.2: 4, 0.3: 4, 0.4: 4, 0.5: 4, 0.6: 4, 0.7: 4},
+    limits=[-2.4, 2.4, -2.5, 5],
     save=tosave,
 )
