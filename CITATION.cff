@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: pypesh
+type: software
+authors:
+  - given-names: Radost
+    family-names: Waszkiewicz
+    orcid: 'https://orcid.org/0000-0002-0376-1708'
+  - given-names: Jan
+    family-names: Turczynowicz
+    orcid: 'https://orcid.org/0009-0002-8745-2298'
+keywords:
+  - advection-diffusion
+  - stokes flow
+  - marine snow
+license: GPL-3.0
