@@ -1,8 +1,10 @@
 import pypesh.trajectories as traj
 import pypesh.fem as fem
 import pypesh.stokes_flow as sf
+import pypesh.mpl.streamplot_many_arrows as many_arrows
 import matplotlib.pyplot as plt
-from matplotlib.patches import Arc
+from matplotlib.patches import Arc, Wedge
+from matplotlib.patches import FancyArrowPatch, ArrowStyle
 from skfem import (
     BilinearForm,
 )
@@ -14,13 +16,13 @@ import jax
 import jax.numpy as jnp
 
 
-def draw_pde_vs_sde(
+def draw_scheme_sde_pde(
     peclet,
     ball_radius,
     positions,
     limits=[-2.5, 2.5, -2.5, 5],
     t_max=30,
-    downstream_distance=2.5,
+    downstream_distance=3,
     save="no",
 ):
     """
@@ -55,6 +57,52 @@ def draw_pde_vs_sde(
     -------
     TODO
     """
+
+    # # # make scheme
+
+    def stream(x, z):
+        vx, vy, vz = sf.stokes_around_sphere_explicite(x, z, ball_radius)
+        return vx, vz
+
+    x_min, x_max, z_min, z_max = limits
+
+    xlist = np.linspace(x_min - 1, 0, 400)
+    zlist = np.linspace(-downstream_distance - 1, z_max + 1, 400)
+
+    X, Z = np.meshgrid(xlist, zlist)
+
+    VX, VZ = stream(X, Z)
+
+    speed = np.sqrt(VX**2 + VZ**2)
+
+    def make_arrow(start, end, ax, scale):
+        style = ArrowStyle(
+            "fancy",
+            head_length=1 * scale,
+            head_width=0.7 * scale,
+            tail_width=0.05 * scale,
+        )
+        arrow = FancyArrowPatch(
+            start,
+            end,
+            mutation_scale=10,
+            arrowstyle=style,
+            color="k",
+            zorder=3,
+        )
+        ax.add_patch(arrow)
+        return None
+
+    def make_line(start, end, ax):
+        ax.plot(
+            start,
+            end,
+            zorder=3,
+            c="k",
+            linestyle="--",
+            linewidth=1,
+        )
+        return None
 
     # # # calculate multiple trajectories
 
@@ -118,9 +166,8 @@ def draw_pde_vs_sde(
     # Solve the problem
     u = solve(*condense(A, x=u, I=interior))
 
-    #artefacts of past text size changes to fit text in paper
+    # artefacts of past text size changes to fit text in paper
     fontsize = 15 * 1.3 * 11.5 / 16
-    x_min, x_max, z_min, z_max = limits
     plt.rcParams.update(
         {"text.usetex": True, "font.family": "Times", "savefig.dpi": 300}
     )
@@ -131,6 +178,74 @@ def draw_pde_vs_sde(
         sharey=True,
         gridspec_kw={"width_ratios": [1, 1, 1]},
     )
+
+    lw = 1.5 * speed
+    many_arrows.streamplot_many_arrows(
+        axes[0],
+        X,
+        Z,
+        VX,
+        VZ,
+        density=5,
+        broken_streamlines=False,
+        start_points=[[x_val, -2.8] for x_val in np.linspace(-0.2, -x_max, 8)],
+        num_arrows=18,
+        integration_direction="forward",
+        linewidth=lw,
+        zorder=3,
+        color="C1",
+        arrowstyle="fancy",
+    )
+
+    make_arrow((0, -0.05), (0, 3.9), axes[0], scale=0.9)
+    make_arrow((-0.05, 0), (2.0, 0), axes[0], scale=0.9)
+
+    make_line([0, 0], [-3, 1], axes[0])
+    make_line([0.7, 0.7], [0, 1.6], axes[0])
+    make_line([1, 1], [0, 1.6], axes[0])
+
+    make_arrow((0.5, 1.5), (0, 1.5), axes[0], scale=0.5)
+    make_arrow((0.2, 1.5), (0.7, 1.5), axes[0], scale=0.5)
+
+    make_arrow((0.2, 1.2), (0.7, 1.2), axes[0], scale=0.5)
+    make_arrow((1.5, 1.2), (1, 1.2), axes[0], scale=0.5)
+
+    axes[0].text(
+        0.55,
+        0.63,
+        r"$a$",
+        transform=axes[0].transAxes,
+        fontsize=fontsize,
+    )
+    axes[0].text(
+        0.72,
+        0.59,
+        r"$b$",
+        transform=axes[0].transAxes,
+        fontsize=fontsize,
+    )
+
+    trajectories = collision_data["trajectories"]
+    for i in range(len(trajectories)):
+
+        r = (trajectories[i, :, 0] ** 2 + trajectories[i, :, 1] ** 2) ** 0.5
+        z = trajectories[i, :, -1]
+        when_hit = np.concatenate((np.where(r**2 + z**2 < 1)[0], [-1]))[0]
+
+        r = r[:when_hit]
+        z = z[:when_hit]
+
+        if collision_data["ball_hit"][i]:
+            color = "C0"
+        elif collision_data["something_hit"][i]:
+            color = "C0"
+        else:
+            color = "#a22"
+
+        if i % 2:
+            axes[1].plot(r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
+        else:
+            axes[1].plot(-r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
 
     tric1 = axes[2].tripcolor(
         mesh.p[0],
@@ -157,41 +272,48 @@ def draw_pde_vs_sde(
     tric1.set_clim(vmin=0, vmax=1)
     tric2.set_clim(vmin=0, vmax=1)
 
-    trajectories = collision_data["trajectories"]
-    for i in range(len(trajectories)):
-
-        r = (trajectories[i, :, 0] ** 2 + trajectories[i, :, 1] ** 2) ** 0.5
-        z = trajectories[i, :, -1]
-        when_hit = np.concatenate((np.where(r**2 + z**2 < 1)[0], [-1]))[0]
-
-        r = r[:when_hit]
-        z = z[:when_hit]
-
-        if collision_data["ball_hit"][i]:
-            color = "C0"
-        elif collision_data["something_hit"][i]:
-            color = "C0"
-        else:
-            color = "#a22"
-
-        if i % 2:
-            axes[1].plot(r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
-        else:
-            axes[1].plot(-r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
-
-    for ax in axes:
-        ax.set_xlim(x_min, x_max)
-        ax.set_ylim(z_min, z_max)
-        ax.set_aspect(1)
-        ax.tick_params(axis="x", labelsize=fontsize, top=True)
-
-    axes[1].add_artist(
+    axes[0].add_artist(
         plt.Circle(
             (0, 0),
             ball_radius,
             edgecolor="k",
             facecolor="#fff",
-            hatch="///",
+            hatch="////",
+            zorder=2,
+            linewidth=1,
+        )
+    )
+    axes[0].add_artist(
+        Arc(
+            (0, 0),
+            2,
+            2,
+            color="k",
+            linestyle="--",
+            theta1=0,
+            theta2=360,
+            zorder=2,
+            linewidth=1.6,
+        )
+    )
+    axes[0].add_artist(
+        Wedge(
+            (0.0, 0.0),
+            1,
+            -90,
+            90,
+            facecolor="C2",
+            alpha=0.5,
+        )
+    )
+
+    axes[1].add_artist(
+        plt.Circle(
+            (0.0, 0.0),
+            ball_radius,
+            edgecolor="k",
+            facecolor="#fff",
+            hatch="////",
             zorder=2,
             linewidth=1,
         )
@@ -206,17 +328,17 @@ def draw_pde_vs_sde(
             theta1=0,
             theta2=360,
             zorder=2,
-            linewidth=1,
+            linewidth=1.6,
         )
     )
 
     axes[2].add_artist(
         plt.Circle(
-            (0, 0),
+            (0.0, 0.0),
             ball_radius,
             edgecolor="k",
             facecolor="#fff",
-            hatch="///",
+            hatch="////",
             zorder=2,
             linewidth=1,
         )
@@ -231,7 +353,7 @@ def draw_pde_vs_sde(
             theta1=-90,
             theta2=90,
             zorder=2,
-            linewidth=1,
+            linewidth=1.6,
         )
     )
 
@@ -241,6 +363,13 @@ def draw_pde_vs_sde(
             (0, 0), 1, edgecolor=None, facecolor=cmap(0), zorder=1, rasterized=True
         )
     )
+
+    for ax in axes:
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(z_min, z_max)
+        ax.set_aspect(1)
+        ax.tick_params(axis="x", labelsize=fontsize, top=True)
+
     axes[0].tick_params(axis="y", labelsize=fontsize)
     axes[1].tick_params(axis="y", labelsize=fontsize, left=False)
     axes[2].tick_params(axis="y", labelsize=fontsize, left=False)
@@ -251,12 +380,21 @@ def draw_pde_vs_sde(
     axes[0].set_ylabel(r"Along the flow $(z)$ [$a + b$]", fontsize=fontsize)
     axes[1].set_xlabel(r"Acros the flow $(\rho)$ [$a+b$]", fontsize=fontsize)
 
-    for i, x in enumerate([r"(a)", r"(b)", r"(c)"]):
-        axes[i].text(
+    axes[0].text(
+        0.02,
+        0.94,
+        r"(a)",
+        transform=axes[0].transAxes,
+        fontsize=fontsize,
+        backgroundcolor="#fff",
+    )
+
+    for i, x in enumerate([r"(b)", r"(c)"]):
+        axes[i + 1].text(
             0.02,
             0.94,
             x,
-            transform=axes[i].transAxes,
+            transform=axes[i + 1].transAxes,
             fontsize=fontsize,
         )
 
@@ -284,7 +422,7 @@ from pathlib import Path
 parent_dir = Path(__file__).parent
 
 tosave = parent_dir / "graphics/two_approaches"
-draw_pde_vs_sde(
+draw_scheme_sde_pde(
     500,
     0.7,
     {0: 4, 0.1: 4, 0.2: 4, 0.3: 4, 0.4: 4, 0.5: 4, 0.6: 4, 0.7: 4},
