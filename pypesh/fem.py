@@ -215,3 +215,103 @@ def sherwood_fem(peclet, ball_radius):
     result = analytic.sherwood_from_flux(asm(intercepted, fbasis, u=u), peclet)
 
     return result
+
+
+def _sherwood_fem_custom_mesh(
+    peclet,
+    ball_radius,
+    mesh_size=0.01,
+    far_mesh=0.5,
+    cell_size=1,
+    width=10,
+    ceiling=10,
+    floor=10,
+    show_mesh=False,
+):
+    """
+    Calculates sherwood for custom mesh. Sherwood is defined as flux_dimesional/(4 pi D R) = U R^2 flux / (4 pi D R) = flux*(Pe/4 pi)
+
+    Parameters
+    ----------
+    peclet: float
+        Peclet number defined as R u / D.
+
+    ball_radius : float
+        Radius of the big ball.
+
+    Returns
+    --------
+    float
+        Sherwood calcualted for selected peclet and ball radius using fem approach.
+
+    Example
+    -------
+    >>> import pypesh.fem as fem
+    >>> fem.sherwood_fem(10000, 0.9)
+    54.93467214954524
+    """
+
+    @BilinearForm
+    def advection(k, l, m):
+        # Coordinate fields
+        r, z = m.x
+
+        v_r, v_y, v_z = sf.stokes_around_sphere_explicite(r, z, ball_radius)
+
+        return (l * v_r * grad(k)[0] + l * v_z * grad(k)[1]) * 2 * np.pi * r
+
+    @BilinearForm
+    def claplace(u, v, m):
+        """Laplace operator in cylindrical coordinates."""
+        r, z = m.x
+        return dot(grad(u), grad(v)) * 2 * np.pi * r
+
+    mesh = msh.gen_mesh(
+        mesh=mesh_size,
+        far_mesh=far_mesh,
+        cell_size=cell_size,
+        width=width,
+        ceiling=ceiling,
+        floor=floor,
+        show_mesh=show_mesh,
+    )
+
+    basis = Basis(mesh, ElementTriP1())
+
+    # Assemble the system matrix
+    A = asm(claplace, basis) + peclet * asm(advection, basis)
+    # Identify the interior degrees of freedom
+    interior = basis.complement_dofs(basis.get_dofs({"bottom", "ball"}))
+    # Boundary condition
+    u = basis.zeros()
+    u[basis.get_dofs("bottom")] = 1.0
+    u[basis.get_dofs("ball")] = 0.0
+    # Solve the problem
+    u = solve(*condense(A, x=u, I=interior))
+
+    fbasis = FacetBasis(mesh, ElementTriP1(), facets="top")
+
+    @Functional
+    def intercepted(m):
+        # Coordinate fields
+        r, z = m.x
+
+        v_r, v_y, v_z = sf.stokes_around_sphere_explicite(r, z, ball_radius)
+
+        phi = m["u"]
+
+        """
+        calculation of effective surface: 
+            1-phi - propability of hitting
+            2*pi*r - measure from cylindrical integration
+            v_z - flux is v.n so effective surface is dependent on value of v_z for selected r
+        """
+
+        return (1 - phi) * 2 * np.pi * r * v_z
+
+    """
+    Calculating Sherwood
+    """
+    result = analytic.sherwood_from_flux(asm(intercepted, fbasis, u=u), peclet)
+
+    return result

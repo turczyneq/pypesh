@@ -2,6 +2,7 @@ import pypesh.trajectories as traj
 import pypesh.fem as fem
 import pypesh.stokes_flow as sf
 import pypesh.mpl.streamplot_many_arrows as many_arrows
+from pypesh.mpl.fenix_arrow import FenixArrowStyle
 import matplotlib.pyplot as plt
 from matplotlib.patches import Arc, Wedge
 from matplotlib.patches import FancyArrowPatch, ArrowStyle
@@ -67,7 +68,7 @@ def draw_scheme_sde_pde(
     x_min, x_max, z_min, z_max = limits
 
     xlist = np.linspace(x_min - 1, 0, 400)
-    zlist = np.linspace(-downstream_distance - 1, z_max + 1, 400)
+    zlist = np.linspace(-downstream_distance - 1, z_max, 400)
 
     X, Z = np.meshgrid(xlist, zlist)
 
@@ -75,31 +76,33 @@ def draw_scheme_sde_pde(
 
     speed = np.sqrt(VX**2 + VZ**2)
 
-    def make_arrow(start, end, ax, scale):
-        style = ArrowStyle(
-            "fancy",
-            head_length=1 * scale,
-            head_width=0.7 * scale,
-            tail_width=0.05 * scale,
+    def make_arrow(start, end, ax, scale=1, mutation_scale=2, tpercent=0.15):
+        style = FenixArrowStyle(
+            "fenix",
+            head_length=2 * scale,
+            head_width=2 * scale,
+            tail_width=0.01 * scale,
+            tpercent=tpercent,
         )
         arrow = FancyArrowPatch(
             start,
             end,
-            mutation_scale=10,
+            mutation_scale=mutation_scale,
             arrowstyle=style,
             color="k",
             zorder=3,
+            joinstyle="miter",
         )
         ax.add_patch(arrow)
         return None
 
-    def make_line(start, end, ax):
+    def make_line(start, end, ax, ls='--'):
         ax.plot(
             start,
             end,
             zorder=3,
             c="k",
-            linestyle="--",
+            linestyle=ls,
             linewidth=1,
         )
         return None
@@ -194,21 +197,42 @@ def draw_scheme_sde_pde(
         linewidth=lw,
         zorder=3,
         color="C1",
-        arrowstyle="fancy",
+        arrowstyle=FenixArrowStyle(
+            "fenix", head_length=0.4, head_width=0.4, tail_width=0.1
+        ),
     )
 
-    make_arrow((0, -0.05), (0, 3.9), axes[0], scale=0.9)
-    make_arrow((-0.05, 0), (2.0, 0), axes[0], scale=0.9)
+    make_line([x_min, x_min], [z_min, z_max], axes[0], ls='-')
+    make_line([x_min, 0], [z_max, z_max], axes[0], ls='-')
+    make_line([x_min, 0], [z_min, z_min], axes[0], ls='-')
+
+    make_arrow((0, -0.05), (0, 3.9), axes[0], scale = 0.6, mutation_scale=5, tpercent=0.05)
+    make_arrow((-0.05, 0), (2.2, 0), axes[0], scale = 0.6, mutation_scale=5, tpercent=0.05)
+
+    axes[0].text(
+        0.53,
+        0.95,
+        r"$z$",
+        transform=axes[0].transAxes,
+        fontsize=fontsize,
+    )
+    axes[0].text(
+        0.85,
+        0.42,
+        r"$\rho$",
+        transform=axes[0].transAxes,
+        fontsize=fontsize,
+    )
 
     make_line([0, 0], [-3, 1], axes[0])
     make_line([0.7, 0.7], [0, 1.6], axes[0])
     make_line([1, 1], [0, 1.6], axes[0])
 
-    make_arrow((0.5, 1.5), (0, 1.5), axes[0], scale=0.5)
-    make_arrow((0.2, 1.5), (0.7, 1.5), axes[0], scale=0.5)
+    make_arrow((0.5, 1.5), (0, 1.5), axes[0], tpercent=0.05)
+    make_arrow((0.2, 1.5), (0.7, 1.5), axes[0], tpercent=0.05)
 
-    make_arrow((0.2, 1.2), (0.7, 1.2), axes[0], scale=0.5)
-    make_arrow((1.5, 1.2), (1, 1.2), axes[0], scale=0.5)
+    make_arrow((0.2, 1.2), (0.7, 1.2), axes[0], tpercent=0.05)
+    make_arrow((1.5, 1.2), (1, 1.2), axes[0], tpercent=0.05)
 
     axes[0].text(
         0.55,
@@ -381,8 +405,8 @@ def draw_scheme_sde_pde(
     axes[1].set_xlabel(r"Acros the flow $(\rho)$ [$a+b$]", fontsize=fontsize)
 
     axes[0].text(
-        0.02,
-        0.94,
+        0.023,
+        0.9425,
         r"(a)",
         transform=axes[0].transAxes,
         fontsize=fontsize,
@@ -391,8 +415,8 @@ def draw_scheme_sde_pde(
 
     for i, x in enumerate([r"(b)", r"(c)"]):
         axes[i + 1].text(
-            0.02,
-            0.94,
+            0.023,
+            0.9425,
             x,
             transform=axes[i + 1].transAxes,
             fontsize=fontsize,

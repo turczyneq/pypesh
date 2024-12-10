@@ -148,7 +148,7 @@ plt.text(
 plt.xlim(0, r_bacteria_list[-1])
 plt.ylim(0, 1.001)
 
-plt.xlabel(r"Size of small particles ($r$)", fontsize=fontsize)
+plt.xlabel(r"Size of small particles ($b$) [$\mu$m]", fontsize=fontsize)
 plt.ylabel(r"Partial contribution", fontsize=fontsize)
 
 plt.xticks(fontsize=fontsize)
@@ -156,7 +156,7 @@ plt.yticks(fontsize=fontsize)
 
 plt.tight_layout()
 parent_dir = Path(__file__).parent
-tosave = parent_dir / "graphics/encounter_type_with_small_particles.pdf"
+tosave = parent_dir / "graphics/encounter_type_with_small_particles_strait_text.pdf"
 plt.savefig(
     tosave,
     bbox_inches="tight",

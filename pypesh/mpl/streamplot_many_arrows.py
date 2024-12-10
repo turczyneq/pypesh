@@ -238,7 +238,7 @@ def streamplot_many_arrows(axes, x, y, u, v, density=1, linewidth=None, color=No
                 arrow_kw['color'] = cmap(norm(color_values[idx]))
 
             p = patches.FancyArrowPatch(
-                arrow_tail, arrow_head, transform=transform, **arrow_kw)
+                arrow_tail, arrow_head, transform=transform, joinstyle='miter', **arrow_kw)
             arrows.append(p)
 
     lc = mcollections.LineCollection(
