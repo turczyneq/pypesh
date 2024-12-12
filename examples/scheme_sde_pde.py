@@ -445,7 +445,7 @@ from pathlib import Path
 
 parent_dir = Path(__file__).parent
 
-tosave = parent_dir / "graphics/sheme_sde_pde_not_much"
+tosave = parent_dir / "graphics/scheme_sde_pde_not_much"
 draw_scheme_sde_pde(
     500,
     0.7,
@@ -466,7 +466,7 @@ to_plt = {}
 for x in positions:
     to_plt[np.sqrt(x)] = amount
 
-tosave = parent_dir / "graphics/sheme_sde_pde"
+tosave = parent_dir / "graphics/scheme_sde_pde"
 draw_scheme_sde_pde(
     500,
     0.7,

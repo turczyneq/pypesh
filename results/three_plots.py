@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from itertools import groupby
 import pypesh.analytic as analytic
+import matplotlib.colors as mcolors
+tableau = list(mcolors.TABLEAU_COLORS)
 
 parent_dir = Path(__file__).parent
 
@@ -149,7 +151,7 @@ femdots = [
         data[:, 0],
         data[:, 2],
         label=f"${1-data[1,1]:5.3f}$",
-        color=f"C{i}",
+        color=tableau[i],
         zorder=1,
         s=marker_size,
     )
@@ -160,7 +162,7 @@ beta_zero = axes[0].scatter(
     fem_radius_zero[:, 0],
     fem_radius_zero[:, 2],
     label=f"${1-fem_radius_zero[1,1]:5.3f}$",
-    color=f"C{len(fem_sherwood.values())}",
+    color=tableau[len(fem_sherwood.values())],
     zorder=1,
     s=marker_size,
 )
@@ -171,7 +173,7 @@ for data in py_sherwood.values():
     axes[0].scatter(
         data[:, 0],
         data[:, 2],
-        color=f"C{num}",
+        color=tableau[num],
         facecolors="none",
         zorder=0,
         s=marker_size,
@@ -235,7 +237,7 @@ for data in fem_modified_sherwood.values():
         data[:, 0],
         data[:, 2],
         label=f"$\\beta = {round(10000*(1-data[1,1]))/10000}$",
-        color=f"C{num}",
+        color=tableau[num],
         zorder=1,
         s=marker_size,
     )
@@ -247,7 +249,7 @@ for data in py_modified_sherwood.values():
     axes[1].scatter(
         data[:, 0],
         data[:, 2],
-        color=f"C{num}",
+        color=tableau[num],
         facecolors="none",
         zorder=0,
         s=marker_size,
@@ -258,7 +260,7 @@ beta_zero = axes[1].scatter(
     fem_radius_zero[:, 0],
     fem_radius_zero[:, 2],
     label=f"${1-fem_radius_zero[1,1]:5.3f}$",
-    color=f"C{len(fem_sherwood.values())}",
+    color=tableau[len(fem_sherwood.values())],
     zorder=1,
     s=marker_size,
 )
@@ -314,7 +316,7 @@ femdots = [
         data[:, 0],
         data[:, 2],
         label=f"${1-data[1,1]:5.3f}$",
-        color=f"C{i}",
+        color=tableau[i],
         zorder=-i,
         s=marker_size,
     )
@@ -325,7 +327,7 @@ for i, data in enumerate(py_difference.values()):
     axes[2].scatter(
         data[:, 0],
         data[:, 2],
-        color=f"C{i}",
+        color=tableau[i],
         facecolors="none",
         zorder=0,
         s=marker_size,

@@ -1,8 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
-import matplotlib.colors as mcolors
-tableau = list(mcolors.TABLEAU_COLORS)
 
 parent_dir = Path(__file__).parent
 
@@ -57,7 +55,7 @@ plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
     peclet_values,
     analytic_clift,
     label="Clift et al. (fit.)",
-    color=tableau[7],
+    color="C7",
     linestyle="-",
     linewidth=3,
     zorder=1,
@@ -71,7 +69,7 @@ kuta = plt.scatter(
     kutateladze[:, 2],
     kutateladze[:, 3],
     label="Kutateladze et al. (exp.)",
-    color=tableau[1],
+    color="C1",
     marker="o",
     s=marker_size,
     edgecolor="k",
@@ -82,7 +80,7 @@ kra = plt.scatter(
     kramers[:, 2],
     kramers[:, 3],
     label="Kramers et al. (exp.)",
-    color=tableau[6],
+    color="C6",
     marker="s",
     s=marker_size,
     edgecolor="k",
@@ -97,7 +95,7 @@ west = plt.scatter(
     westerberg[:, 2],
     westerberg[:, 3],
     label="Westerberg \& Finlayson (sim.)",
-    color=tableau[9],
+    color="C9",
     marker="s",
     s=marker_size,
     edgecolor="k",
@@ -108,7 +106,7 @@ clift_num = plt.scatter(
     numerical_clift[:, 2],
     numerical_clift[:, 3],
     label="Clift et al. (sim.)",
-    color=tableau[0],
+    color="C0",
     marker="o",
     s=marker_size,
     edgecolor="k",
@@ -119,7 +117,7 @@ frie = plt.scatter(
     friedlander[:, 2],
     friedlander[:, 3],
     label="Friedlander (sim.)",
-    color=tableau[4],
+    color="C4",
     marker="D",
     s=marker_size,
     edgecolor="k",
@@ -130,7 +128,7 @@ feng = plt.scatter(
     feng[:, 2],
     feng[:, 3],
     label="Feng et al. (sim.)",
-    color=tableau[3],
+    color="C3",
     marker="D",
     s=marker_size,
     edgecolor="k",

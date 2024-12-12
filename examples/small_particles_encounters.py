@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
+from pypesh.mpl.curved_text import CurvedText
+import matplotlib.colors as mcolors
+tableau = list(mcolors.TABLEAU_COLORS)
 
 
 def clift(pe):
@@ -83,13 +86,13 @@ plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 plt.plot(
     r_bacteria_list,
     lower_band,
-    c='k',
+    c="k",
 )
 
 plt.plot(
     r_bacteria_list,
     upper_band,
-    c='k',
+    c="k",
 )
 
 plt.fill_between(
@@ -97,6 +100,7 @@ plt.fill_between(
     lower_band,
     np.zeros_like(r_bacteria_list),
     alpha=0.3,
+    color="#a0cbe8",
 )
 
 plt.fill_between(
@@ -104,6 +108,7 @@ plt.fill_between(
     upper_band,
     np.ones_like(r_bacteria_list),
     alpha=0.3,
+    color="#ffbe7d",
 )
 
 
@@ -115,33 +120,34 @@ plt.text(
     va="top",
     fontsize=fontsize,
     transform=plt.gca().transAxes,
-    color="C0",
+    color=tableau[0],
     weight="bold",
 )
 
 plt.text(
     0.7,
     0.8,
-    r"collision share",
+    r"direct interceptions share",
     ha="center",
     va="top",
     fontsize=fontsize,
     transform=plt.gca().transAxes,
-    color="C1",
+    color=tableau[1],
     weight="bold",
 )
 
-plt.text(
-    0.55,
-    0.37,
-    r"changes with bigger particle $a$ and $U$",
-    ha="center",
-    va="top",
+### make curved text
+curve = (np.array(upper_band) + 2 * np.array(lower_band)) * (1 / 3)
+
+# plt.plot(r_bacteria_list, y_values)
+
+added_text = CurvedText(
+    x=r_bacteria_list[100:],
+    y=curve[100:],
+    text=r"changes with bigger particle $a$ and $U$",
+    va="bottom",
+    axes=plt.gca(),
     fontsize=fontsize,
-    transform=plt.gca().transAxes,
-    color="black",
-    weight="bold",
-    rotation=-15,
 )
 
 
@@ -156,7 +162,7 @@ plt.yticks(fontsize=fontsize)
 
 plt.tight_layout()
 parent_dir = Path(__file__).parent
-tosave = parent_dir / "graphics/encounter_type_with_small_particles_strait_text.pdf"
+tosave = parent_dir / "graphics/encounter_type_with_small_particles.pdf"
 plt.savefig(
     tosave,
     bbox_inches="tight",
