@@ -21,16 +21,16 @@ names = [
 
 # # # Cheap in time version of calculations, below expensive version
 
-msh_list = np.logspace(-0.1, -2, 2)
-msh_far_list = np.logspace(1, -1, 2)
+msh_list = np.logspace(-1, -2, 2)
+msh_far_list = np.logspace(0.5, -1, 2)
 scale_list = np.linspace(1 / 8, 1, 2)
 length_list = np.linspace(1.5, 10, 2)
 
 
 # # # long calculation
 
-# msh_list = np.logspace(-0.1, -3, 20)
-# msh_far_list = np.logspace(1, -1, 20)
+# msh_list = np.logspace(-1, -3, 20)
+# msh_far_list = np.logspace(0.5, -1, 20)
 # scale_list = np.linspace(1 / 8, 2, 20)
 # length_list = np.linspace(1.5, 15, 20)
 
