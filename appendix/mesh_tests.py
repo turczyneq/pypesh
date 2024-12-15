@@ -95,7 +95,7 @@ def export_data(msh_list, msh_far_list, scale_list, length_list, scale):
         )
     return None
 
-export_data(msh_list, msh_far_list, scale_list, length_list, 10**(-3))
+# export_data(msh_list, msh_far_list, scale_list, length_list, 10**(-3))
 
 predicted_value = np.loadtxt(parent_dir / "data" / f"msh.csv", delimiter=",")[-1,1]
 
@@ -105,7 +105,7 @@ fig, axes = plt.subplots(
     2,
     3,
     figsize=(22 * 0.6, 10 * 0.6),
-    # sharey=True
+    sharey=True,
     # sharex=True,
     gridspec_kw={
         "width_ratios": [1, 1, 1],
