@@ -21,7 +21,7 @@ names = [
 
 # # # Cheap in time version of calculations, below expensive version
 
-msh_list = np.logspace(-1, -2, 2)
+msh_list = np.logspace(-0.1, -2, 2)
 msh_far_list = np.logspace(1, -1, 2)
 scale_list = np.linspace(1 / 8, 1, 2)
 length_list = np.linspace(1.5, 10, 2)
@@ -29,7 +29,7 @@ length_list = np.linspace(1.5, 10, 2)
 
 # # # long calculation
 
-# msh_list = np.logspace(-1, -3, 20)
+# msh_list = np.logspace(-0.1, -3, 20)
 # msh_far_list = np.logspace(1, -1, 20)
 # scale_list = np.linspace(1 / 8, 2, 20)
 # length_list = np.linspace(1.5, 15, 20)
@@ -91,27 +91,27 @@ def export_data(msh_list, msh_far_list, scale_list, length_list, scale):
             data.T,
             delimiter=",",
             # header="xargs,yargs",
-            sharey=True,
             comments="",
         )
     return None
 
-# export_data(msh_list, msh_far_list, scale_list, length_list, 10**(-3))
+export_data(msh_list, msh_far_list, scale_list, length_list, 10**(-3))
 
 predicted_value = np.loadtxt(parent_dir / "data" / f"msh.csv", delimiter=",")[-1,1]
 
 fontsize = 10
 plt.rcParams.update({"text.usetex": True, "font.family": "Times", "savefig.dpi": 300})
 fig, axes = plt.subplots(
-    1,
+    2,
     3,
-    figsize=(22 * 0.6, 5 * 0.6),
-    sharey=True,
+    figsize=(22 * 0.6, 10 * 0.6),
+    # sharey=True
     # sharex=True,
     gridspec_kw={
         "width_ratios": [1, 1, 1],
-        # "height_ratios": [1, 1],
-        "wspace": 0,
+        "height_ratios": [1, 1],
+        "wspace": 0.25,
+        "hspace": 0.25,
     },
 )
 
@@ -119,34 +119,36 @@ stuff_to_plt = [
     np.loadtxt(parent_dir / "data" / f"{name}.csv", delimiter=",") for name in names
 ]
 
-for i, ax in enumerate(axes):
+for i, ax in enumerate(axes.flatten()):
     ax.scatter(stuff_to_plt[i][:,0], stuff_to_plt[i][:,1])
     ax.axhline(stuff_to_plt[0][-1,1], linestyle="--", color="k", linewidth=1)
 
-for ax in axes:
-    ax.tick_params(which="both", labelsize=fontsize)
-    ax.set_xmargin(0.05)
-    ax.set_ymargin(0.05)
-    ax.set_yscale('log')
-
-axes[0].set_ylabel(
-    r"Sherwood number $\left(\textrm{Sh}\times10^{-3}\right)$",
-    fontsize=fontsize,
-)
+for axlist in axes:
+    for ax in axlist:
+        ax.set_ylabel(
+            r"Sherwood number $\left(\textrm{Sh}\times10^{-3}\right)$",
+            fontsize=fontsize,
+        )
+        ax.tick_params(which="both", labelsize=fontsize)
+        ax.set_xmargin(0.05)
+        ax.set_ymargin(0.05)
 
 xlabel_list = [
     r"mesh tightness (1/\texttt{mesh})",
     r"far mesh tightness (1/\texttt{mesh_far})",
     r"size of cell (\texttt{cell_size})",
+    r"width of cell (\texttt{width})",
+    r"distance to floor (\texttt{floor})",
+    r"distance to ceiling (\texttt{ceiling})",
 ]
 for i, ax in enumerate(axes.flatten()):
     ax.set_xlabel(xlabel_list[i], fontsize=fontsize)
 
-axes[0].set_xscale("log")
-axes[1].set_xscale("log")
+axes[0, 0].set_xscale("log")
+axes[0, 1].set_xscale("log")
 
-# axes[0, 0].set_yscale("log")
-# axes[0, 1].set_yscale("log")
+axes[0, 0].set_yscale("log")
+axes[0, 1].set_yscale("log")
 
 
 tosave = parent_dir / "graphics/different_mesh.pdf"
