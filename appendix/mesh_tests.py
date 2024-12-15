@@ -6,7 +6,7 @@ from pathlib import Path
 parent_dir = Path(__file__).parent
 
 peclet = 5 * 10**3
-ball_radius = 0.05
+ball_radius = 0.9
 names = [
     "msh",
     "far_msh",
@@ -22,9 +22,9 @@ names = [
 # # # Cheap in time version of calculations, below expensive version
 
 msh_list = np.logspace(-1, -2, 2)
-msh_far_list = np.logspace(0.5, -1, 2)
-scale_list = np.linspace(1 / 8, 1, 2)
-length_list = np.linspace(1.5, 10, 2)
+msh_far_list = np.logspace(1, -1, 2)
+scale_list = np.linspace(1 / 6, 1, 2)
+length_list = np.linspace(1.2, 10, 2)
 
 
 # # # long calculation
@@ -110,7 +110,7 @@ fig, axes = plt.subplots(
     gridspec_kw={
         "width_ratios": [1, 1, 1],
         "height_ratios": [1, 1],
-        "wspace": 0.25,
+        "wspace": 0,
         "hspace": 0.25,
     },
 )
@@ -125,13 +125,18 @@ for i, ax in enumerate(axes.flatten()):
 
 for axlist in axes:
     for ax in axlist:
-        ax.set_ylabel(
-            r"Sherwood number $\left(\textrm{Sh}\times10^{-3}\right)$",
-            fontsize=fontsize,
-        )
         ax.tick_params(which="both", labelsize=fontsize)
         ax.set_xmargin(0.05)
         ax.set_ymargin(0.05)
+
+axes[0,0].set_ylabel(
+    r"Sherwood number $\left(\textrm{Sh}\times10^{-3}\right)$",
+    fontsize=fontsize,
+)
+axes[1,0].set_ylabel(
+    r"Sherwood number $\left(\textrm{Sh}\times10^{-3}\right)$",
+    fontsize=fontsize,
+)
 
 xlabel_list = [
     r"mesh tightness (1/\texttt{mesh})",
