@@ -14,6 +14,14 @@ scale_list = np.linspace(1 / 8, 1, 10)
 length_list = np.linspace(2, 10, 10)
 
 
+# # # long calculation
+
+# msh_list = np.logspace(-0.1, -3, 30)
+# msh_far_list = np.logspace(1, -2, 30)
+# scale_list = np.linspace(1 / 8, 2, 30)
+# length_list = np.linspace(1.5, 10, 30)
+
+
 sh_msh = [
     fem._sherwood_fem_custom_mesh(peclet, ball_radius, mesh_size=msh)
     for msh in msh_list
