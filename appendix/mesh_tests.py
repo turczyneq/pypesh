@@ -5,7 +5,7 @@ from pathlib import Path
 
 parent_dir = Path(__file__).parent
 
-peclet = 5 * 10**3
+peclet = 10**4
 ball_radius = 0.9
 names = [
     "msh",
@@ -22,17 +22,18 @@ names = [
 # # # Cheap in time version of calculations, below expensive version
 
 msh_list = np.logspace(-1, -2, 2)
-msh_far_list = np.logspace(1, -1, 2)
+msh_far_list = np.logspace(0.8, -1, 2)
 scale_list = np.linspace(1 / 6, 1, 2)
-length_list = np.linspace(1.2, 10, 2)
+length_list = np.linspace(2, 10, 2)
 
 
 # # # long calculation
 
 # msh_list = np.logspace(-1, -3, 20)
-# msh_far_list = np.logspace(0.5, -1, 20)
-# scale_list = np.linspace(1 / 8, 2, 20)
-# length_list = np.linspace(1.5, 15, 20)
+# msh_far_list = np.logspace(0.8, -1.5, 20)
+# scale_list = np.linspace(1 / 6, 2, 20)
+# length_list = np.linspace(2, 15, 20)
+
 
 def export_data(msh_list, msh_far_list, scale_list, length_list, scale):
     sh_msh = np.array(
@@ -95,11 +96,12 @@ def export_data(msh_list, msh_far_list, scale_list, length_list, scale):
         )
     return None
 
-# export_data(msh_list, msh_far_list, scale_list, length_list, 10**(-3))
 
-predicted_value = np.loadtxt(parent_dir / "data" / f"msh.csv", delimiter=",")[-1,1]
+# export_data(msh_list, msh_far_list, scale_list, length_list, 1)
 
-fontsize = 10
+predicted_value = np.loadtxt(parent_dir / "data" / f"msh.csv", delimiter=",")[-1, 1]
+
+fontsize = 10 * (9.5 / 7)
 plt.rcParams.update({"text.usetex": True, "font.family": "Times", "savefig.dpi": 300})
 fig, axes = plt.subplots(
     2,
@@ -119,22 +121,53 @@ stuff_to_plt = [
     np.loadtxt(parent_dir / "data" / f"{name}.csv", delimiter=",") for name in names
 ]
 
+vlines = [1 / 0.01, 1 / 0.5, 1.0, 10, 10, 10]
 for i, ax in enumerate(axes.flatten()):
-    ax.scatter(stuff_to_plt[i][:,0], stuff_to_plt[i][:,1])
-    ax.axhline(stuff_to_plt[0][-1,1], linestyle="--", color="k", linewidth=1)
+    hlength = stuff_to_plt[i][-1, 0] - stuff_to_plt[i][0, 0]
+    ax.scatter(stuff_to_plt[i][:, 0], stuff_to_plt[i][:, 1])
+    ax.axhline(stuff_to_plt[0][-1, 1], linestyle="--", color="gray", linewidth=0.8)
+    ax.axvline(vlines[i], linestyle="--", color="k", linewidth=1)
+    if i != 0 and i != 1:
+        ax.text(
+            vlines[i] - 0.06 * hlength,
+            80,
+            "default",
+            ha="left",
+            fontsize=fontsize,
+            rotation=90,
+        )
+    else:
+        ax.text(
+            10
+            ** (
+                np.log10(vlines[i] / (hlength))
+                - 0.06
+                * (np.log10(stuff_to_plt[i][-1, 0]) - np.log10(stuff_to_plt[i][0, 0])) * 0.95
+            )
+            * hlength,
+            80,
+            "default",
+            ha="left",
+            fontsize=fontsize,
+            rotation=90,
+        )
+
 
 for axlist in axes:
-    for ax in axlist:
-        ax.tick_params(which="both", labelsize=fontsize)
+    for i, ax in enumerate(axlist):
         ax.set_xmargin(0.05)
         ax.set_ymargin(0.05)
+        if i != 0:
+            ax.tick_params(which="both", labelsize=fontsize, left=False)
+        else:
+            ax.tick_params(which="both", labelsize=fontsize)
 
-axes[0,0].set_ylabel(
-    r"Sherwood number $\left(\textrm{Sh}\times10^{-3}\right)$",
+axes[0, 0].set_ylabel(
+    r"Sherwood number $\left(\textrm{Sh}\right)$",
     fontsize=fontsize,
 )
-axes[1,0].set_ylabel(
-    r"Sherwood number $\left(\textrm{Sh}\times10^{-3}\right)$",
+axes[1, 0].set_ylabel(
+    r"Sherwood number $\left(\textrm{Sh}\right)$",
     fontsize=fontsize,
 )
 
@@ -146,14 +179,23 @@ xlabel_list = [
     r"distance to floor (\texttt{floor})",
     r"distance to ceiling (\texttt{ceiling})",
 ]
+alphabet = [r"(a)", r"(b)", r"(c)", r"(d)", r"(e)", r"(f)"]
 for i, ax in enumerate(axes.flatten()):
     ax.set_xlabel(xlabel_list[i], fontsize=fontsize)
+    ax.text(
+        0.93,
+        0.91,
+        alphabet[i],
+        transform=ax.transAxes,
+        fontsize=fontsize,
+    )
+
 
 axes[0, 0].set_xscale("log")
 axes[0, 1].set_xscale("log")
 
-axes[0, 0].set_yscale("log")
-axes[0, 1].set_yscale("log")
+# axes[0, 0].set_yscale("log")
+# axes[0, 1].set_yscale("log")
 
 
 tosave = parent_dir / "graphics/different_mesh.pdf"

@@ -217,6 +217,86 @@ def sherwood_fem(peclet, ball_radius):
     return result
 
 
+def _sherwood_fem_different_integral(peclet, ball_radius):
+    """
+    sherwood is defined as flux_dimesional/(4 pi D R) = U R^2 flux / (4 pi D R) = flux*(Pe/4 pi)
+
+    Parameters
+    ----------
+    peclet: float
+        Peclet number defined as R u / D.
+
+    ball_radius : float
+        Radius of the big ball.
+
+    Returns
+    --------
+    float
+        Sherwood calcualted for selected peclet and ball radius using fem approach.
+
+    Example
+    -------
+    >>> import pypesh.fem as fem
+    >>> fem.sherwood_fem(10000, 0.9)
+    54.93467214954524
+    """
+
+    @BilinearForm
+    def advection(k, l, m):
+        # Coordinate fields
+        r, z = m.x
+
+        v_r, v_y, v_z = sf.stokes_around_sphere_explicite(r, z, ball_radius)
+
+        return (l * v_r * grad(k)[0] + l * v_z * grad(k)[1]) * 2 * np.pi * r
+
+    @BilinearForm
+    def claplace(u, v, m):
+        """Laplace operator in cylindrical coordinates."""
+        r, z = m.x
+        return dot(grad(u), grad(v)) * 2 * np.pi * r
+
+    mesh, basis = get_mesh(peclet)
+
+    # Assemble the system matrix
+    A = asm(claplace, basis) + peclet * asm(advection, basis)
+    # Identify the interior degrees of freedom
+    interior = basis.complement_dofs(basis.get_dofs({"bottom", "ball"}))
+    # Boundary condition
+    u = basis.zeros()
+    u[basis.get_dofs("bottom")] = 1.0
+    u[basis.get_dofs("ball")] = 0.0
+    # Solve the problem
+    u = solve(*condense(A, x=u, I=interior))
+
+
+    ball_basis = FacetBasis(mesh, ElementTriP1(), facets="ball")
+    
+    @Functional
+    def intercepted_sphere(m):
+        # Coordinate fields
+        r, z = m.x
+
+        val = m["uh"]
+        normal = val.grad[0] * r + val.grad[1] * z
+
+        """
+        calculation of effective surface: 
+            1/peclet - dimesionless diffusion
+            normal   - Fick's flux of concentration throught sphere surface
+            2*pi*r   - measure from cylindrical integration
+        """
+
+        return (1/peclet) * normal * 2 * np.pi * r
+
+    """
+    Calculating Sherwood
+    """
+    result = analytic.sherwood_from_flux(asm(intercepted_sphere, ball_basis, uh=ball_basis.interpolate(u)), peclet)
+
+    return result
+
+
 def _sherwood_fem_custom_mesh(
     peclet,
     ball_radius,

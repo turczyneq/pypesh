@@ -38,14 +38,14 @@ def all_sherwood(
     Returns
     -------
     tuple
-        float - Clift et. al., float - our approximation, float - fem approach, float - trajectories approach
+        float - Clift et. al., float - our approximation, float - fem approach, float - fem approach different integral , float - trajectories approach
 
 
     Example
     --------
     >>> import pypesh.pesh as pesh
     >>> pesh.all_sherwood(1000, 0.9)
-    (6.800655008742168, 10.425655008742165, np.float64(12.033892568100546), 14.194223139015682)
+    (6.800655008742168, 10.425655008742165, np.float64(12.033892568100546), np.float64(11.720084145681978), 14.194223139015682)
     """
 
     import pypesh.fem as fem
@@ -66,11 +66,13 @@ def all_sherwood(
 
     sherwood_fem = fem.sherwood_fem(peclet, ball_radius)
 
+    sherwood_fem_sphere = fem._sherwood_fem_different_integral(peclet, ball_radius)
+
     sherwood_clift = analytic.clift_approximation(peclet)
 
     sherwood_us = analytic.our_approximation(peclet, ball_radius)
 
-    return sherwood_clift, sherwood_us, sherwood_fem, sherwood_traj
+    return sherwood_clift, sherwood_us, sherwood_fem, sherwood_fem_sphere, sherwood_traj
 
 
 def _sherwood(
