@@ -162,7 +162,7 @@ plt.yticks(fontsize=fontsize)
 
 plt.tight_layout()
 parent_dir = Path(__file__).parent
-tosave = parent_dir / "graphics/encounter_type_with_small_particles.pdf"
+tosave = parent_dir / "graphics/encounter_type_with_small_particles_just_plot.pdf"
 plt.savefig(
     tosave,
     bbox_inches="tight",

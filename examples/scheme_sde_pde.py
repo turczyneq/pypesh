@@ -54,9 +54,6 @@ def draw_scheme_sde_pde(
     list
         list of outcomes from pychastic for each position
 
-    Example
-    -------
-    TODO
     """
 
     # # # make scheme
