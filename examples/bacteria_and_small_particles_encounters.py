@@ -137,6 +137,14 @@ y_max_from_top = (
 )
 synechococcus = synechococcus[y_min_from_top:y_max_from_top, x_min:x_max]
 
+image_path = parent_dir / "images" / "prochloroccus.png"
+prochloroccus = mpimg.imread(image_path)
+x_min, x_max, y_min_from_top = 0, 600, 50
+y_max_from_top = (
+    int(round((x_max - x_min) * images_aspect) + y_min_from_top) + y_min_from_top
+)
+prochloroccus = prochloroccus[y_min_from_top:y_max_from_top, x_min:x_max]
+
 fontsize = 11.5
 marker_size = 80
 plt.rcParams.update({"text.usetex": True, "font.family": "Times", "savefig.dpi": 700})
@@ -169,7 +177,7 @@ for image_ax in [axes_nw, axes_ne, axes_sw, axes_se]:
 
 for image_ax, image in zip(
     [axes_nw, axes_ne, axes_sw, axes_se],
-    [roseobacter, pelagibacter, synechococcus, synechococcus],
+    [roseobacter, pelagibacter, synechococcus, prochloroccus],
 ):
     image_ax.imshow(image, aspect="equal", extent=(0, 1, 0, 1))
 
@@ -179,7 +187,7 @@ for image_ax, text in zip(
         r"\textit{Roseobacter}",
         r"\textit{Pelagibacter}",
         r"\textit{Synechococcus}",
-        r"\textit{Synechococcus}",
+        r"\textit{Prochloroccus}",
     ],
 ):
     image_ax.text(
@@ -199,7 +207,7 @@ for image_ax, text in zip(
         r"$0.6$ $\mu$m",
         r"$2$ $\mu$m",
         r"$7$ $\mu$m",
-        r"$7$ $\mu$m",
+        r"$1.5$ $\mu$m",
     ],
 ):
     make_length_scale([0.1, 0.4], [0.1, 0.1], 0.5, 0.002, "w", text, image_ax)
@@ -275,12 +283,12 @@ added_text = CurvedText(
     fontsize=fontsize,
 )
 
-for val in [0.3, 0.5, 2.8]:
+for val in [0.3, 0.4, 0.5, 2.8]:
     axes_big.axvline(x=val, c="gray", ls="--")
 
 axes_big.text(
     2.8,
-    0.7,
+    0.9,
     r"\textit{Synechococcus}",
     va="top",
     ha="right",
@@ -290,8 +298,17 @@ axes_big.text(
 
 axes_big.text(
     0.5,
-    0.8,
+    0.7,
     r"\textit{Pelagibacter}",
+    va="top",
+    ha="right",
+    fontsize=fontsize,
+    rotation=90,
+)
+axes_big.text(
+    0.4,
+    0.8,
+    r"\textit{Prochloroccus}",
     va="top",
     ha="right",
     fontsize=fontsize,
@@ -319,7 +336,6 @@ axes_big.set_ylabel(r"Partial contribution", fontsize=fontsize)
 
 axes_big.tick_params(which="both", labelsize=fontsize, left=True, labelleft=True)
 
-plt.subplots_adjust(wspace=0.08)
 tosave = parent_dir / "graphics/encounter_type_with_small_particles.pdf"
 plt.savefig(
     tosave,
