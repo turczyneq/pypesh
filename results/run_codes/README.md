@@ -1,4 +1,6 @@
-Codes in here calculate Sherwood for different Peclet na ball_radius. For higher $Pe$ and ball_radius close to 1 it was neccesarry to increase time of integration for pychastic approach (for deeper explanation see Appendix of adjusent publication.)
+Codes in here calculate Sherwood for different Peclet na ball_radius. For higher $Pe$ and ball_radius close to 1 it was neccesarry to increase the time of integration for pychastic approach (for deeper explanation see Appendix of adjusent publication.)
+
+**Warning:** calculations expensive in terms of time.
 
 In order to increase calculation speed GNU PARALELL was used. Run code looked like this:
 

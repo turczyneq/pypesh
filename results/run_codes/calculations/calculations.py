@@ -29,6 +29,6 @@ peclet = args.peclet
 start = time.time()
 sol = psh.all_sherwood(peclet, ball_radius, trials = 10000, mesh_out = 15, mesh_jump = 20, spread = 10, t_max = 200)
 end = time.time()
-print(f"\n{peclet}\t{ball_radius}\t{sol[0]}\t{sol[1]}\t{sol[2]}\t{sol[3]}\t{end-start}")
+print(f"\n{peclet}\t{ball_radius}\t{sol[0]}\t{sol[1]}\t{sol[2]}\t{sol[3]}\t{sol[4]}\t{end-start}")
 with open(output_file, "a") as f:
-    f.write(f"\n{peclet}\t{ball_radius}\t{sol[0]}\t{sol[1]}\t{sol[2]}\t{sol[3]}\t{end-start}")
+    f.write(f"\n{peclet}\t{ball_radius}\t{sol[0]}\t{sol[1]}\t{sol[2]}\t{sol[3]}\t{sol[4]}\t{end-start}")

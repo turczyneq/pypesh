@@ -32,6 +32,6 @@ sol = psh.all_sherwood(
     partition=10,
 )
 end = time.time()
-print(f"\n{peclet}\t{ball_radius}\t{sol[0]}\t{sol[1]}\t{sol[2]}\t{sol[3]}\t{end-start}")
+print(f"\n{peclet}\t{ball_radius}\t{sol[0]}\t{sol[1]}\t{sol[2]}\t{sol[3]}\t{sol[4]}\t{end-start}")
 with open(output_file, "a") as f:
-    f.write(f"\n{peclet}\t{ball_radius}\t{sol[0]}\t{sol[1]}\t{sol[2]}\t{sol[3]}\t{end-start}")
+    f.write(f"\n{peclet}\t{ball_radius}\t{sol[0]}\t{sol[1]}\t{sol[2]}\t{sol[3]}\t{sol[4]}\t{end-start}")

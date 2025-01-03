@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 from pypesh.mpl.curved_text import CurvedText
+from matplotlib.patches import Rectangle
 import matplotlib.colors as mcolors
 import matplotlib.image as mpimg
 
@@ -177,17 +178,17 @@ for image_ax in [axes_nw, axes_ne, axes_sw, axes_se]:
 
 for image_ax, image in zip(
     [axes_nw, axes_ne, axes_sw, axes_se],
-    [roseobacter, pelagibacter, synechococcus, prochloroccus],
+    [synechococcus, pelagibacter, prochloroccus, roseobacter],
 ):
     image_ax.imshow(image, aspect="equal", extent=(0, 1, 0, 1))
 
 for image_ax, text in zip(
     [axes_nw, axes_ne, axes_sw, axes_se],
     [
-        r"\textit{Roseobacter}",
-        r"\textit{Pelagibacter}",
         r"\textit{Synechococcus}",
+        r"\textit{Pelagibacter}",
         r"\textit{Prochloroccus}",
+        r"\textit{Roseobacter}",
     ],
 ):
     image_ax.text(
@@ -197,17 +198,17 @@ for image_ax, text in zip(
         c="w",
         va="top",
         ha="left",
-        fontsize=fontsize,        
-        bbox=dict(boxstyle='square,pad=0.15',fc='0.2',ec='none'),
+        fontsize=fontsize,
+        bbox=dict(boxstyle="square,pad=0.15", fc="0.2", ec="none"),
     )
 
 for image_ax, text in zip(
     [axes_nw, axes_ne, axes_sw, axes_se],
     [
-        r"$0.6$ $\mu$m",
-        r"$2$ $\mu$m",
         r"$7$ $\mu$m",
+        r"$2$ $\mu$m",
         r"$1.5$ $\mu$m",
+        r"$0.6$ $\mu$m",
     ],
 ):
     make_length_scale([0.1, 0.4], [0.1, 0.1], 0.5, 0.002, "w", text, image_ax)
@@ -233,7 +234,7 @@ axes_big.fill_between(
     lower_band,
     np.zeros_like(r_bacteria_list),
     alpha=0.3,
-    color="#a0cbe8",
+    color=tableau[0],
 )
 
 axes_big.fill_between(
@@ -241,7 +242,7 @@ axes_big.fill_between(
     upper_band,
     np.ones_like(r_bacteria_list),
     alpha=0.3,
-    color="#ffbe7d",
+    color=tableau[1],
 )
 
 
@@ -333,6 +334,52 @@ axes_big.set_ylim(0, 1.001)
 
 axes_big.set_xlabel(r"Size of small particles ($b$) [$\mu$m]", fontsize=fontsize)
 axes_big.set_ylabel(r"Partial contribution", fontsize=fontsize)
+
+# axes_big.add_artist(
+#     Rectangle(
+#         (0, 0),
+#         1,
+#         0.05,
+#         facecolor=tableau[2],
+#         alpha=0.7,
+#         zorder=5,
+#     )
+# )
+
+# axes_big.add_artist(
+#     Rectangle(
+#         (1, 0),
+#         r_bacteria_list[-1]-1,
+#         0.05,
+#         facecolor=tableau[3],
+#         alpha=0.7,
+#         zorder=5,
+#     )
+# )
+
+# axes_big.text(
+#     0.15,
+#     0,
+#     r"picplancton",
+#     ha="center",
+#     va="bottom",
+#     fontsize=fontsize,
+#     transform=axes_big.transAxes,
+#     color=tableau[0],
+#     weight="bold",
+# )
+
+# axes_big.text(
+#     0.8,
+#     0,
+#     r"nanoplankton",
+#     ha="center",
+#     va="bottom",
+#     fontsize=fontsize,
+#     transform=axes_big.transAxes,
+#     color=tableau[1],
+#     weight="bold",
+# )
 
 axes_big.tick_params(which="both", labelsize=fontsize, left=True, labelleft=True)
 
