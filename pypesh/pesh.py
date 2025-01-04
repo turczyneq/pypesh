@@ -52,17 +52,20 @@ def all_sherwood(
     import pypesh.analytic as analytic
     import pypesh.trajectories as traj
 
-    sherwood_traj, xargs, yagrs = traj.sherwood_trajectories(
-        peclet,
-        ball_radius,
-        mesh_out=mesh_out,
-        mesh_jump=mesh_jump,
-        trials=trials,
-        floor_h=floor_h,
-        spread=spread,
-        t_max=t_max,
-        partition=partition,
-    )
+    if peclet <= 1e4:
+        sherwood_traj = 0
+    else:
+        sherwood_traj, xargs, yagrs = traj.sherwood_trajectories(
+            peclet,
+            ball_radius,
+            mesh_out=mesh_out,
+            mesh_jump=mesh_jump,
+            trials=trials,
+            floor_h=floor_h,
+            spread=spread,
+            t_max=t_max,
+            partition=partition,
+        )
 
     sherwood_fem = fem.sherwood_fem(peclet, ball_radius)
 
