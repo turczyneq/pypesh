@@ -5,5 +5,5 @@ Codes in here calculate Sherwood for different Peclet na ball_radius. For higher
 In order to increase calculation speed GNU PARALELL was used. Run code looked like this:
 
 ```console
-user:~$cat list_to_calculate.txt | parallel --colsep '\t' python3 calculations.py --peclet {1} --ball_radius {2} | tee -a log
+user:~$cat list_to_calculate.txt | parallel --colsep '\t' python3 calculations.py --peclet {1} --ball_radius {2}
 ```

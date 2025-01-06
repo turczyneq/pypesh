@@ -301,7 +301,7 @@ legend2 = axes[1].legend(
     handles=utils,
     fontsize=fontsize,
     frameon=False,
-    loc=(0.01, 0.5),
+    loc=(0.01, 0.55),
     labelspacing=0.1,
     handlelength=0.4,
 )
@@ -402,7 +402,7 @@ utils = [fem, traj]
 
 for ax in axes:
     ax.set_xscale("log")
-    ax.set_xlim(0.5, 10**12)
+    ax.set_xlim(5, 10**12)
 
 
 for ax in axes[:2]:

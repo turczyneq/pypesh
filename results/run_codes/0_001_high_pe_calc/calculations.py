@@ -32,4 +32,11 @@ sol = psh.all_sherwood(
     partition=20,
 )
 end = time.time()
-print(f"\n{peclet}\t{ball_radius}\t{sol[0]}\t{sol[1]}\t{sol[2]}\t{sol[3]}\t{sol[4]}\t{end-start}")
+
+pe_string = f"{int(peclet)}_{int((peclet - int(peclet))*10)}"
+ball_string = "0_" + f"{ball_radius}"[2:]
+file_to_export = "peclet_" + pe_string + "__ball_" + ball_string + ".txt"
+output_file = parent_dir / "output" / file_to_export
+
+with open(output_file, "w") as f:
+    f.write(f"\n{peclet}\t{ball_radius}\t{sol[0]}\t{sol[1]}\t{sol[2]}\t{sol[3]}\t{sol[4]}\t{end-start}")
