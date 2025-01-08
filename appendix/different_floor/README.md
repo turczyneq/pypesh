@@ -1,4 +1,4 @@
-Codes in here calculate Sherwood for different Peclet and parameter `wide`. (for deeper explanation see Appendix of adjusent publication.)
+Codes in here calculate Sherwood for different Peclet and parameter `floor`. (for deeper explanation see Appendix of adjusent publication.)
 
 **Warning:** calculations reuqire folder `output` to be present. This will allow code to save output under `"output/"`.
 

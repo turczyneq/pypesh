@@ -2,16 +2,16 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 
-wide5 = []
-wide10 = []
-wide20 = []
+floor5 = []
+floor10 = []
+floor20 = []
 for file_path in Path("./output/").rglob("*"):
     if file_path.is_file():
         with file_path.open("r") as f:
             read = f.read()
             read = read.split("\n")[1]
             read = read.split("\t")
-            wide5 += [
+            floor5 += [
                 np.array(
                     [
                         float(read[0]),
@@ -20,7 +20,7 @@ for file_path in Path("./output/").rglob("*"):
                     ]
                 )
             ]
-            wide10 += [
+            floor10 += [
                 np.array(
                     [
                         float(read[0]),
@@ -29,7 +29,7 @@ for file_path in Path("./output/").rglob("*"):
                     ]
                 )
             ]
-            wide20 += [
+            floor20 += [
                 np.array(
                     [
                         float(read[0]),
@@ -51,14 +51,14 @@ ball_list = [
     1,
 ]
 
-wide5 = np.array(wide5)
-wide5 = wide5[np.lexsort((wide5[:, 0], wide5[:, 1]))]
+floor5 = np.array(floor5)
+floor5 = floor5[np.lexsort((floor5[:, 0], floor5[:, 1]))]
 
-wide10 = np.array(wide10)
-wide10 = wide10[np.lexsort((wide10[:, 0], wide10[:, 1]))]
+floor10 = np.array(floor10)
+floor10 = floor10[np.lexsort((floor10[:, 0], floor10[:, 1]))]
 
-wide20 = np.array(wide20)
-wide20 = wide20[np.lexsort((wide20[:, 0], wide20[:, 1]))]
+floor20 = np.array(floor20)
+floor20 = floor20[np.lexsort((floor20[:, 0], floor20[:, 1]))]
 
 
 fontsize = 15
@@ -66,8 +66,8 @@ plt.figure(figsize=(10, 6))
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 
 for n, ball in enumerate(ball_list):
-    to_plot10 = wide10[wide10[:, 1] == ball]
-    to_plot20 = wide20[wide20[:, 1] == ball]
+    to_plot10 = floor10[floor10[:, 1] == ball]
+    to_plot20 = floor20[floor20[:, 1] == ball]
     plt.scatter(
         to_plot10[:, 0],
         to_plot10[:, 2],
@@ -87,7 +87,7 @@ for n, ball in enumerate(ball_list):
 plt.xscale("log")
 plt.yscale("log")
 plt.xlim(0.5, 10**6)
-plt.ylim(0.9, 10**5)
+plt.ylim(0.9, 2 * 10**4)
 plt.xticks(fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
 
@@ -98,9 +98,9 @@ plt.ylabel(
     fontsize=fontsize,
 )
 
-plt.scatter([0], [0], label=r"$\it{wide} = 10$", color="k")
+plt.scatter([0], [0], label=r"$\it{floor} = 10$", color="k")
 
-plt.scatter([0], [0], label=r"$\it{wide} = 20$", color="k", facecolors="none")
+plt.scatter([0], [0], label=r"$\it{floor} = 20$", color="k", facecolors="none")
 
 plt.legend(fontsize=fontsize, frameon=False, loc=0)
 
