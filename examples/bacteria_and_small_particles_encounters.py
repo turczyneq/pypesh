@@ -285,7 +285,7 @@ added_text = CurvedText(
 )
 
 for val in [0.3, 0.4, 0.5, 2.8]:
-    axes_big.axvline(x=val, c="gray", ls="--")
+    axes_big.plot([val, val], [0, 1], c="gray", ls="--")
 
 axes_big.text(
     2.8,
@@ -330,56 +330,36 @@ axes_big.text(
 axes_big.set_xlim(0.75 * 1e-1, r_bacteria_list[-1])
 axes_big.set_xscale("log")
 
-axes_big.set_ylim(0, 1.001)
+axes_big.set_ylim(-0.06, 1.001)
 
 axes_big.set_xlabel(r"Size of small particles ($b$) [$\mu$m]", fontsize=fontsize)
 axes_big.set_ylabel(r"Partial contribution", fontsize=fontsize)
 
-# axes_big.add_artist(
-#     Rectangle(
-#         (0, 0),
-#         1,
-#         0.05,
-#         facecolor=tableau[2],
-#         alpha=0.7,
-#         zorder=5,
-#     )
-# )
+axes_big.plot([2, 2], [-0.06, 0], c="k", ls="--", lw=0.5)
 
-# axes_big.add_artist(
-#     Rectangle(
-#         (1, 0),
-#         r_bacteria_list[-1]-1,
-#         0.05,
-#         facecolor=tableau[3],
-#         alpha=0.7,
-#         zorder=5,
-#     )
-# )
+axes_big.text(
+    0.5,
+    -0.03,
+    r"picoplankton",
+    ha="center",
+    va="center",
+    fontsize=fontsize,
+    # transform=axes_big.transAxes,
+    # color=tableau[0],
+    weight="bold",
+)
 
-# axes_big.text(
-#     0.15,
-#     0,
-#     r"picplancton",
-#     ha="center",
-#     va="bottom",
-#     fontsize=fontsize,
-#     transform=axes_big.transAxes,
-#     color=tableau[0],
-#     weight="bold",
-# )
-
-# axes_big.text(
-#     0.8,
-#     0,
-#     r"nanoplankton",
-#     ha="center",
-#     va="bottom",
-#     fontsize=fontsize,
-#     transform=axes_big.transAxes,
-#     color=tableau[1],
-#     weight="bold",
-# )
+axes_big.text(
+    7,
+    -0.03,
+    r"nanoplankton",
+    ha="center",
+    va="center",
+    fontsize=fontsize,
+    # transform=axes_big.transAxes,
+    # color=tableau[1],
+    weight="bold",
+)
 
 axes_big.tick_params(which="both", labelsize=fontsize, left=True, labelleft=True)
 
