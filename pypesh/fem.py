@@ -124,7 +124,7 @@ def get_mesh(peclet):
         # For big peclets use finer mesh
         mesh_type = "fine"
 
-    elif peclet < 5:
+    elif peclet < 100:
         # For small peclets use wider base, with coarse  mesh
         mesh_type = "coarse"
 

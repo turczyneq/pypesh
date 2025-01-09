@@ -4,6 +4,7 @@ from pathlib import Path
 from itertools import groupby
 import pypesh.analytic as analytic
 import matplotlib.colors as mcolors
+
 tableau = list(mcolors.TABLEAU_COLORS)
 
 parent_dir = Path(__file__).parent
@@ -33,7 +34,7 @@ py_sherwood = {k: np.array(list(g)) for k, g in py_grouped}
 
 """modified sherwood"""
 
-fem_path = parent_dir / "data" / "mod_fem_pe_vs_sh.csv"
+fem_path = parent_dir / "data" / "fem_pe_vs_sh.csv"
 fem = np.loadtxt(fem_path, delimiter=",", skiprows=1)
 fem = fem[fem[:, 0] < 10**6]
 # we have to split into listst wiht different r_syf
@@ -42,7 +43,22 @@ fem_sorted = fem_sorted[fem_sorted[:, 1] != 1]
 fem_grouped = groupby(fem_sorted, key=lambda x: x[1])
 fem_modified_sherwood = {k: np.array(list(g)) for k, g in fem_grouped}
 
-py_path = parent_dir / "data" / "mod_py_pe_vs_sh.csv"
+fem_modified_sherwood = {
+    key: np.array(
+        [
+            [
+                peclet,
+                ball_radius,
+                sherwood / (analytic.direct_impact(peclet, ball_radius) + 1),
+            ]
+            for peclet, ball_radius, sherwood in value
+        ]
+    )
+    for key, value in fem_modified_sherwood.items()
+}
+
+
+py_path = parent_dir / "data" / "py_pe_vs_sh.csv"
 py = np.loadtxt(py_path, delimiter=",", skiprows=1)
 py = py[py[:, 0] > 10**5]
 # we have to split into listst wiht different r_syf
@@ -50,6 +66,20 @@ py_sorted = py[py[:, 1].argsort()]
 py_sorted = py_sorted[py_sorted[:, 1] != 1]
 py_grouped = groupby(py_sorted, key=lambda x: x[1])
 py_modified_sherwood = {k: np.array(list(g)) for k, g in py_grouped}
+
+py_modified_sherwood = {
+    key: np.array(
+        [
+            [
+                peclet,
+                ball_radius,
+                sherwood / (analytic.direct_impact(peclet, ball_radius) + 1),
+            ]
+            for peclet, ball_radius, sherwood in value
+        ]
+    )
+    for key, value in py_modified_sherwood.items()
+}
 
 
 """our approximations"""
@@ -62,8 +92,9 @@ fem = np.loadtxt(fem_path, delimiter=",", skiprows=1)
 fem_sorted = fem[fem[:, 1].argsort()]
 fem_grouped = groupby(fem_sorted, key=lambda x: x[1])
 fem_plt = {k: np.array(list(g)) for k, g in fem_grouped}
-for i in [1, 0.999, 0.998, 0.995]:
-    del fem_plt[i]
+del fem_plt[1.]
+# for i in [1, 0.999, 0.998, 0.995]:
+#     del fem_plt[i]
 
 py_path = parent_dir / "data" / "py_pe_vs_sh.csv"
 py = np.loadtxt(py_path, delimiter=",", skiprows=1)
@@ -73,8 +104,9 @@ py = np.loadtxt(py_path, delimiter=",", skiprows=1)
 py_sorted = py[py[:, 1].argsort()]
 py_grouped = groupby(py_sorted, key=lambda x: x[1])
 py_plt = {k: np.array(list(g)) for k, g in py_grouped}
-for i in [1, 0.999, 0.998, 0.995]:
-    del py_plt[i]
+del py_plt[1.]
+# for i in [1, 0.999, 0.998, 0.995]:
+#     del py_plt[i]
 
 
 fem_difference = {
@@ -107,11 +139,14 @@ py_difference = {
 }
 
 cutout = {
-    0.8: (10**4, 5 * 10**2),
+    0.8: (2 * 10**4, 5 * 10**2),
     0.9: (3 * 10**4, 1.5 * 10**4),
     0.95: (4.5 * 10**5, 5 * 10**4),
-    0.98: (10**6, 7 * 10**5),
-    0.99: (1.5 * 10**6, 1.5 * 10**6),
+    0.98: (10**6,  10**5),
+    0.99: (2 * 10**6,  10**5),
+    0.995: (10**6, 5 * 10**5),
+    0.998: (10**6, 5 * 10**5),
+    0.999: (10**6, 5 * 10**5),
 }
 
 for key, value in cutout.items():

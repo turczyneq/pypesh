@@ -52,7 +52,7 @@ def all_sherwood(
     import pypesh.analytic as analytic
     import pypesh.trajectories as traj
 
-    if peclet <= 1e4:
+    if peclet <= 1e3:
         sherwood_traj = 0
     else:
         sherwood_traj, xargs, yagrs = traj.sherwood_trajectories(
