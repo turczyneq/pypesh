@@ -59,7 +59,7 @@ def _get_mesh(mesh_type):
     )
 
     mesh_wide_path = os.path.join(
-        parent_dir, "meshes", f"mesh_{str(0.05).replace('.', '_')}__width_{20}.msh"
+        parent_dir, "meshes", f"mesh_{str(0.01).replace('.', '_')}__width_{20}.msh"
     )
 
     if mesh_type == "default":
@@ -82,7 +82,7 @@ def _get_mesh(mesh_type):
         if os.path.exists(mesh_wide_path):
             mesh = MeshTri.load(mesh_wide_path)
         else:
-            mesh = msh.gen_mesh(width=20, mesh=0.05, save=True)
+            mesh = msh.gen_mesh(width=20, save=True)
 
         basis = Basis(mesh, ElementTriP1())
 
