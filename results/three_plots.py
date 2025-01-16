@@ -92,7 +92,8 @@ fem = np.loadtxt(fem_path, delimiter=",", skiprows=1)
 fem_sorted = fem[fem[:, 1].argsort()]
 fem_grouped = groupby(fem_sorted, key=lambda x: x[1])
 fem_plt = {k: np.array(list(g)) for k, g in fem_grouped}
-del fem_plt[1.]
+del fem_plt[1.0]
+del fem_plt[0.999]
 # for i in [1, 0.999, 0.998, 0.995]:
 #     del fem_plt[i]
 
@@ -104,7 +105,8 @@ py = np.loadtxt(py_path, delimiter=",", skiprows=1)
 py_sorted = py[py[:, 1].argsort()]
 py_grouped = groupby(py_sorted, key=lambda x: x[1])
 py_plt = {k: np.array(list(g)) for k, g in py_grouped}
-del py_plt[1.]
+del py_plt[1.0]
+del py_plt[0.999]
 # for i in [1, 0.999, 0.998, 0.995]:
 #     del py_plt[i]
 
@@ -142,11 +144,11 @@ cutout = {
     0.8: (2 * 10**4, 5 * 10**2),
     0.9: (3 * 10**4, 1.5 * 10**4),
     0.95: (4.5 * 10**5, 5 * 10**4),
-    0.98: (10**6,  10**5),
-    0.99: (2 * 10**6,  10**5),
+    0.98: (10**6, 10**5),
+    0.99: (2 * 10**6, 10**5),
     0.995: (10**6, 5 * 10**5),
     0.998: (10**6, 5 * 10**5),
-    0.999: (10**6, 5 * 10**5),
+    # 0.999: (1.2 * 10**6, 10**5),
 }
 
 for key, value in cutout.items():
@@ -437,7 +439,7 @@ utils = [fem, traj]
 
 for ax in axes:
     ax.set_xscale("log")
-    ax.set_xlim(5, 10**12)
+    ax.set_xlim(1, 10**12)
 
 
 for ax in axes[:2]:
@@ -445,7 +447,7 @@ for ax in axes[:2]:
 
 axes[0].set_ylim(0.5, 8 * 10**10)
 axes[1].set_ylim(0.7, 80)
-axes[2].set_ylim(-0.05, 0.18)
+axes[2].set_ylim(-0.05, 0.185)
 
 for i, x in enumerate([r"(a)", r"(b)", r"(c)"]):
     axes[i].text(0.01, 0.9, x, transform=axes[i].transAxes, fontsize=fontsize)
