@@ -370,4 +370,4 @@ plt.savefig(
     pad_inches=0.02,
 )
 
-# plt.show()
+plt.show()
