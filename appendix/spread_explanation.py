@@ -52,7 +52,7 @@ plt.plot(
     color="C1",
     linestyle="-",
     ms=2,
-    label=rf"FEM for $Pe = 10^{round(np.log10(peclet))}$",
+    label=rf"scikit-fem for $Pe = 10^{round(np.log10(peclet))}$",
 )
 
 vertical_lines = [
