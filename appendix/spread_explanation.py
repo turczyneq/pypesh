@@ -18,6 +18,7 @@ traj_cross = visual.draw_cross_section_traj(
     ball_radius,
     mesh_out=4,
     mesh_jump=10,
+    trials=10000,
 )
 
 
