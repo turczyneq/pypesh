@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import pypesh.stokes_flow as sf
 from pathlib import Path
 import numpy as np
+import matplotlib.colors as mcolors
+
+tableau = list(mcolors.TABLEAU_COLORS)
 
 parent_dir = Path(__file__).parent
 
@@ -13,17 +16,23 @@ fontsize = 15
 plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
 plt.figure(figsize=(10, 6))
 
-i = 1
-for peclet in [10**4, 10**5, 10**6]:
+i = 0
+for peclet in [10**3, 10**4, 10**5, 10**6]:
     fem_cross = visual.draw_cross_section_fem(
-        peclet, ball_radius, maximal_radius=maximal_radius
+        peclet,
+        ball_radius,
+        maximal_radius=maximal_radius,
     )
-    traj_cross = visual.draw_cross_section_traj(peclet, ball_radius,    mesh_out=4,
-    mesh_jump=8,)
+    traj_cross = visual.draw_cross_section_traj(
+        peclet,
+        ball_radius,
+        mesh_out=4,
+        mesh_jump=8,
+    )
     plt.plot(
         traj_cross[:, 0],
         traj_cross[:, 1],
-        color=f"C{i}",
+        color=tableau[i],
         linestyle="None",
         ms=8,
         marker="o",
@@ -31,7 +40,7 @@ for peclet in [10**4, 10**5, 10**6]:
     plt.plot(
         fem_cross[:, 0],
         fem_cross[:, 1],
-        color=f"C{i}",
+        color=tableau[i],
         linestyle="-",
         ms=2,
         label=rf"$Pe = 10^{round(np.log10(peclet))}$",
@@ -40,7 +49,7 @@ for peclet in [10**4, 10**5, 10**6]:
     i += 1
 
 # add dummy plt to make legend
-plt.plot([0], [-1], label="FEM", color="k", linestyle="-")
+plt.plot([0], [-1], label="scikit-fem", color="k", linestyle="-")
 
 plt.plot([0], [-1], label=r"pychastic", color="k", linestyle="None", ms=8, marker="o")
 
