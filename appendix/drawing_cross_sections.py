@@ -29,6 +29,7 @@ for peclet in [10**3, 10**4, 10**5, 10**6]:
         mesh_out=15,
         mesh_jump=20,
         spread=10,
+        trials=10000,
     )
     plt.plot(
         traj_cross[:, 0],
