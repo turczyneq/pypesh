@@ -64,7 +64,7 @@ for i, peclet in enumerate([10**3, 10**4, 10**5, 10**6]):
 
 
 traj_cross = visual.draw_cross_section_traj(
-    10**9,
+    10**8,
     ball_radius,
     mesh_out=15,
     mesh_jump=20,
@@ -75,11 +75,19 @@ traj_cross = visual.draw_cross_section_traj(
 plt.plot(
     traj_cross[:, 0],
     traj_cross[:, 1],
-    color=tableau[i],
+    color=tableau[4],
     linestyle="None",
     ms=8,
     marker="o",
-    label=rf"$Pe = 10^9$"
+)
+
+plt.plot(
+    [0, 0],
+    [0, 0],
+    color=tableau[4],
+    linestyle="-",
+    ms=2,
+    label=rf"$Pe = 10^8$",
 )
 
 # add dummy plt to make legend
