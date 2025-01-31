@@ -13,7 +13,7 @@ ball_radius = 0.9
 maximal_radius = 0.3
 
 fontsize = 15
-plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
+plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 plt.figure(figsize=(10, 6))
 
 i = 0
@@ -73,7 +73,7 @@ plt.ylabel(r"Hitting probability $(p)$", fontsize=fontsize)
 plt.legend(fontsize=fontsize, frameon=False)
 plt.tight_layout()
 tosave = parent_dir / "graphics/cross_sections.pdf"
-plt.savefig(tosave)
+plt.savefig(tosave, bbox_inches="tight", pad_inches=0.02)
 
 # Show the plot
 plt.show()

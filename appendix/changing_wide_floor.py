@@ -5,10 +5,14 @@ import pypesh.analytic as analytic
 
 parent_dir = Path(__file__).parent
 
+floor_path = parent_dir / "different_floor" / "output"
+wide_path = parent_dir / "different_wide" / "output"
+
+
 floor5 = []
 floor10 = []
 floor20 = []
-for file_path in Path("./different_floor/output/").rglob("*"):
+for file_path in floor_path.rglob("*.txt"):
     if file_path.is_file():
         with file_path.open("r") as f:
             read = f.read()
@@ -54,7 +58,7 @@ floor20 = floor20[np.lexsort((floor20[:, 0], floor20[:, 1]))]
 wide5 = []
 wide10 = []
 wide20 = []
-for file_path in Path("./different_wide/output/").rglob("*"):
+for file_path in wide_path.rglob("*.txt"):
     if file_path.is_file():
         with file_path.open("r") as f:
             read = f.read()
@@ -113,7 +117,7 @@ plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 fig, axes = plt.subplots(
     1,
     2,
-    figsize=(22 * 0.6, 10 * 0.6),
+    figsize=(10, 6),
     sharey=True,
     # sharex=True,
     gridspec_kw={
@@ -150,6 +154,7 @@ for n, ball in enumerate(ball_list):
         zorder=1,
     )
 
+to_legend_color = []
 for n, ball in enumerate(ball_list):
     to_plot10 = wide10[wide10[:, 1] == ball]
     to_plot20 = wide20[wide20[:, 1] == ball]
@@ -161,13 +166,15 @@ for n, ball in enumerate(ball_list):
         (sh - analytic.our_approximation(pe, ball)) / sh for pe, ball, sh in to_plot20
     ]
 
-    axes[0].scatter(
-        to_plot10[:, 0],
-        yargs10,
-        color=f"C{n}",
-        label=f"$\\beta={ball}$",
-        zorder=0,
-    )
+    to_legend_color += [
+        axes[0].scatter(
+            to_plot10[:, 0],
+            yargs10,
+            color=f"C{n}",
+            label=f"$\\beta={ball}$",
+            zorder=0,
+        )
+    ]
     axes[0].scatter(
         to_plot20[:, 0],
         yargs20,
@@ -187,13 +194,23 @@ for ax in axes:
     ax.set_xlabel(r"Peclet number $\left(Pe\right)$", fontsize=fontsize)
 axes[0].set_ylabel(r"$(Sh - Sh_{\mathrm{f}}) / Sh$", fontsize=fontsize)
 
-axes[0].scatter([0], [0], label=r"$\it{wide} = 10$", color="k")
-axes[0].scatter([0], [0], label=r"$\it{wide} = 20$", color="k", facecolors="none")
+legend_wide10 = axes[0].scatter([0], [0], label=r"$\texttt{wide} = 10$", color="k")
+legend_wide20 = axes[0].scatter(
+    [0], [0], label=r"$\texttt{wide} = 20$", color="k", facecolors="none", s=10
+)
 
-axes[1].scatter([0], [0], label=r"$\it{floor} = 10$", color="k")
-axes[1].scatter([0], [0], label=r"$\it{floor} = 20$", color="k", facecolors="none")
+axes[1].scatter([0], [0], label=r"$\texttt{floor} = 10$", color="k")
+axes[1].scatter(
+    [0], [0], label=r"$\texttt{floor} = 20$", color="k", facecolors="none", s=10
+)
 
-axes[0].legend(fontsize=fontsize, frameon=False, loc=2)
+second_legend = [legend_wide10, legend_wide20]
+
+legend1 = axes[0].legend(fontsize=fontsize, handles=to_legend_color, frameon=False, loc=2)
+legend2 = axes[0].legend(fontsize=fontsize, handles=second_legend, frameon=False, loc=4)
+
+axes[0].add_artist(legend1)
+axes[0].add_artist(legend2)
 axes[1].legend(fontsize=fontsize, frameon=False, loc=2)
 
 tosave = parent_dir / "graphics/changing_floor_width.pdf"

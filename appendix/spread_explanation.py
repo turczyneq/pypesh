@@ -34,7 +34,7 @@ def dispersion(peclet):
 
 
 fontsize = 15
-plt.rcParams.update({"text.usetex": True, "font.family": "Cambria"})
+plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 plt.figure(figsize=(10, 6))
 
 plt.plot(
@@ -114,7 +114,7 @@ plt.legend(
 )
 plt.tight_layout()
 tosave = parent_dir / "graphics/regions.pdf"
-plt.savefig(tosave)
+plt.savefig(tosave, bbox_inches="tight", pad_inches=0.02)
 
 # Show the plot
 plt.show()
