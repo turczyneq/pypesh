@@ -60,7 +60,7 @@ for i, peclet in enumerate([10**3, 10**4, 10**5, 10**6]):
         ms=2,
         label=rf"$Pe = 10^{round(np.log10(peclet))}$",
     )
-    jax.clear_backends()
+    jax.clear_caches()
 
 
 # add dummy plt to make legend
