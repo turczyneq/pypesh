@@ -30,7 +30,7 @@ for peclet in [10**3, 10**4, 10**5, 10**6]:
         mesh_jump=20,
         spread=10,
     )
-    plt.scatter(
+    plt.plot(
         traj_cross[:, 0],
         traj_cross[:, 1],
         color=tableau[i],
