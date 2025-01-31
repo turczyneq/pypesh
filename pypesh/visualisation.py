@@ -39,7 +39,7 @@ def draw_cross_section_fem(
         Default False, if True plot is shown
 
     denstity : int, optional
-        Default 200, how many points in result
+        Default 400, how many points in result
 
     maximal_radius : float, optional
         Default 1, maximal radius to place in result

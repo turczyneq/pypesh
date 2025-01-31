@@ -4,6 +4,7 @@ import pypesh.stokes_flow as sf
 from pathlib import Path
 import numpy as np
 import matplotlib.colors as mcolors
+import jax
 
 tableau = list(mcolors.TABLEAU_COLORS)
 
@@ -12,12 +13,23 @@ parent_dir = Path(__file__).parent
 ball_radius = 0.9
 maximal_radius = 0.3
 
+# tesing = visual.draw_cross_section_traj(
+#         10**3,
+#         ball_radius,
+#         mesh_out=15,
+#         mesh_jump=20,
+#         spread=10,
+#         trials=10000,
+#         partition=5,
+#     )
+
+# print(tesing)
+
 fontsize = 15
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 plt.figure(figsize=(10, 6))
 
-i = 0
-for peclet in [10**3, 10**4, 10**5, 10**6]:
+for i, peclet in enumerate([10**3, 10**4, 10**5, 10**6]):
     fem_cross = visual.draw_cross_section_fem(
         peclet,
         ball_radius,
@@ -29,8 +41,8 @@ for peclet in [10**3, 10**4, 10**5, 10**6]:
         mesh_out=15,
         mesh_jump=20,
         spread=10,
-        trials=10000,
-        partition=20,
+        trials=1000,
+        partition=5,
     )
     plt.plot(
         traj_cross[:, 0],
@@ -48,8 +60,8 @@ for peclet in [10**3, 10**4, 10**5, 10**6]:
         ms=2,
         label=rf"$Pe = 10^{round(np.log10(peclet))}$",
     )
+    jax.clear_backends()
 
-    i += 1
 
 # add dummy plt to make legend
 plt.plot([0], [-1], label="scikit-fem", color="k", linestyle="-")
