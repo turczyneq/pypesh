@@ -154,6 +154,7 @@ def draw_cross_section_traj(
     spread=4,
     trials=200,
     partition=1,
+    t_max=40,
 ):
     """
     Draws cross section of hitting probability at selected height using pychastic.
@@ -192,6 +193,9 @@ def draw_cross_section_traj(
 
     parition : int, optional
         Default 1, if to expensive in RAM partition into 'partition' parts.
+
+    t_max: float, optional
+        Default 40.0, select time of simmulation
 
     Returns
     --------
@@ -246,6 +250,7 @@ def draw_cross_section_traj(
                         trials=trials,
                         floor_h=downstream_distance,
                         partition=partition,
+                        t_max=t_max,
                     ),
                 ]
             )
