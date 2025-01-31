@@ -153,6 +153,7 @@ def draw_cross_section_traj(
     mesh_jump=6,
     spread=4,
     trials=200,
+    partition=1,
 ):
     """
     Draws cross section of hitting probability at selected height using pychastic.
@@ -188,6 +189,9 @@ def draw_cross_section_traj(
 
     trials : int, optional
         Default 200, Number of trajectories.
+
+    parition : int, optional
+        Default 1, if to expensive in RAM partition into 'partition' parts.
 
     Returns
     --------
@@ -241,6 +245,7 @@ def draw_cross_section_traj(
                         ball_radius,
                         trials=trials,
                         floor_h=downstream_distance,
+                        partition=partition,
                     ),
                 ]
             )
