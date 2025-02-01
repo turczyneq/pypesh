@@ -27,7 +27,7 @@ ax.set_xlabel(r"Particle radius ($r$) [$\mu$m]", fontsize=fontsize)
 ax.set_ylabel(r"Count ($n$)", fontsize=fontsize)
 
 x = np.logspace(np.log10(0.25e1), np.log10(0.015e6), 100)
-y = 3 * (10**2 * x * 10**(-6)) ** -3
+y = 3 * 10**(-6) *( x * 10**(-6)) ** -3
 ax.plot(x, y, color="black", label=r"Slope $r^{-3}$ from Jackson et al. (1997)")
 
 
