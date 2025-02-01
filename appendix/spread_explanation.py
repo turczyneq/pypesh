@@ -33,7 +33,7 @@ def dispersion(peclet):
     return 10 * (1 / peclet) ** (1 / 2)
 
 
-fontsize = 15
+fontsize = 15 * 15 / 14
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 plt.figure(figsize=(10, 6))
 

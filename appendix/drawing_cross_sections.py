@@ -25,7 +25,7 @@ maximal_radius = 0.3
 
 # print(tesing)
 
-fontsize = 15
+fontsize = fontsize = 15 * 15 / 14
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 plt.figure(figsize=(10, 6))
 

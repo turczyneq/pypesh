@@ -112,7 +112,7 @@ ball_list = [
     # 1,
 ]
 
-fontsize = 15
+fontsize = 15 * 15 / 14
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 fig, axes = plt.subplots(
     1,
@@ -206,7 +206,9 @@ axes[1].scatter(
 
 second_legend = [legend_wide10, legend_wide20]
 
-legend1 = axes[0].legend(fontsize=fontsize, handles=to_legend_color, frameon=False, loc=2)
+legend1 = axes[0].legend(
+    fontsize=fontsize, handles=to_legend_color, frameon=False, loc=2
+)
 legend2 = axes[0].legend(fontsize=fontsize, handles=second_legend, frameon=False, loc=4)
 
 axes[0].add_artist(legend1)

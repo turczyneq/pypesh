@@ -60,7 +60,7 @@ peclet_values = np.logspace(-1, 12, 300)
 analytic_clift = clift_approximation(peclet_values)
 
 
-fontsize = 15
+fontsize = 15 * 15 / 14
 marker_size = 10
 
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
