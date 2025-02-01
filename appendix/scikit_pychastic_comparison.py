@@ -101,8 +101,8 @@ legend1 = plt.legend(
 )
 
 plt.text(
-    0.05,
-    0.52,
+    0.06,
+    0.54,
     r"$\beta = $",
     ha="center",
     fontsize=fontsize,
@@ -115,8 +115,9 @@ plt.text(
 
 plt.xscale("log")
 plt.xlim(10**3, 10**6)
+plt.ylim(-4, 2)
 plt.tick_params(axis="both", labelsize=fontsize)
-plt.ylabel(r"$Sh_{\texttt{pychastic}}-Sh_{\texttt{scikit-fem}}$", fontsize=fontsize)
+plt.ylabel(r"$\textrm{Sh}_{\texttt{pychastic}}-\textrm{Sh}_{\texttt{scikit-fem}}$", fontsize=fontsize)
 plt.xlabel(r"Peclet number $\left(Pe\right)$", fontsize=fontsize)
 
 

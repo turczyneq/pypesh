@@ -13,6 +13,9 @@ fem_cross = visual.draw_cross_section_fem(
     peclet, ball_radius, maximal_radius=maximal_radius
 )
 
+'''
+WARNING trials 10**4 is expensive in computation time
+'''
 traj_cross = visual.draw_cross_section_traj(
     peclet,
     ball_radius,
@@ -20,6 +23,18 @@ traj_cross = visual.draw_cross_section_traj(
     mesh_jump=10,
     trials=10000,
 )
+
+
+'''
+to test plot setting
+'''
+# traj_cross = visual.draw_cross_section_traj(
+#     peclet,
+#     ball_radius,
+#     mesh_out=4,
+#     mesh_jump=10,
+#     trials=200,
+# )
 
 
 spread = 4

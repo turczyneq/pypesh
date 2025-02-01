@@ -101,7 +101,7 @@ def export_data(msh_list, msh_far_list, scale_list, length_list, scale):
 
 predicted_value = np.loadtxt(parent_dir / "data" / f"msh.csv", delimiter=",")[-1, 1]
 
-fontsize = 10 * (9.5 / 7)
+fontsize = 10 * (9.5 / 7) * (12.8 / 8.7)
 plt.rcParams.update({"text.usetex": True, "font.family": "Times", "savefig.dpi": 300})
 fig, axes = plt.subplots(
     2,
@@ -113,7 +113,7 @@ fig, axes = plt.subplots(
         "width_ratios": [1, 1, 1],
         "height_ratios": [1, 1],
         "wspace": 0,
-        "hspace": 0.25,
+        "hspace": 0.4,
     },
 )
 
@@ -129,7 +129,7 @@ for i, ax in enumerate(axes.flatten()):
     ax.axvline(vlines[i], linestyle="--", color="k", linewidth=1)
     if i != 0 and i != 1:
         ax.text(
-            vlines[i] - 0.06 * hlength,
+            vlines[i] - 0.09 * hlength,
             80,
             "default",
             ha="left",
@@ -141,7 +141,7 @@ for i, ax in enumerate(axes.flatten()):
             10
             ** (
                 np.log10(vlines[i] / (hlength))
-                - 0.06
+                - 0.09
                 * (np.log10(stuff_to_plt[i][-1, 0]) - np.log10(stuff_to_plt[i][0, 0])) * 0.95
             )
             * hlength,
@@ -163,11 +163,11 @@ for axlist in axes:
             ax.tick_params(which="both", labelsize=fontsize)
 
 axes[0, 0].set_ylabel(
-    r"Sherwood number $\left(\textrm{Sh}\right)$",
+    r"Sh",
     fontsize=fontsize,
 )
 axes[1, 0].set_ylabel(
-    r"Sherwood number $\left(\textrm{Sh}\right)$",
+    r"Sh",
     fontsize=fontsize,
 )
 
@@ -183,8 +183,8 @@ alphabet = [r"(a)", r"(b)", r"(c)", r"(d)", r"(e)", r"(f)"]
 for i, ax in enumerate(axes.flatten()):
     ax.set_xlabel(xlabel_list[i], fontsize=fontsize)
     ax.text(
-        0.93,
-        0.91,
+        0.89,
+        0.85,
         alphabet[i],
         transform=ax.transAxes,
         fontsize=fontsize,
