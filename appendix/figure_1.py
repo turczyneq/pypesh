@@ -239,7 +239,7 @@ plt.tick_params(
 cbar_ax = fig.add_axes([0.1, 0.11, 0.02, 0.771])  # [left, bottom, width, height]
 cbar = fig.colorbar(tric1, cax=cbar_ax, location="left")
 cbar.ax.tick_params(labelsize=fontsize)
-cbar.set_label(r"Concentration ($\varphi$)", fontsize=fontsize)
+cbar.set_label(r"Concentration $\varphi$", fontsize=fontsize)
 plt.subplots_adjust(wspace=-0.01)
 
 

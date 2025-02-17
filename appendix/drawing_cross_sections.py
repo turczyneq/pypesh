@@ -25,7 +25,7 @@ maximal_radius = 0.3
 
 # print(tesing)
 
-fontsize = fontsize = 15 * 15 / 14
+fontsize = fontsize = 15 * 15 / 14 * (23.8 / 21) * (11.34 / 12.23)
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 plt.figure(figsize=(10, 6))
 
@@ -58,7 +58,7 @@ for i, peclet in enumerate([10**3, 10**4, 10**5, 10**6]):
         color=tableau[i],
         linestyle="-",
         ms=2,
-        label=rf"$Pe = 10^{round(np.log10(peclet))}$",
+        label=rf"$\textrm{{Pe}} = 10^{round(np.log10(peclet))}$",
     )
     jax.clear_caches()
 
@@ -87,7 +87,7 @@ plt.plot(
     color=tableau[4],
     linestyle="-",
     ms=2,
-    label=rf"$Pe = 10^8$",
+    label=r"$\textrm{Pe} = 10^8$",
 )
 
 # add dummy plt to make legend
@@ -109,8 +109,8 @@ plt.ylim(-0.05, 1.1)
 plt.yticks(fontsize=fontsize)
 plt.xticks(fontsize=fontsize)
 
-plt.xlabel(r"Distance from axis $(\rho)$", fontsize=fontsize)
-plt.ylabel(r"Hitting probability $(p)$", fontsize=fontsize)
+plt.xlabel(r"Distance from axis $\rho$", fontsize=fontsize)
+plt.ylabel(r"Hitting probability $p$", fontsize=fontsize)
 
 plt.legend(fontsize=fontsize, frameon=False)
 plt.tight_layout()

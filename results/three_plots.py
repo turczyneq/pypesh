@@ -202,6 +202,7 @@ beta_zero = axes[0].scatter(
     color=tableau[len(fem_sherwood.values())],
     zorder=1,
     s=marker_size,
+    marker="x",
 )
 
 num = 0
@@ -299,16 +300,17 @@ beta_zero = axes[1].scatter(
     label=f"${1-fem_radius_zero[1,1]:5.3f}$",
     color=tableau[len(fem_sherwood.values())],
     zorder=1,
-    s=marker_size,
+    s=marker_size * 0.5,
+    marker="x",
 )
 
 # for limits, modified sherwood should be 1
 axes[1].plot(
     peclet_values,
     [1 for x in peclet_values],
-    color="k",
+    color="0.7",
     linestyle="--",
-    linewidth=2,
+    linewidth=1.5,
     zorder=-1,
 )
 
@@ -478,12 +480,14 @@ for ax in axes:
 #     r"Relative error $\left(\frac{Sh - Sh_{\mathrm{f}}}{Sh}\right)$", fontsize=fontsize
 # )
 
-axes[0].set_ylabel(r"$Sh$", fontsize=fontsize)
-axes[1].set_ylabel(r"$\widetilde{Sh}$", fontsize=fontsize)
-axes[2].set_ylabel(r"$(Sh - Sh_{\mathrm{f}}) / Sh$", fontsize=fontsize)
+axes[0].set_ylabel(r"$\textrm{Sh}$", fontsize=fontsize)
+axes[1].set_ylabel(r"$\widetilde{\textrm{Sh}}$", fontsize=fontsize)
+axes[2].set_ylabel(
+    r"$(\textrm{Sh} - \textrm{Sh}_{\mathrm{f}}) / \textrm{Sh}$", fontsize=fontsize
+)
 
 axes[2].set_xlabel(
-    r"Peclet number $\left(Pe\right)$",
+    r"Peclet number $\textrm{Pe}$",
     fontsize=fontsize,
 )
 

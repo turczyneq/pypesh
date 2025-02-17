@@ -37,7 +37,7 @@ def give_peclet(r1, u1, r2, u2):
 
 def diffusion(r):
     k_b = 1.38 * 10 ** (-23)
-    temperature = 280
+    temperature = 277
     viscosity = 1.6 * 10 ** (-3)
 
     return k_b * temperature / (6 * np.pi * viscosity * r)
@@ -117,8 +117,8 @@ def make_length_scale(xargs, yargs, thickness, height, c, label, axes):
     )
 
     axes.text(
-        (xargs[0]),
-        yargs[0] + 0.1,
+        xargs[0],
+        yargs[0] + 0.11,
         label,
         c=c,
         va="top",
@@ -163,7 +163,7 @@ y_max_from_top = (
 )
 prochloroccus = prochloroccus[y_min_from_top:y_max_from_top, x_min:x_max]
 
-fontsize = 11.5
+fontsize = 11.5 * (11.3 / 9)
 marker_size = 80
 plt.rcParams.update({"text.usetex": True, "font.family": "Times", "savefig.dpi": 700})
 
@@ -229,7 +229,7 @@ for image_ax, text in zip(
         r"$1.5$ $\mu$m",
     ],
 ):
-    make_length_scale([0.05, 0.35], [0.05, 0.05], 0.5, 0.005, "w", text, image_ax)
+    make_length_scale([0.04, 0.34], [0.03, 0.03], 0.5, 0.005, "w", text, image_ax)
 
 #
 # Complicated graph
@@ -282,7 +282,7 @@ axes_big.fill_between(
 
 
 axes_big.text(
-    0.12,
+    0.1,
     0.2,
     r"diffusion share",
     ha="center",
@@ -294,7 +294,7 @@ axes_big.text(
 )
 
 axes_big.text(
-    0.85,
+    0.82,
     0.8,
     r"direct interceptions share",
     ha="center",
@@ -307,8 +307,8 @@ axes_big.text(
 
 
 added_text = CurvedText(
-    x=r_bacteria_list[25:],
-    y=line_3[25:],
+    x=r_bacteria_list[20:],
+    y=line_3[20:],
     text=r"changes with larger particle $a$ and $U$",
     ha="center",
     va="center",
@@ -343,7 +343,7 @@ for val in [0.3, 0.4, 2.5, 3.5]:
 
 axes_big.text(
     3.5,
-    0.7,
+    0.6,
     r"\textit{Thalassiosira}",
     va="bottom",
     ha="right",
@@ -353,7 +353,7 @@ axes_big.text(
 
 axes_big.text(
     2.5,
-    0.6,
+    0.5,
     r"\textit{E. Huxleyi}",
     va="bottom",
     ha="right",
@@ -362,7 +362,7 @@ axes_big.text(
 )
 axes_big.text(
     0.4,
-    0.5,
+    0.4,
     r"\textit{Pelagibacter}",
     va="bottom",
     ha="right",
@@ -372,7 +372,7 @@ axes_big.text(
 
 axes_big.text(
     0.3,
-    0.4,
+    0.3,
     r"\textit{Prochlorococcus}",
     va="bottom",
     ha="right",
@@ -386,7 +386,7 @@ axes_big.set_xscale("log")
 
 axes_big.set_ylim(-0.06, 1.001)
 
-axes_big.set_xlabel(r"Size of small particles ($b$) [$\mu$m]", fontsize=fontsize)
+axes_big.set_xlabel(r"Size of small particles $b$ [$\mu$m]", fontsize=fontsize)
 axes_big.set_ylabel(r"Partial contribution", fontsize=fontsize)
 
 axes_big.plot([2, 2], [-0.06, 0], c="k", ls="--", lw=0.5)

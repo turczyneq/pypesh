@@ -147,8 +147,8 @@ plt.xticks(fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
 
 # Labels and Title
-plt.xlabel(r"Peclet number $\left(Pe\right)$", fontsize=fontsize)
-plt.ylabel(r"Sherwood number $\left(Sh\right)$", fontsize=fontsize)
+plt.xlabel(r"Peclet number $\textrm{Pe}$", fontsize=fontsize)
+plt.ylabel(r"Sherwood number $\textrm{Sh}$", fontsize=fontsize)
 
 leg1 = [our_work, clift_approx, clift_num, west, frie, feng]
 leg2 = [kuta, kra]

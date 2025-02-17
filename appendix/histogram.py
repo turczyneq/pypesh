@@ -23,8 +23,8 @@ ax.hist(
 )
 ax.set_xscale("log")
 ax.set_yscale("log")
-ax.set_xlabel(r"Particle radius ($r$) [$\mu$m]", fontsize=fontsize)
-ax.set_ylabel(r"Count ($n$)", fontsize=fontsize)
+ax.set_xlabel(r"Particle radius $r$ [$\mu$m]", fontsize=fontsize)
+ax.set_ylabel(r"Count $n$", fontsize=fontsize)
 
 x = np.logspace(np.log10(0.25e1), np.log10(0.015e6), 100)
 y = 3 * 10**(-6) *( x * 10**(-6)) ** -3

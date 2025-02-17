@@ -43,7 +43,7 @@ comparison = {
             [
                 fem_array[0],
                 fem_array[1],
-                (py_array[2] - fem_array[2]),
+                (py_array[2] - fem_array[2]) / py_array[2],
             ]
             for fem_array, py_array in zip(value, py_modified_sherwood[key])
         ]
@@ -60,7 +60,7 @@ peclet_values = np.logspace(-1, 12, 300)
 analytic_clift = clift_approximation(peclet_values)
 
 
-fontsize = 15 * 15 / 14
+fontsize = 15 * 15 / 14 * (23.8 / 21)  * (11.34 / 12.23)
 marker_size = 10
 
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
@@ -96,13 +96,13 @@ legend1 = plt.legend(
     frameon=False,
     labelspacing=0.1,
     handlelength=0.1,
-    loc=(0.01, 0.35),
+    loc=(0.01, 0.05),
     ncols=2,
 )
 
 plt.text(
     0.06,
-    0.54,
+    0.27,
     r"$\beta = $",
     ha="center",
     fontsize=fontsize,
@@ -115,10 +115,10 @@ plt.text(
 
 plt.xscale("log")
 plt.xlim(10**3, 10**6)
-plt.ylim(-4, 2)
+plt.ylim(-0.05, 0.09)
 plt.tick_params(axis="both", labelsize=fontsize)
-plt.ylabel(r"$\textrm{Sh}_{\texttt{pychastic}}-\textrm{Sh}_{\texttt{scikit-fem}}$", fontsize=fontsize)
-plt.xlabel(r"Peclet number $\left(Pe\right)$", fontsize=fontsize)
+plt.ylabel(r"$(\textrm{Sh}_{\texttt{pychastic}}-\textrm{Sh}_{\texttt{scikit-fem}})/\textrm{Sh}_{\texttt{pychastic}}$", fontsize=fontsize)
+plt.xlabel(r"Peclet number $\textrm{Pe}$", fontsize=fontsize)
 
 
 tosave = parent_dir / "graphics/pychastic_scikit_comparison.pdf"

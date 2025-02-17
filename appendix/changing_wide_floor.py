@@ -112,7 +112,7 @@ ball_list = [
     # 1,
 ]
 
-fontsize = 15 * 15 / 14
+fontsize = 15 * 15 / 14 * (23.8 / 20.9) * (11.34 / 12.23)
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 fig, axes = plt.subplots(
     1,
@@ -191,8 +191,10 @@ for ax in axes:
     ax.set_ylim(-0.05, 0.19)
     ax.tick_params(which="both", labelsize=fontsize)
 
-    ax.set_xlabel(r"Peclet number $\left(Pe\right)$", fontsize=fontsize)
-axes[0].set_ylabel(r"$(Sh - Sh_{\mathrm{f}}) / Sh$", fontsize=fontsize)
+    ax.set_xlabel(r"Peclet number $\textrm{Pe}$", fontsize=fontsize)
+axes[0].set_ylabel(
+    r"$(\textrm{Sh} - \textrm{Sh}_{\mathrm{f}}) / \textrm{Sh}$", fontsize=fontsize
+)
 
 legend_wide10 = axes[0].scatter([0], [0], label=r"$\texttt{wide} = 10$", color="k")
 legend_wide20 = axes[0].scatter(

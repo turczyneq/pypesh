@@ -398,8 +398,8 @@ def draw_scheme_sde_pde(
     #     r"Radius (negative values for better visbility) $(\rho)$", fontsize=fontsize
     # )
 
-    axes[0].set_ylabel(r"Along the flow $(z)$ [$a + b$]", fontsize=fontsize)
-    axes[1].set_xlabel(r"Acros the flow $(\rho)$ [$a+b$]", fontsize=fontsize)
+    axes[0].set_ylabel(r"Along the flow $z$ [$a + b$]", fontsize=fontsize)
+    axes[1].set_xlabel(r"Acros the flow $\rho$ [$a+b$]", fontsize=fontsize)
 
     axes[0].text(
         0.023,

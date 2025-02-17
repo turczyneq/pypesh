@@ -48,7 +48,7 @@ def dispersion(peclet):
     return 10 * (1 / peclet) ** (1 / 2)
 
 
-fontsize = 15 * 15 / 14
+fontsize = 15 * 15 / 14 * (23.8 / 21) * (11.34 / 12.23)
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 plt.figure(figsize=(10, 6))
 
@@ -59,7 +59,7 @@ plt.plot(
     linestyle="None",
     ms=8,
     marker="o",
-    label=rf"pychastic for $Pe = 10^{round(np.log10(peclet))}$",
+    label=rf"pychastic for $\textrm{{Pe}} = 10^{round(np.log10(peclet))}$",
 )
 plt.plot(
     fem_cross[:, 0],
@@ -67,7 +67,7 @@ plt.plot(
     color="C1",
     linestyle="-",
     ms=2,
-    label=rf"scikit-fem for $Pe = 10^{round(np.log10(peclet))}$",
+    label=rf"scikit-fem for $\textrm{{Pe}} = 10^{round(np.log10(peclet))}$",
 )
 
 vertical_lines = [
@@ -121,8 +121,8 @@ plt.ylim(-0.05, 1.1)
 plt.yticks(fontsize=fontsize)
 plt.xticks(fontsize=fontsize)
 
-plt.xlabel(r"Distance from axis $(\rho)$", fontsize=fontsize)
-plt.ylabel(r"Hitting probability $(p)$", fontsize=fontsize)
+plt.xlabel(r"Distance from axis $\rho$", fontsize=fontsize)
+plt.ylabel(r"Hitting probability $p$", fontsize=fontsize)
 
 plt.legend(
     fontsize=fontsize, frameon=True, facecolor="white", framealpha=1, edgecolor="none"

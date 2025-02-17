@@ -22,7 +22,7 @@ single_snowflake = single_snowflake[::-1]
 single_dimensions = single_snowflake.shape
 aggregates_dimensions = marine_aggregates.shape
 
-fontsize = 11.5 * 4.41 / 2.48 * 7.3 / 4.5
+fontsize = 11.5 * 4.41 / 2.48 * 7.3 / 4.5 * (47.5 / 52.9)
 marker_size = 80
 plt.rcParams.update({"text.usetex": True, "font.family": "Times", "savefig.dpi": 700})
 
@@ -64,7 +64,7 @@ for image_ax, image in zip(
     )
 
 x_pos = 0.065
-y_pos = 0.96
+y_pos = 0.965
 
 axes_l.text(
     x_pos,
@@ -79,7 +79,11 @@ axes_l.text(
 )
 
 axes_r.text(
-    x_pos * (aggregates_dimensions[1] / (single_dimensions[1] * (aggregates_dimensions[0]/single_dimensions[0]))),
+    x_pos
+    * (
+        aggregates_dimensions[1]
+        / (single_dimensions[1] * (aggregates_dimensions[0] / single_dimensions[0]))
+    ),
     y_pos,
     r" (b) ",
     ha="center",
