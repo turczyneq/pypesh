@@ -57,7 +57,7 @@ def to_lower_band(r_bact):
                 give_peclet(r_snow, stokes(r_snow, drho), r_bact, 0),
                 r_bact / (r_snow + r_bact),
             )
-            for r_snow in np.logspace(-5, -2, 20)
+            for r_snow in np.logspace(np.log10(0.00002), -2, 20)
         ]
 
     return np.min(to_min)
@@ -71,13 +71,27 @@ def to_upper_band(r_bact):
                 give_peclet(r_snow, stokes(r_snow, drho), r_bact, 0),
                 r_bact / (r_snow + r_bact),
             )
-            for r_snow in np.logspace(-5, -2, 20)
+            for r_snow in np.logspace(np.log10(0.00002), -2, 20)
         ]
     return np.max(to_max)
 
 
 r_bacteria_list = np.linspace(10 ** (-5), 25, 1000)
 
+
+def for_line(r_snow, drho):
+    return [
+        relative_clift_flux(
+            give_peclet(r_snow, stokes(r_snow, drho), 10 ** (-6) * r_bact, 0),
+            10 ** (-6) * r_bact / (r_snow + 10 ** (-6) * r_bact),
+        )
+        for r_bact in r_bacteria_list
+    ]
+
+
+line_1 = np.array(for_line(20 * 10 ** (-6), drho=20))
+line_2 = np.array(for_line(10 ** (4) * 10 ** (-6), drho=300))
+line_3 = np.array(for_line(0.3 * 10 ** (-3), drho=70))
 upper_band = [to_upper_band(10 ** (-6) * r_bacteria) for r_bacteria in r_bacteria_list]
 lower_band = [to_lower_band(10 ** (-6) * r_bacteria) for r_bacteria in r_bacteria_list]
 
@@ -93,22 +107,22 @@ def make_length_scale(xargs, yargs, thickness, height, c, label, axes):
         [xargs[0], xargs[0]],
         [yargs[0] - height, yargs[0] + height],
         c=c,
-        lw=thickness,
+        lw=2 * thickness,
     )
     axes.plot(
         [xargs[1], xargs[1]],
         [yargs[0] - height, yargs[0] + height],
         c=c,
-        lw=thickness,
+        lw=2 * thickness,
     )
 
     axes.text(
-        (xargs[0] + xargs[1]) / 2,
+        (xargs[0]),
         yargs[0] + 0.1,
         label,
         c=c,
         va="top",
-        ha="center",
+        ha="left",
         fontsize=fontsize,
     )
     return None
@@ -122,21 +136,24 @@ x_min, x_max, y_min_from_top = 100, 400, 100
 y_max_from_top = int(round((x_max - x_min) * images_aspect) + y_min_from_top)
 pelagibacter = pelagibacter[y_min_from_top:y_max_from_top, x_min:x_max]
 
-image_path = parent_dir / "images" / "roseobacter.jpg"
-roseobacter = mpimg.imread(image_path)
-x_min, x_max, y_min_from_top = 0, 700, 100
-y_max_from_top = (
-    int(round((x_max - x_min) * images_aspect) + y_min_from_top) + y_min_from_top
-)
-roseobacter = roseobacter[y_min_from_top:y_max_from_top, x_min:x_max]
 
-image_path = parent_dir / "images" / "synechococcus.png"
-synechococcus = mpimg.imread(image_path)
-x_min, x_max, y_min_from_top = 50, 450, 20
+image_path = parent_dir / "images" / "emiliania_huxleyi.png"
+huxleyi = mpimg.imread(image_path)
+x_min, x_max, y_min_from_top = 0, 650, 0
 y_max_from_top = (
     int(round((x_max - x_min) * images_aspect) + y_min_from_top) + y_min_from_top
 )
-synechococcus = synechococcus[y_min_from_top:y_max_from_top, x_min:x_max]
+huxleyi = huxleyi[y_min_from_top:y_max_from_top, x_min:x_max]
+
+
+image_path = parent_dir / "images" / "thalassiosira_pseudonana.png"
+thalassiosira = mpimg.imread(image_path)
+x_min, x_max, y_min_from_top = 100, 800, 0
+y_max_from_top = (
+    int(round((x_max - x_min) * images_aspect) + y_min_from_top) + y_min_from_top
+)
+thalassiosira = thalassiosira[y_min_from_top:y_max_from_top, x_min:x_max]
+
 
 image_path = parent_dir / "images" / "prochloroccus.png"
 prochloroccus = mpimg.imread(image_path)
@@ -178,17 +195,17 @@ for image_ax in [axes_nw, axes_ne, axes_sw, axes_se]:
 
 for image_ax, image in zip(
     [axes_nw, axes_ne, axes_sw, axes_se],
-    [synechococcus, pelagibacter, prochloroccus, roseobacter],
+    [thalassiosira, huxleyi, pelagibacter, prochloroccus],
 ):
     image_ax.imshow(image, aspect="equal", extent=(0, 1, 0, 1))
 
 for image_ax, text in zip(
     [axes_nw, axes_ne, axes_sw, axes_se],
     [
-        r"\textit{Synechococcus}",
+        r"\textit{Thalassiosira}",
+        r"\textit{E. Huxleyi}",
         r"\textit{Pelagibacter}",
-        r"\textit{Prochloroccus}",
-        r"\textit{Roseobacter}",
+        r"\textit{Prochlorococcus}",
     ],
 ):
     image_ax.text(
@@ -199,19 +216,20 @@ for image_ax, text in zip(
         va="top",
         ha="left",
         fontsize=fontsize,
+        # transform=axes_big.transAxes,
         bbox=dict(boxstyle="square,pad=0.15", fc="0.2", ec="none"),
     )
 
 for image_ax, text in zip(
     [axes_nw, axes_ne, axes_sw, axes_se],
     [
-        r"$7$ $\mu$m",
+        r"$2$ $\mu$m",
+        r"$5$ $\mu$m",
         r"$2$ $\mu$m",
         r"$1.5$ $\mu$m",
-        r"$0.6$ $\mu$m",
     ],
 ):
-    make_length_scale([0.1, 0.4], [0.1, 0.1], 0.5, 0.002, "w", text, image_ax)
+    make_length_scale([0.05, 0.35], [0.05, 0.05], 0.5, 0.005, "w", text, image_ax)
 
 #
 # Complicated graph
@@ -221,33 +239,50 @@ axes_big.plot(
     r_bacteria_list,
     lower_band,
     c="k",
+    ls="--",
+    label=r"$a=10^4$ $\mu$m" + "\n" + r"$\Delta \rho=200$ kg $\textrm{m}^{-3}$",
 )
 
 axes_big.plot(
     r_bacteria_list,
     upper_band,
     c="k",
+    label=r"$a=20$ $\mu$m" + "\n" + r"$\Delta \rho=30$ kg $\textrm{m}^{-3}$",
 )
 
 axes_big.fill_between(
     r_bacteria_list,
     lower_band,
     np.zeros_like(r_bacteria_list),
-    alpha=0.3,
-    color=tableau[0],
+    color="#aec7e8",
 )
 
 axes_big.fill_between(
     r_bacteria_list,
     upper_band,
     np.ones_like(r_bacteria_list),
-    alpha=0.3,
-    color=tableau[1],
+    color="#ffbb78",
 )
+
+# axes_big.plot(
+#     r_bacteria_list,
+#     line_1,
+#     c="#98df8a",
+#     ls="--",
+#     label=r"$a=50$ $\mu$m" + "\n" + r"$\Delta \rho=30$ kg $\textrm{m}^{-3}$",
+# )
+
+# axes_big.plot(
+#     r_bacteria_list,
+#     line_2,
+#     c="#ff9896",
+#     ls="--",
+#     label=r"$a=10^3$ $\mu$m" + "\n" + r"$\Delta \rho=120$ kg $\textrm{m}^{-3}$",
+# )
 
 
 axes_big.text(
-    0.15,
+    0.12,
     0.2,
     r"diffusion share",
     ha="center",
@@ -259,7 +294,7 @@ axes_big.text(
 )
 
 axes_big.text(
-    0.8,
+    0.85,
     0.8,
     r"direct interceptions share",
     ha="center",
@@ -270,47 +305,66 @@ axes_big.text(
     weight="bold",
 )
 
-### make curved text
-curve = (np.array(upper_band) + np.array(lower_band)) * (1 / 2)
-
-# axes[1]plot(r_bacteria_list, y_values)
 
 added_text = CurvedText(
-    x=r_bacteria_list[25:] - 0.15,
-    y=curve[25:],
-    text=r"changes with bigger particle $a$ and $U$",
-    va="bottom",
+    x=r_bacteria_list[25:],
+    y=line_3[25:],
+    text=r"changes with larger particle $a$ and $U$",
+    ha="center",
+    va="center",
     axes=axes_big,
     fontsize=fontsize,
 )
 
-for val in [0.3, 0.4, 0.5, 2.8]:
+# added_text = CurvedText(
+#     x=r_bacteria_list[40:],
+#     y=line_1[40:],
+#     text=r"small and slow",
+#     ha="center",
+#     va="center",
+#     axes=axes_big,
+#     fontsize=fontsize,
+# )
+
+
+# added_text = CurvedText(
+#     x=r_bacteria_list[30:],
+#     y=line_2[30:],
+#     text=r"big and fast",
+#     ha="center",
+#     va="center",
+#     axes=axes_big,
+#     fontsize=fontsize,
+# )
+
+
+for val in [0.3, 0.4, 2.5, 3.5]:
     axes_big.plot([val, val], [0, 1], c="gray", ls="--")
 
 axes_big.text(
-    2.8,
-    0.9,
-    r"\textit{Synechococcus}",
-    va="top",
+    3.5,
+    0.7,
+    r"\textit{Thalassiosira}",
+    va="bottom",
     ha="right",
     fontsize=fontsize,
     rotation=90,
 )
 
 axes_big.text(
-    0.5,
-    0.7,
-    r"\textit{Pelagibacter}",
-    va="top",
+    2.5,
+    0.6,
+    r"\textit{E. Huxleyi}",
+    va="bottom",
     ha="right",
     fontsize=fontsize,
     rotation=90,
 )
 axes_big.text(
     0.4,
-    0.8,
-    r"\textit{Prochloroccus}",
-    va="top",
+    0.5,
+    r"\textit{Pelagibacter}",
+    va="bottom",
     ha="right",
     fontsize=fontsize,
     rotation=90,
@@ -318,16 +372,16 @@ axes_big.text(
 
 axes_big.text(
     0.3,
-    0.9,
-    r"\textit{Roseobacter}",
-    va="top",
+    0.4,
+    r"\textit{Prochlorococcus}",
+    va="bottom",
     ha="right",
     fontsize=fontsize,
     rotation=90,
 )
 
 
-axes_big.set_xlim(0.75 * 1e-1, r_bacteria_list[-1])
+axes_big.set_xlim(1e-1, r_bacteria_list[-1])
 axes_big.set_xscale("log")
 
 axes_big.set_ylim(-0.06, 1.001)
@@ -359,6 +413,14 @@ axes_big.text(
     # transform=axes_big.transAxes,
     # color=tableau[1],
     weight="bold",
+)
+
+plt.legend(
+    fontsize=fontsize,
+    frameon=True,
+    facecolor="white",
+    framealpha=0.3,
+    edgecolor="none",
 )
 
 axes_big.tick_params(which="both", labelsize=fontsize, left=True, labelleft=True)

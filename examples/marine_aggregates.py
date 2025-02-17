@@ -22,7 +22,7 @@ single_snowflake = single_snowflake[::-1]
 single_dimensions = single_snowflake.shape
 aggregates_dimensions = marine_aggregates.shape
 
-fontsize = 11.5 * 4.41 / 2.48
+fontsize = 11.5 * 4.41 / 2.48 * 7.3 / 4.5
 marker_size = 80
 plt.rcParams.update({"text.usetex": True, "font.family": "Times", "savefig.dpi": 700})
 
@@ -31,7 +31,7 @@ figure_aspect_ratio = 300 / 200
 
 fig = plt.figure(
     # constrained_layout=True,
-    figsize=(11.7, 11.7 * figure_aspect_ratio),
+    figsize=(11.7 * figure_aspect_ratio, 11.7),
 )
 gs = fig.add_gridspec(
     1,
@@ -39,23 +39,23 @@ gs = fig.add_gridspec(
     wspace=0.05,
     height_ratios=[1],
     width_ratios=[
-        1,
         (single_dimensions[0] / aggregates_dimensions[0])
         * (aggregates_dimensions[1] / single_dimensions[1]),
+        1,
     ],
 )
 
 axes_l = fig.add_subplot(gs[0, 0])
 axes_r = fig.add_subplot(gs[0, 1])
 
-for image_ax, size in zip([axes_l, axes_r], [single_dimensions, aggregates_dimensions]):
+for image_ax, size in zip([axes_l, axes_r], [aggregates_dimensions, single_dimensions]):
     image_ax.set_xlim(0, size[1])
     image_ax.set_ylim(0, size[0])
     image_ax.set_axis_off()
 
 for image_ax, image in zip(
     [axes_l, axes_r],
-    [single_snowflake, marine_aggregates],
+    [marine_aggregates, single_snowflake],
 ):
     image_ax.imshow(
         image,
@@ -63,34 +63,31 @@ for image_ax, image in zip(
         # extent=(0, 1, 0, 1),
     )
 
-x_pos = 35
-y_pos = 33
+x_pos = 0.065
+y_pos = 0.96
 
 axes_l.text(
     x_pos,
-    single_dimensions[0] - y_pos,
-    r"(a)",
-    ha="center",
-    va="center",
-    color="w",
-    fontsize=fontsize,
-)
-
-axes_r.text(
-    x_pos
-    * 1
-    / (
-        (single_dimensions[0] / aggregates_dimensions[0])
-        * (aggregates_dimensions[1] / single_dimensions[1])
-    ),
-    aggregates_dimensions[0]
-    - y_pos * (aggregates_dimensions[0] / single_dimensions[0]),
-    r"(b)",
+    y_pos,
+    r" (a) ",
     ha="center",
     va="center",
     color="w",
     fontsize=fontsize,
     backgroundcolor="#000a",
+    transform=axes_l.transAxes,
+)
+
+axes_r.text(
+    x_pos * (aggregates_dimensions[1] / (single_dimensions[1] * (aggregates_dimensions[0]/single_dimensions[0]))),
+    y_pos,
+    r" (b) ",
+    ha="center",
+    va="center",
+    color="w",
+    fontsize=fontsize,
+    backgroundcolor="#000a",
+    transform=axes_r.transAxes,
 )
 
 tosave = parent_dir / "graphics/marine_aggregates.pdf"
