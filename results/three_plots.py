@@ -93,7 +93,7 @@ fem_sorted = fem[fem[:, 1].argsort()]
 fem_grouped = groupby(fem_sorted, key=lambda x: x[1])
 fem_plt = {k: np.array(list(g)) for k, g in fem_grouped}
 del fem_plt[1.0]
-del fem_plt[0.999]
+# del fem_plt[0.999]
 # for i in [1, 0.999, 0.998, 0.995]:
 #     del fem_plt[i]
 
@@ -106,7 +106,7 @@ py_sorted = py[py[:, 1].argsort()]
 py_grouped = groupby(py_sorted, key=lambda x: x[1])
 py_plt = {k: np.array(list(g)) for k, g in py_grouped}
 del py_plt[1.0]
-del py_plt[0.999]
+# del py_plt[0.999]
 # for i in [1, 0.999, 0.998, 0.995]:
 #     del py_plt[i]
 
@@ -148,7 +148,7 @@ cutout = {
     0.99: (2 * 10**6, 10**5),
     0.995: (10**6, 5 * 10**5),
     0.998: (10**6, 5 * 10**5),
-    # 0.999: (1.2 * 10**6, 10**5),
+    0.999: (1.2 * 10**6, 10**5),
 }
 
 for key, value in cutout.items():
@@ -309,8 +309,8 @@ axes[1].plot(
     peclet_values,
     [1 for x in peclet_values],
     color="0.7",
-    linestyle="--",
-    linewidth=1.5,
+    linestyle="-",
+    linewidth=1.,
     zorder=-1,
 )
 
@@ -372,6 +372,16 @@ for i, data in enumerate(py_difference.values()):
         s=marker_size,
     )
 
+
+# for the solution to be exact, difference should be 0
+axes[2].plot(
+    peclet_values,
+    [0 for x in peclet_values],
+    color="0.7",
+    linestyle="-",
+    linewidth=1.0,
+    zorder=-1,
+)
 
 # # Plot Clift data
 # (clift,) = plt.loglog(

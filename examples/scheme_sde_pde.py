@@ -442,20 +442,20 @@ from pathlib import Path
 
 parent_dir = Path(__file__).parent
 
-tosave = parent_dir / "graphics/scheme_sde_pde_not_much"
-draw_scheme_sde_pde(
-    500,
-    0.7,
-    {0: 4, 0.1: 4, 0.2: 4, 0.3: 4, 0.4: 4, 0.5: 4, 0.6: 4, 0.7: 4},
-    limits=[-2.8, 2.8, -2.5, 4],
-    save=tosave,
-)
+# tosave = parent_dir / "graphics/scheme_sde_pde_not_much"
+# draw_scheme_sde_pde(
+#     500,
+#     0.7,
+#     {0: 4, 0.1: 4, 0.2: 4, 0.3: 4, 0.4: 4, 0.5: 4, 0.6: 4, 0.7: 4},
+#     limits=[-2.8, 2.8, -2.5, 4],
+#     save=tosave,
+# )
 
 '''
 WARNING time expensive code, 
 '''
 
-'''
+
 positions = np.linspace(0, 2.8 ** 2, 150)
 amount = 20
 
@@ -471,4 +471,3 @@ draw_scheme_sde_pde(
     limits=[-2.8, 2.8, -2.5, 4],
     save=tosave,
 )
-'''
