@@ -49,8 +49,8 @@ def stokes(r, drho):
     return (2 / 9) * (drho * g / viscosity) * (r) ** 2
 
 
-rho_list = np.linspace(30, 200, 20)
-a_list = np.logspace(np.log10(0.00002), np.log10(0.002), 20)
+rho_list = np.linspace(30, 200, 10)
+a_list = np.logspace(np.log10(0.00002), -2, 10)
 
 
 def to_lower_band(r_bact):
@@ -300,7 +300,7 @@ axes_big.text(
 axes_big.text(
     0.82,
     0.8,
-    r"direct interceptions share",
+    r"direct interception share",
     ha="center",
     va="top",
     fontsize=fontsize,
