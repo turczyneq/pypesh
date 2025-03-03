@@ -89,7 +89,7 @@ def dispersion(peclet):
 fontsize = 26 * 0.96 * (53.249 / 52.022)
 marker_size = 80
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
-fig, axes = plt.subplots(2, 1, figsize=(10, 11), height_ratios=[1, 0.8])
+fig, axes = plt.subplots(2, 1, figsize=(10, 11), height_ratios=[1, 1])
 
 """
 FIRST PLOT
@@ -229,19 +229,20 @@ axes[0].set_ylabel(r"Sherwood number $\textrm{Sh}$", fontsize=fontsize)
 SECOND PLOT
 """
 
-axes[1].plot(
+axes[1].scatter(
     traj_cross[:, 0],
     traj_cross[:, 1],
-    color=tableau[1],
+    color='k',
     linestyle="None",
-    ms=8,
+    s=marker_size,
     marker="o",
+    edgecolor="k",
     label=rf"pychastic for $\textrm{{Pe}} = 10^{round(np.log10(peclet))}$",
 )
 axes[1].plot(
     fem_cross[:, 0],
     fem_cross[:, 1],
-    color=tableau[1],
+    color='k',
     linestyle="-",
     ms=2,
     label=rf"scikit-fem for $\textrm{{Pe}} = 10^{round(np.log10(peclet))}$",
@@ -256,7 +257,7 @@ vertical_lines = [
 
 axes[1].vlines(
     vertical_lines,
-    [-0.05],
+    [-0.11],
     [1.2],
     color="0.6",
     linestyles="--",
@@ -264,29 +265,40 @@ axes[1].vlines(
 
 axes[1].vlines(
     [stream_radius],
-    [-0.05],
+    [0],
     [1.2],
     color="0.2",
     linestyles="--",
 )
 
+axes[1].hlines(
+    [0],
+    [-1],
+    [1.2],
+    color="0.2",
+    # linestyles="--",
+    lw=0.1
+)
+
+text_height = -0.09
+
 axes[1].text(
     (vertical_lines[0] + vertical_lines[1]) / 2,
-    1.25,
+    text_height,
     "Coarse",
     ha="center",
     fontsize=fontsize,
 )
 axes[1].text(
     (vertical_lines[1] + vertical_lines[2]) / 2,
-    1.25,
+    text_height,
     "Fine",
     ha="center",
     fontsize=fontsize,
 )
 axes[1].text(
     (vertical_lines[2] + vertical_lines[3]) / 2,
-    1.25,
+    text_height,
     "Coarse",
     ha="center",
     fontsize=fontsize,
@@ -294,11 +306,11 @@ axes[1].text(
 
 
 axes[1].set_xlim(0, maximal_radius - 0.005)
-axes[1].set_ylim(-0.05, 1.2)
+axes[1].set_ylim(-0.11, 1.2)
 axes[1].tick_params(axis="both", labelsize=fontsize)
 
-axes[1].set_xlabel(r"Distance from axis $\rho}$", fontsize=fontsize)
-axes[1].set_ylabel(r"Hitting probability $p_{\textrm{hit}$", fontsize=fontsize)
+axes[1].set_xlabel(r"Distance from axis $\rho$", fontsize=fontsize)
+axes[1].set_ylabel(r"Hitting probability $p_{\textrm{hit}}$", fontsize=fontsize)
 
 axes[1].legend(
     fontsize=fontsize,
