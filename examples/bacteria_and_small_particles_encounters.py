@@ -49,15 +49,19 @@ def stokes(r, drho):
     return (2 / 9) * (drho * g / viscosity) * (r) ** 2
 
 
+rho_list = np.linspace(30, 200, 20)
+a_list = np.logspace(np.log10(0.00002), np.log10(0.002), 20)
+
+
 def to_lower_band(r_bact):
     to_min = []
-    for drho in np.linspace(30, 200, 20):
+    for drho in rho_list:
         to_min = to_min + [
             relative_clift_flux(
                 give_peclet(r_snow, stokes(r_snow, drho), r_bact, 0),
                 r_bact / (r_snow + r_bact),
             )
-            for r_snow in np.logspace(np.log10(0.00002), -2, 20)
+            for r_snow in a_list
         ]
 
     return np.min(to_min)
@@ -65,13 +69,13 @@ def to_lower_band(r_bact):
 
 def to_upper_band(r_bact):
     to_max = []
-    for drho in np.linspace(30, 200, 20):
+    for drho in rho_list:
         to_max = to_max + [
             relative_clift_flux(
                 give_peclet(r_snow, stokes(r_snow, drho), r_bact, 0),
                 r_bact / (r_snow + r_bact),
             )
-            for r_snow in np.logspace(np.log10(0.00002), -2, 20)
+            for r_snow in a_list
         ]
     return np.max(to_max)
 
@@ -240,14 +244,14 @@ axes_big.plot(
     lower_band,
     c="k",
     ls="--",
-    label=r"$a=10^4$ $\mu$m" + "\n" + r"$\Delta \rho=200$ kg $\textrm{m}^{-3}$",
+    label=r"$a=10^4$ $\mu$m" + "\n" + r"$U \approx 2\times10^6$ m/day",
 )
 
 axes_big.plot(
     r_bacteria_list,
     upper_band,
     c="k",
-    label=r"$a=20$ $\mu$m" + "\n" + r"$\Delta \rho=30$ kg $\textrm{m}^{-3}$",
+    label=r"$a=20$ $\mu$m" + "\n" + r"$U \approx 1.4$ m/day",
 )
 
 axes_big.fill_between(
@@ -421,6 +425,7 @@ plt.legend(
     facecolor="white",
     framealpha=0.3,
     edgecolor="none",
+    loc=(0.67, 0.2),
 )
 
 axes_big.tick_params(which="both", labelsize=fontsize, left=True, labelleft=True)

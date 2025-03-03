@@ -264,11 +264,11 @@ def draw_scheme_sde_pde(
             color = "#a22"
 
         if i % 2:
-            axes[1].plot(r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
+            axes[2].plot(r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
         else:
-            axes[1].plot(-r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
+            axes[2].plot(-r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
 
-    tric1 = axes[2].tripcolor(
+    tric1 = axes[1].tripcolor(
         mesh.p[0],
         mesh.p[1],
         mesh.t.T,
@@ -279,7 +279,7 @@ def draw_scheme_sde_pde(
         rasterized=True,
     )
 
-    tric2 = axes[2].tripcolor(
+    tric2 = axes[1].tripcolor(
         -mesh.p[0],
         mesh.p[1],
         mesh.t.T,
@@ -328,7 +328,7 @@ def draw_scheme_sde_pde(
         )
     )
 
-    axes[1].add_artist(
+    axes[2].add_artist(
         plt.Circle(
             (0.0, 0.0),
             ball_radius,
@@ -339,7 +339,7 @@ def draw_scheme_sde_pde(
             linewidth=1,
         )
     )
-    axes[1].add_artist(
+    axes[2].add_artist(
         Arc(
             (0, 0),
             2,
@@ -353,7 +353,7 @@ def draw_scheme_sde_pde(
         )
     )
 
-    axes[2].add_artist(
+    axes[1].add_artist(
         plt.Circle(
             (0.0, 0.0),
             ball_radius,
@@ -364,7 +364,7 @@ def draw_scheme_sde_pde(
             linewidth=1,
         )
     )
-    axes[2].add_artist(
+    axes[1].add_artist(
         Arc(
             (0, 0),
             2,
@@ -379,7 +379,7 @@ def draw_scheme_sde_pde(
     )
 
     cmap = plt.get_cmap("viridis")
-    axes[2].add_artist(
+    axes[1].add_artist(
         plt.Circle(
             (0, 0), 1, edgecolor=None, facecolor=cmap(0), zorder=1, rasterized=True
         )
@@ -392,14 +392,14 @@ def draw_scheme_sde_pde(
         ax.tick_params(axis="x", labelsize=fontsize, top=True)
 
     axes[0].tick_params(axis="y", labelsize=fontsize)
-    axes[1].tick_params(axis="y", labelsize=fontsize, left=False)
     axes[2].tick_params(axis="y", labelsize=fontsize, left=False)
+    axes[1].tick_params(axis="y", labelsize=fontsize, left=False)
     # plt.xlabel(
     #     r"Radius (negative values for better visbility) $(\rho)$", fontsize=fontsize
     # )
 
     axes[0].set_ylabel(r"Along the flow $z$ [$a + b$]", fontsize=fontsize)
-    axes[1].set_xlabel(r"Acros the flow $\rho$ [$a+b$]", fontsize=fontsize)
+    axes[1].set_xlabel(r"Across the flow $\rho$ [$a+b$]", fontsize=fontsize)
 
     axes[0].text(
         0.023,
@@ -451,11 +451,11 @@ parent_dir = Path(__file__).parent
 #     save=tosave,
 # )
 
+
+
 '''
 WARNING time expensive code, 
 '''
-
-
 positions = np.linspace(0, 2.8 ** 2, 150)
 amount = 20
 
