@@ -14,7 +14,7 @@ $$ \mathrm{Sh} = \frac{\Phi}{ 4 \pi D R}$$
 Where $D$ is diffusion constant and $\Phi$ is flux falling onto the sphere.
 
 <p align="center">
-  <img src="examples/graphics/scheme_sde_pde.pngf" alt="Both approaches solving the same problem">
+  <img src="examples/graphics/scheme_sde_pde.png" alt="Both approaches solving the same problem">
 </p>
 
 We use two approaches: (a) `pychastic` to generate and trace trajcetories of single particles and estimate the probability of hitting, which allows to calculate sherwood number. This however is expenive in time, so for spaller $\mathrm{Pe}$ we used (b) `scikit-fem` package to handle solving which requires rewriting equations in weak form.
