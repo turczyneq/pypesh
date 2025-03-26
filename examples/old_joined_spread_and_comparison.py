@@ -42,24 +42,26 @@ westerberg_path = parent_dir / "data/westerberg.csv"
 westerberg = np.loadtxt(westerberg_path, delimiter=",", skiprows=1)
 
 
-ball_radius = 0.92
+ball_radius = 0.91
 maximal_radius = 0.3
-peclet = 10**5
+peclet = 7 * 10**5
 # fem_cross = np.array([[0, 1], [0.1, 0.9], [0.2, 0.8]])
-fem_cross = visual.draw_cross_section_fem(
-    peclet, ball_radius, maximal_radius=maximal_radius
-)
+# fem_cross = visual.draw_cross_section_fem(
+#     peclet, ball_radius, maximal_radius=maximal_radius
+# )
+fem_cross = np.array([[0, 1], [0.1, 0.9], [0.2, 0.8]])
 
 """
 WARNING trials 10**4 is expensive in computation time
 """
-traj_cross = visual.draw_cross_section_traj(
-    peclet,
-    ball_radius,
-    mesh_out=4,
-    mesh_jump=10,
-    trials=10000,
-)
+# traj_cross = visual.draw_cross_section_traj(
+#     peclet,
+#     ball_radius,
+#     mesh_out=15,
+#     mesh_jump=20,
+#     trials=10000,
+#     spread=10,
+# )
 
 """
 to test plot setting
@@ -72,9 +74,9 @@ to test plot setting
 #     trials=200,
 # )
 
-# traj_cross = np.array([[0, 1], [0.1, 0.9], [0.2, 0.8]])
+traj_cross = np.array([[0, 1], [0.1, 0.9], [0.2, 0.8]])
 
-spread = 4
+spread = 10
 stream_radius = sf.streamline_radius(5, ball_radius)
 
 
@@ -237,7 +239,7 @@ axes[1].scatter(
     s=marker_size,
     marker="o",
     edgecolor="k",
-    label=rf"pychastic for $\textrm{{Pe}} = 10^{round(np.log10(peclet))}$",
+    label=rf"pychastic",
 )
 axes[1].plot(
     fem_cross[:, 0],
@@ -245,8 +247,23 @@ axes[1].plot(
     color='k',
     linestyle="-",
     ms=2,
-    label=rf"scikit-fem for $\textrm{{Pe}} = 10^{round(np.log10(peclet))}$",
+    label=rf"scikit-fem",
 )
+
+axes[1].scatter(
+    [-1,-1],
+    [-1,-1],
+    color='w',
+    label=r"$\textrm{Pe}=7 \times 10^5$",
+)
+
+axes[1].scatter(
+    [-1,-1],
+    [-1,-1],
+    color='w',
+    label=r"$\beta=0.09$",
+)
+
 
 vertical_lines = [
     stream_radius - spread * dispersion(peclet),
@@ -318,7 +335,7 @@ axes[1].legend(
     facecolor="white",
     framealpha=0.8,
     edgecolor="none",
-    loc=(0.45, 0.69),
+    loc=(0.6, 0.5),
 )
 
 for i, x in enumerate([r"(a)", r"(b)"]):

@@ -50,7 +50,7 @@ def stokes(r, drho):
 
 
 rho_list = np.linspace(30, 200, 10)
-a_list = np.logspace(np.log10(0.00002), -2, 10)
+a_list = np.logspace(np.log10(0.00002), -3, 10)
 
 
 def to_lower_band(r_bact):
@@ -244,14 +244,14 @@ axes_big.plot(
     lower_band,
     c="k",
     ls="--",
-    label=r"$a=10^4$ $\mu$m" + "\n" + r"$U \approx 2\times10^6$ m/day",
+    label=r"$a=10^3$ $\mu$m" + "\n" + r"$U = 2.4\times10^4$ m/day",
 )
 
 axes_big.plot(
     r_bacteria_list,
     upper_band,
     c="k",
-    label=r"$a=20$ $\mu$m" + "\n" + r"$U \approx 1.4$ m/day",
+    label=r"$a=20$ $\mu$m" + "\n" + r"$U = 1.4$ m/day",
 )
 
 axes_big.fill_between(
@@ -286,10 +286,10 @@ axes_big.fill_between(
 
 
 axes_big.text(
-    0.1,
+    0.01,
     0.2,
-    r"diffusion share",
-    ha="center",
+    "advection--\n--diffusion share",
+    ha="left",
     va="top",
     fontsize=fontsize,
     transform=axes_big.transAxes,
@@ -425,7 +425,7 @@ plt.legend(
     facecolor="white",
     framealpha=0.3,
     edgecolor="none",
-    loc=(0.67, 0.2),
+    loc=(0.657, 0.2),
 )
 
 axes_big.tick_params(which="both", labelsize=fontsize, left=True, labelleft=True)

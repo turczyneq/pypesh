@@ -11,7 +11,7 @@ with open("README.md") as f:
 
 setup(
     name="pypesh",
-    version="0.1.4",
+    version="0.1.5",
     description="Sherwood number in Stokes flow",
     url="https://github.com/turczyneq/pypesh",
     author="Jan Turczynowicz and Radost Waszkiewicz",
@@ -24,6 +24,10 @@ setup(
     },
     license="GNU GPLv3",
     packages=["pypesh"],
+    include_package_data=True,
+    package_data={  
+        "pypesh": ["data/*"]
+    },
     install_requires=parse_requirements("requirements.txt"),
     zip_safe=False,
 )

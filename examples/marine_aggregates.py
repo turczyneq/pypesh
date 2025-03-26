@@ -98,7 +98,7 @@ tosave = parent_dir / "graphics/marine_aggregates.pdf"
 plt.savefig(
     tosave,
     bbox_inches="tight",
-    pad_inches=0.02,
+    pad_inches=0,
 )
 
 # plt.show()
