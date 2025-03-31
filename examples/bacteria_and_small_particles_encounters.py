@@ -311,9 +311,9 @@ axes_big.text(
 
 
 added_text = CurvedText(
-    x=r_bacteria_list[20:],
-    y=line_3[20:],
-    text=r"changes with larger particle $a$ and $U$",
+    x=r_bacteria_list[18:],
+    y=line_3[18:],
+    text=r"varying marine snow parameters $a$ and $U$",
     ha="center",
     va="center",
     axes=axes_big,
@@ -390,7 +390,7 @@ axes_big.set_xscale("log")
 
 axes_big.set_ylim(-0.06, 1.001)
 
-axes_big.set_xlabel(r"Size of small particles $b$ [$\mu$m]", fontsize=fontsize)
+axes_big.set_xlabel(r"Size of suspended objects $b$ [$\mu$m]", fontsize=fontsize)
 axes_big.set_ylabel(r"Partial contribution", fontsize=fontsize)
 
 axes_big.plot([2, 2], [-0.06, 0], c="k", ls="--", lw=0.5)

@@ -9,7 +9,7 @@ tableau = list(mcolors.TABLEAU_COLORS)
 
 parent_dir = Path(__file__).parent
 
-pe_values = np.logspace(-1, 15, 2000)
+pe_values = np.logspace(-1, 12, 2000)
 rsyf_values = np.logspace(-3.5, np.log10(0.5), 2000)
 
 pe_min, pe_max = pe_values[0], pe_values[-1]
@@ -439,14 +439,14 @@ plt.yscale("log")
 plt.xlim(pe_min, pe_max)
 plt.ylim(rsyf_min, rsyf_max)
 
-plt.xlabel(r"Peclet number $\textrm{Pe}$", fontsize=fontsize)
+plt.xlabel(r"P\'{e}clet number $\textrm{Pe}$", fontsize=fontsize)
 plt.ylabel(r"Colliders' size ratio $\beta$", fontsize=fontsize)
 
 plt.xticks(fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
 
 
-xtick_list = [10 ** (pow) for pow in [-1, 1, 3, 5, 7, 9, 11, 13, 15]]
+xtick_list = [10 ** (pow) for pow in [ 1, 3, 5, 7, 9, 11]]
 plt.xticks(xtick_list)
 
 tosave = parent_dir / "graphics/beta_pe_for_players.pdf"

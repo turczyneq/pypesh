@@ -48,17 +48,17 @@ plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
     numerical[:, 1],
     label="This work",
     color="k",
-    linewidth=4,
-    zorder=2,
+    linewidth=5,
+    zorder=0,
 )
 
 # Plot Clift data
 (clift_approx,) = plt.loglog(
     peclet_values,
     analytic_clift,
-    label="Clift et al. (fit.)",
+    label="Clift et al. (fit)",
     color=tableau[7],
-    linestyle="-",
+    linestyle="--",
     linewidth=3,
     zorder=1,
 )
@@ -147,7 +147,7 @@ plt.xticks(fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
 
 # Labels and Title
-plt.xlabel(r"Peclet number $\textrm{Pe}$", fontsize=fontsize)
+plt.xlabel(r"P\'{e}clet number $\textrm{Pe}$", fontsize=fontsize)
 plt.ylabel(r"Sherwood number $\textrm{Sh}$", fontsize=fontsize)
 
 leg1 = [our_work, clift_approx, clift_num, west, frie, feng]
@@ -159,7 +159,7 @@ legend1 = plt.legend(
     # fontsize=fontsize,
     frameon=False,
     labelspacing=0.2,
-    handlelength=0.6,
+    handlelength=1,
     loc=(0, 0.48),
     prop={'family':"Times", 'size':fontsize}
 )

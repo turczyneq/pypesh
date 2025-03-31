@@ -422,7 +422,7 @@ def draw_scheme_sde_pde(
     cbar_ax = fig.add_axes([0.92, 0.218, 0.02, 0.555])  # [left, bottom, width, height]
     cbar = fig.colorbar(tric1, cax=cbar_ax)
     cbar.ax.tick_params(labelsize=fontsize)
-    cbar.set_label(r"Concentration ($\varphi$)", fontsize=fontsize)
+    cbar.set_label(r"Concentration $\varphi$ [$\varphi_{0}$]", fontsize=fontsize)
     plt.subplots_adjust(wspace=0.0)
 
     if save != "no":
@@ -442,32 +442,32 @@ from pathlib import Path
 
 parent_dir = Path(__file__).parent
 
-# tosave = parent_dir / "graphics/scheme_sde_pde_not_much"
-# draw_scheme_sde_pde(
-#     500,
-#     0.7,
-#     {0: 4, 0.1: 4, 0.2: 4, 0.3: 4, 0.4: 4, 0.5: 4, 0.6: 4, 0.7: 4},
-#     limits=[-2.8, 2.8, -2.5, 4],
-#     save=tosave,
-# )
-
-
-
-'''
-WARNING time expensive code, 
-'''
-positions = np.linspace(0, 2.8 ** 2, 150)
-amount = 20
-
-to_plt = {}
-for x in positions:
-    to_plt[np.sqrt(x)] = amount
-
-tosave = parent_dir / "graphics/scheme_sde_pde"
+tosave = parent_dir / "graphics/scheme_sde_pde_not_much"
 draw_scheme_sde_pde(
     500,
     0.7,
-    to_plt,
+    {0: 4, 0.1: 4, 0.2: 4, 0.3: 4, 0.4: 4, 0.5: 4, 0.6: 4, 0.7: 4},
     limits=[-2.8, 2.8, -2.5, 4],
     save=tosave,
 )
+
+
+
+# '''
+# WARNING time expensive code, 
+# '''
+# positions = np.linspace(0, 2.8 ** 2, 150)
+# amount = 20
+
+# to_plt = {}
+# for x in positions:
+#     to_plt[np.sqrt(x)] = amount
+
+# tosave = parent_dir / "graphics/scheme_sde_pde"
+# draw_scheme_sde_pde(
+#     500,
+#     0.7,
+#     to_plt,
+#     limits=[-2.8, 2.8, -2.5, 4],
+#     save=tosave,
+# )

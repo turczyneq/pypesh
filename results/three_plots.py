@@ -261,7 +261,7 @@ axes[0].add_artist(legend1)
 (clift,) = axes[1].loglog(
     peclet_values,
     analytic_clift,
-    label="Clift et al.",
+    label="Eq. (14)",
     color="k",
     linestyle="-",
     linewidth=2,
@@ -497,7 +497,7 @@ axes[2].set_ylabel(
 )
 
 axes[2].set_xlabel(
-    r"Peclet number $\textrm{Pe}$",
+    r"P\'{e}clet number $\textrm{Pe}$",
     fontsize=fontsize,
 )
 
