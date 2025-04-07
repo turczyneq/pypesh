@@ -423,7 +423,7 @@ def draw_scheme_sde_pde(
     cbar_ax = fig.add_axes([0.92, 0.218, 0.02, 0.555])  # [left, bottom, width, height]
     cbar = fig.colorbar(tric1, cax=cbar_ax)
     cbar.ax.tick_params(labelsize=fontsize)
-    cbar.set_label(r"Concentration $\varphi$", fontsize=fontsize)
+    cbar.set_label(r"Concentration $\varphi/\varphi_0$", fontsize=fontsize)
     plt.subplots_adjust(wspace=0.0)
 
     if save != "no":

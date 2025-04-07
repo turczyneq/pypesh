@@ -163,21 +163,21 @@ text_height = -0.09
 plt.text(
     (vertical_lines[0] + vertical_lines[1]) / 2,
     text_height,
-    "Coarse",
+    r"\texttt{coarse}",
     ha="center",
     fontsize=fontsize,
 )
 plt.text(
     (vertical_lines[1] + vertical_lines[2]) / 2,
     text_height,
-    "Fine",
+    r"\texttt{fine}",
     ha="center",
     fontsize=fontsize,
 )
 plt.text(
     (vertical_lines[2] + vertical_lines[3]) / 2,
     text_height,
-    "Coarse",
+    r"\texttt{coarse}",
     ha="center",
     fontsize=fontsize,
 )

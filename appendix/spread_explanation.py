@@ -96,21 +96,21 @@ plt.vlines(
 plt.text(
     (vertical_lines[0] + vertical_lines[1]) / 2,
     1.15,
-    "Coarse",
+    r"\texttt{coarse}",
     ha="center",
     fontsize=fontsize,
 )
 plt.text(
     (vertical_lines[1] + vertical_lines[2]) / 2,
     1.15,
-    "Fine",
+    r"\texttt{fine}",
     ha="center",
     fontsize=fontsize,
 )
 plt.text(
     (vertical_lines[2] + vertical_lines[3]) / 2,
     1.15,
-    "Coarse",
+    r"\texttt{coarse}",
     ha="center",
     fontsize=fontsize,
 )
