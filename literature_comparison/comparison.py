@@ -56,8 +56,8 @@ plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 (clift_approx,) = plt.loglog(
     peclet_values,
     analytic_clift,
-    label="Clift et al. (fit)",
-    color=tableau[7],
+    label="Clift et al. (Eq. 14)",
+    color='0.7',
     linestyle="--",
     linewidth=3,
     zorder=1,
