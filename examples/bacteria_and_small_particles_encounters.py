@@ -142,9 +142,10 @@ y_max_from_top = int(round((x_max - x_min) * images_aspect) + y_min_from_top)
 pelagibacter = pelagibacter[y_min_from_top:y_max_from_top, x_min:x_max]
 
 
-image_path = parent_dir / "images" / "emiliania_huxleyi.png"
+image_path = parent_dir / "images" / "e_huxleyi.jpg"
 huxleyi = mpimg.imread(image_path)
-x_min, x_max, y_min_from_top = 0, 650, 0
+x_min, x_max, y_min_from_top = 790, 1150, 50
+# x_min, x_max, y_min_from_top = 650, 1010, 100
 y_max_from_top = (
     int(round((x_max - x_min) * images_aspect) + y_min_from_top) + y_min_from_top
 )
@@ -229,7 +230,7 @@ for image_ax, text in zip(
     [axes_nw, axes_ne, axes_sw, axes_se],
     [
         r"$2$ $\mu$m",
-        r"$5$ $\mu$m",
+        r"$3$ $\mu$m",
         r"$2$ $\mu$m",
         r"$1.5$ $\mu$m",
     ],

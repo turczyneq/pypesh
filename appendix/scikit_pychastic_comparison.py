@@ -118,7 +118,7 @@ plt.xlim(10**3, 10**6)
 plt.ylim(-0.05, 0.09)
 plt.tick_params(axis="both", labelsize=fontsize)
 plt.ylabel(r"$(\textrm{Sh}_{\texttt{pychastic}}-\textrm{Sh}_{\texttt{scikit-fem}})/\textrm{Sh}_{\texttt{pychastic}}$", fontsize=fontsize)
-plt.xlabel(r"Peclet number $\textrm{Pe}$", fontsize=fontsize)
+plt.xlabel(r"P\'eclet number $\textrm{Pe}$", fontsize=fontsize)
 
 
 tosave = parent_dir / "graphics/pychastic_scikit_comparison.pdf"

@@ -187,11 +187,11 @@ for n, ball in enumerate(ball_list):
 for ax in axes:
     ax.set_xscale("log")
     # ax.set_yscale("log")
-    ax.set_xlim(1, 5 * 10**4)
+    ax.set_xlim(1, 10**4)
     ax.set_ylim(-0.05, 0.19)
     ax.tick_params(which="both", labelsize=fontsize)
 
-    ax.set_xlabel(r"Peclet number $\textrm{Pe}$", fontsize=fontsize)
+    ax.set_xlabel(r"P\'eclet number $\textrm{Pe}$", fontsize=fontsize)
 axes[0].set_ylabel(
     r"$(\textrm{Sh} - \textrm{Sh}_{\mathrm{f}}) / \textrm{Sh}$", fontsize=fontsize
 )

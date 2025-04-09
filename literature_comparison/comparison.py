@@ -160,7 +160,7 @@ legend1 = plt.legend(
     frameon=False,
     labelspacing=0.2,
     handlelength=1,
-    loc=(0, 0.48),
+    loc=(0, 0.47),
     prop={'family':"Times", 'size':fontsize}
 )
 
