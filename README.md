@@ -5,9 +5,9 @@ advection diffusion solver
 
 This repository attempts to find a solution to advection diffusion problem
 
-$$ 0 = \Delta \phi - \mathrm{Pe} (u \cdot \nabla \phi) $$
+$$ 0 = \Delta \varphi - \mathrm{Pe} (u \cdot \nabla \varphi) $$
 
-with $\phi = 1$ for $z \to \infty$ and $\phi = 0$ on a surface of the sphere and $\mathrm{Pe}$ denoting Peclet number. Final determined value is Sherwood number defined as 
+with $\varphi = 1$ for $z \to \infty$ and $\varphi = 0$ on a surface of the sphere and $\mathrm{Pe}$ denoting Peclet number. Final determined value is Sherwood number defined as 
 
 $$ \mathrm{Sh} = \frac{\Phi}{ 4 \pi D R}$$
 
@@ -17,7 +17,7 @@ Where $D$ is diffusion constant and $\Phi$ is flux falling onto the sphere.
   <img src="examples/graphics/scheme_sde_pde.png" alt="Both approaches solving the same problem">
 </p>
 
-(a) shows the flow field around the sphere. We use two approaches: (c) `pychastic` to generate and trace trajcetories of single particles and estimate the probability of hitting, which allows to calculate sherwood number. This however is expenive in time, so for spaller $\mathrm{Pe}$ we used (b) `scikit-fem` package to handle solving which requires rewriting equations in weak form.
+(a) shows the flow field around the sphere. We use two approaches: (c) `pychastic` to generate and trace trajcetories of single particles and estimate the probability of hitting, which allows to calculate sherwood number. This however is expenive in time, so for smaller $\mathrm{Pe}$ we used (b) `scikit-fem` package to handle solving which requires rewriting equations in weak form.
 
 # Usage as module
 
