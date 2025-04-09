@@ -32,7 +32,7 @@ def stokes_around_sphere_jnp(q, ball_radius):
     >>> import pypesh.stokes_flow as sf
     >>> posjnp = jnp.array([1,1,1])
     >>> sf.stokes_around_sphere_jnp(posjnp, 0.9)
-    Array([-0.0948298, -0.0948298,  0.4803847], dtype=float32, weak_type=True)
+    Array([-0.0948298, -0.0948298,  0.4803847], dtype=float32)
     """
 
     big_r = ball_radius

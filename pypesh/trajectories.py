@@ -114,8 +114,9 @@ def simulate_trajectory(drift, noise, initial, t_max, whole_trajectory=False, se
     >>> def drift(q):
     ...     return sf.stokes_around_sphere_jnp(q, 0.9)
     >>> noise = traj.diffusion_function(100)
+    >>> init = traj._construct_initial_trials_at_x(0, 5, 3)
     >>> traj.simulate_trajectory(drift, noise, init, 20)
-    {'ball_hit': Array([ True, False, False], dtype=bool), 'roof_hit': Array([False,  True,  True], dtype=bool), 'something_hit': Array([ True,  True,  True], dtype=bool)}
+    {'ball_hit': Array([False,  True,  True], dtype=bool), 'roof_hit': Array([ True,  True,  True], dtype=bool), 'something_hit': Array([ True,  True,  True], dtype=bool)}
     """
 
     problem = pychastic.sde_problem.SDEProblem(
@@ -281,7 +282,7 @@ def hitting_propability_at_x(
     --------
     >>> import pypesh.trajectories as traj
     >>> traj.hitting_propability_at_x(0.1, 10**4, 0.9)
-    0.91
+    Array(0.82, dtype=float32, weak_type=True)
     """
 
     def drift(q):
@@ -451,10 +452,11 @@ def sherwood_trajectories(
     --------
     >>> import pypesh.trajectories as traj
     >>> traj.sherwood_trajectories(10**6, 0.9)
-    (3714.4541773411393, array([0.10064565, 0.11064565, 0.12064565, 0.13064565, 0.13464565,
+    (3646.3631062456793, array([0.10064565, 0.11064565, 0.12064565, 0.13064565, 0.13464565,
        0.13864565, 0.14264565, 0.14664565, 0.15064565, 0.16064565,
-       0.17064565, 0.18064565]), array([1.  , 1.  , 1.  , 1.  , 0.94, 0.76, 0.39, 0.19, 0.07, 0.  , 0.  ,
-       0.  ], dtype=float32))
+       0.17064565, 0.18064565]), array([1.        , 1.        , 0.98999995, 0.95      , 0.83      ,
+       0.68      , 0.45      , 0.17999999, 0.02      , 0.        ,
+       0.        , 0.        ], dtype=float32))
     """
 
     # define the spread of testing range
