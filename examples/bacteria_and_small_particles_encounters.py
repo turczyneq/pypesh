@@ -144,17 +144,17 @@ pelagibacter = pelagibacter[y_min_from_top:y_max_from_top, x_min:x_max]
 
 image_path = parent_dir / "images" / "e_huxleyi.jpg"
 huxleyi = mpimg.imread(image_path)
-x_min, x_max, y_min_from_top = 790, 1150, 50
-# x_min, x_max, y_min_from_top = 650, 1010, 100
+x_min, x_max, y_min_from_top = 790, 1149, 90
+# x_min, x_max, y_min_from_top = 880, 1200, 1
 y_max_from_top = (
-    int(round((x_max - x_min) * images_aspect) + y_min_from_top) + y_min_from_top
+    int(round((x_max - x_min) * images_aspect) + y_min_from_top) + y_min_from_top - 70
 )
 huxleyi = huxleyi[y_min_from_top:y_max_from_top, x_min:x_max]
 
 
 image_path = parent_dir / "images" / "thalassiosira_pseudonana.png"
 thalassiosira = mpimg.imread(image_path)
-x_min, x_max, y_min_from_top = 100, 800, 0
+x_min, x_max, y_min_from_top = 100, 800, 2
 y_max_from_top = (
     int(round((x_max - x_min) * images_aspect) + y_min_from_top) + y_min_from_top
 )
@@ -209,7 +209,7 @@ for image_ax, text in zip(
     [axes_nw, axes_ne, axes_sw, axes_se],
     [
         r"\textit{Thalassiosira}",
-        r"\textit{E. Huxleyi}",
+        r"\textit{E. huxleyi}",
         r"\textit{Pelagibacter}",
         r"\textit{Prochlorococcus}",
     ],
@@ -367,7 +367,7 @@ axes_big.text(
 axes_big.text(
     2.5,
     0.5,
-    r"\textit{E. Huxleyi}",
+    r"\textit{E. huxleyi}",
     va="bottom",
     ha="right",
     fontsize=fontsize,

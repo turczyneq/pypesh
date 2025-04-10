@@ -171,7 +171,7 @@ for n, ball in enumerate(ball_list):
             to_plot10[:, 0],
             yargs10,
             color=f"C{n}",
-            label=f"$\\beta={ball}$",
+            label=f"$\\beta={1-ball:5.3f}$",
             zorder=0,
         )
     ]

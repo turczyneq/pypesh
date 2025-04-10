@@ -180,7 +180,7 @@ start_position = 0.4
 dy = 0.115
 
 for i, text in enumerate(
-    ["bacteria", "small flake", "flake with\nmucus", "large flake"]
+    ["bacteria", "small particle", "particle with\nmucus", "large particle"]
 ):
     plt.text(
         x_start,
@@ -453,7 +453,7 @@ tosave = parent_dir / "graphics/beta_pe_for_players.pdf"
 plt.savefig(
     tosave,
     bbox_inches="tight",
-    pad_inches=0,
+    pad_inches=0.01,
 )
 
 plt.show()
