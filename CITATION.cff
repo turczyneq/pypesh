@@ -1,6 +1,10 @@
 cff-version: 1.2.0
+
+message: "If you use this software, please cite the associated article."
+
 title: pypesh
 type: software
+
 authors:
   - given-names: Radost
     family-names: Waszkiewicz
@@ -8,8 +12,35 @@ authors:
   - given-names: Jan
     family-names: Turczynowicz
     orcid: 'https://orcid.org/0009-0002-8745-2298'
+
 keywords:
   - advection-diffusion
   - stokes flow
   - marine snow
+
 license: GPL-3.0
+
+preferred-citation:
+  type: article
+  title: Bridging advection and diffusion in the encounter dynamics of sedimenting marine snow
+  authors:
+    - given-names: Jan
+      family-names: Turczynowicz
+      orcid: 'https://orcid.org/0009-0002-8745-2298'
+    - given-names: Radost
+      family-names: Waszkiewicz
+      orcid: 'https://orcid.org/0000-0002-0376-1708'
+    - given-names: Maciej
+      family-names: Lisicki
+      orcid: 'https://orcid.org/0000-0002-6976-0281'
+    - given-names: Jonasz
+      family-names: Słomka
+      orcid: 'https://orcid.org/0000-0002-7097-5810'
+  doi: 10.48550/arXiv.2504.08992
+  date-released: 2025-04-11
+  url: https://doi.org/10.48550/arXiv.2504.08992
+  publisher:
+    name: arXiv
+  year: 2025
+  journal: arXiv
+
