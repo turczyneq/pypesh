@@ -187,7 +187,7 @@ for n, ball in enumerate(ball_list):
 for ax in axes:
     ax.set_xscale("log")
     # ax.set_yscale("log")
-    ax.set_xlim(1, 10**4)
+    ax.set_xlim(1, 0.99 * 10**4)
     ax.set_ylim(-0.05, 0.19)
     ax.tick_params(which="both", labelsize=fontsize)
 
