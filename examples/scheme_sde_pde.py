@@ -93,7 +93,7 @@ def draw_scheme_sde_pde(
         ax.add_patch(arrow)
         return None
 
-    def make_line(start, end, ax, ls='--'):
+    def make_line(start, end, ax, ls="--"):
         ax.plot(
             start,
             end,
@@ -167,7 +167,7 @@ def draw_scheme_sde_pde(
     u = solve(*condense(A, x=u, I=interior))
 
     # artefacts of past text size changes to fit text in paper
-    fontsize = 15 * 1.3 * 11.5 / 16
+    fontsize = 15 * 1.3 * 11.5 / 16 * 1.26
     plt.rcParams.update(
         {"text.usetex": True, "font.family": "Times", "savefig.dpi": 300}
     )
@@ -199,12 +199,16 @@ def draw_scheme_sde_pde(
         ),
     )
 
-    make_line([x_min, x_min], [z_min, z_max], axes[0], ls='-')
-    make_line([x_min, 0], [z_max, z_max], axes[0], ls='-')
-    make_line([x_min, 0], [z_min, z_min], axes[0], ls='-')
+    make_line([x_min, x_min], [z_min, z_max], axes[0], ls="-")
+    make_line([x_min, 0], [z_max, z_max], axes[0], ls="-")
+    make_line([x_min, 0], [z_min, z_min], axes[0], ls="-")
 
-    make_arrow((0, -0.05), (0, 3.9), axes[0], scale = 0.6, mutation_scale=5, tpercent=0.05)
-    make_arrow((-0.05, 0), (2.2, 0), axes[0], scale = 0.6, mutation_scale=5, tpercent=0.05)
+    make_arrow(
+        (0, -0.05), (0, 3.9), axes[0], scale=0.6, mutation_scale=5, tpercent=0.05
+    )
+    make_arrow(
+        (-0.05, 0), (2.2, 0), axes[0], scale=0.6, mutation_scale=5, tpercent=0.05
+    )
 
     axes[0].text(
         0.53,
@@ -390,7 +394,7 @@ def draw_scheme_sde_pde(
         ax.set_ylim(z_min, z_max)
         ax.set_aspect(1)
         ax.tick_params(axis="x", labelsize=fontsize, top=True)
-        ax.set_xticks([-2,-1,0,1,2])
+        ax.set_xticks([-2, -1, 0, 1, 2])
 
     axes[0].tick_params(axis="y", labelsize=fontsize)
     axes[2].tick_params(axis="y", labelsize=fontsize, left=False)
@@ -403,8 +407,8 @@ def draw_scheme_sde_pde(
     axes[1].set_xlabel(r"Across the flow $\rho/(a+b)$", fontsize=fontsize)
 
     axes[0].text(
-        0.023,
-        0.9425,
+        0.0235,
+        0.9325,
         r"(a)",
         transform=axes[0].transAxes,
         fontsize=fontsize,
@@ -413,8 +417,8 @@ def draw_scheme_sde_pde(
 
     for i, x in enumerate([r"(b)", r"(c)"]):
         axes[i + 1].text(
-            0.023,
-            0.9425,
+            0.0235,
+            0.9325,
             x,
             transform=axes[i + 1].transAxes,
             fontsize=fontsize,
@@ -453,9 +457,9 @@ parent_dir = Path(__file__).parent
 # )
 
 
-'''
+"""
 WARNING time expensive code, 
-'''
+"""
 positions = np.linspace(0, 2.8 ** 2, 150)
 amount = 20
 

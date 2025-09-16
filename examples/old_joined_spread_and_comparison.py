@@ -54,14 +54,14 @@ fem_cross = np.array([[0, 1], [0.1, 0.9], [0.2, 0.8]])
 """
 WARNING trials 10**4 is expensive in computation time
 """
-# traj_cross = visual.draw_cross_section_traj(
-#     peclet,
-#     ball_radius,
-#     mesh_out=15,
-#     mesh_jump=20,
-#     trials=10000,
-#     spread=10,
-# )
+traj_cross = visual.draw_cross_section_traj(
+    peclet,
+    ball_radius,
+    mesh_out=15,
+    mesh_jump=20,
+    trials=10000,
+    spread=10,
+)
 
 """
 to test plot setting
@@ -74,7 +74,7 @@ to test plot setting
 #     trials=200,
 # )
 
-traj_cross = np.array([[0, 1], [0.1, 0.9], [0.2, 0.8]])
+# traj_cross = np.array([[0, 1], [0.1, 0.9], [0.2, 0.8]])
 
 spread = 10
 stream_radius = sf.streamline_radius(5, ball_radius)
@@ -88,10 +88,10 @@ def dispersion(peclet):
 
 
 # Plot all data
-fontsize = 26 * 0.96 * (53.249 / 52.022)
-marker_size = 80
+fontsize = 15 * 1.3 * 11.5 / 16 * 10.5 / 9.82
+marker_size = 50
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
-fig, axes = plt.subplots(2, 1, figsize=(10, 11), height_ratios=[1, 1])
+fig, axes = plt.subplots(1, 2, figsize=(19.5 * 0.6, 7 * 0.6), width_ratios=[1, 1])
 
 """
 FIRST PLOT
@@ -201,7 +201,7 @@ legend1 = axes[0].legend(
     frameon=False,
     labelspacing=0.2,
     handlelength=0.6,
-    loc=(0, 0.35),
+    loc=(0, 0.4),
     prop={"family": "Times", "size": fontsize},
 )
 
@@ -220,11 +220,11 @@ axes[0].add_artist(legend2)
 axes[0].set_xscale("log")
 axes[0].set_yscale("log")
 axes[0].set_xlim(0.44, 3 * 10**4)
-axes[0].set_ylim(0.8, 50)
+axes[0].set_ylim(0.8, 25)
 axes[0].tick_params(axis="both", labelsize=fontsize)
 
-axes[0].set_xlabel(r"Peclet number $\textrm{Pe}$", fontsize=fontsize)
-axes[0].set_ylabel(r"Sherwood number $\textrm{Sh}$", fontsize=fontsize)
+axes[0].set_xlabel(r"Peclet number $\textrm{\textit{Pe}}$", fontsize=fontsize)
+axes[0].set_ylabel(r"Sherwood number $\textrm{\textit{Sh}}$", fontsize=fontsize)
 
 
 """
@@ -234,7 +234,7 @@ SECOND PLOT
 axes[1].scatter(
     traj_cross[:, 0],
     traj_cross[:, 1],
-    color='k',
+    color="k",
     linestyle="None",
     s=marker_size,
     marker="o",
@@ -244,23 +244,23 @@ axes[1].scatter(
 axes[1].plot(
     fem_cross[:, 0],
     fem_cross[:, 1],
-    color='k',
+    color="k",
     linestyle="-",
     ms=2,
     label=rf"scikit-fem",
 )
 
 axes[1].scatter(
-    [-1,-1],
-    [-1,-1],
-    color='w',
-    label=r"$\textrm{Pe}=7 \times 10^5$",
+    [-1, -1],
+    [-1, -1],
+    color="w",
+    label=r"$\textrm{\textit{Pe}}=7 \times 10^5$",
 )
 
 axes[1].scatter(
-    [-1,-1],
-    [-1,-1],
-    color='w',
+    [-1, -1],
+    [-1, -1],
+    color="w",
     label=r"$\beta=0.09$",
 )
 
@@ -294,7 +294,7 @@ axes[1].hlines(
     [1.2],
     color="0.2",
     # linestyles="--",
-    lw=0.1
+    lw=0.1,
 )
 
 text_height = -0.09
@@ -340,8 +340,8 @@ axes[1].legend(
 
 for i, x in enumerate([r"(a)", r"(b)"]):
     axes[i].text(
-        0.01,
-        0.92,
+        0.015,
+        0.935,
         x,
         transform=axes[i].transAxes,
         # ha="center",

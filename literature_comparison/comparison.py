@@ -37,7 +37,7 @@ westerberg = np.loadtxt(westerberg_path, delimiter=",", skiprows=1)
 
 
 # Plot all data
-fontsize = 26 * 1.2
+fontsize = 26 * 1.2 * 0.8 * 0.8 / 0.7
 marker_size = 80
 plt.figure(figsize=(16 * 0.85, 9 * 0.85))
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
@@ -142,13 +142,13 @@ feng = plt.scatter(
 plt.xscale("log")
 plt.yscale("log")
 plt.xlim(0.44, 3 * 10**4)
-plt.ylim(0.8, 50)
+plt.ylim(0.8, 25)
 plt.xticks(fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
 
 # Labels and Title
-plt.xlabel(r"P\'{e}clet number $\textrm{Pe}$", fontsize=fontsize)
-plt.ylabel(r"Sherwood number $\textrm{Sh}$", fontsize=fontsize)
+plt.xlabel(r"P\'{e}clet number $\textrm{\textit{Pe}}$", fontsize=fontsize)
+plt.ylabel(r"Sherwood number $\textrm{\textit{Sh}}$", fontsize=fontsize)
 
 leg1 = [our_work, clift_approx, clift_num, west, frie, feng]
 leg2 = [kuta, kra]

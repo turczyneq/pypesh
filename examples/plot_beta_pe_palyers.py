@@ -168,7 +168,7 @@ def to_plt(pos):
     return (xpos - x_min) / (x_max - x_min), (ypos - y_min) / (y_max - y_min)
 
 
-fontsize = 20 * (9 / 6.7) * (23.5 / 20.8)
+fontsize = 20 * (9 / 6.7) * (23.5 / 20.8) * 1.28
 take_each = 1
 error_range = 20
 plt.figure(figsize=(10, 10))
@@ -270,7 +270,7 @@ artists = [
         transform=plt.gca().transAxes,
     ),
     mpatches.Circle(
-        to_plt(to_plot[-3]) - (12/13) * np.array([distance, 0.0]),
+        to_plt(to_plot[-3]) - (12 / 13) * np.array([distance, 0.0]),
         circle_radius,
         ec="none",
         fc=tableau[0],
@@ -278,7 +278,9 @@ artists = [
     ),
     mpatches.PathPatch(
         make_rhombus(
-            to_plt(to_plot[-3]) + (12/13) * np.array([distance, 0.0]), rhombus_size, 0.9
+            to_plt(to_plot[-3]) + (12 / 13) * np.array([distance, 0.0]),
+            rhombus_size,
+            0.9,
         ),
         ec="none",
         fc=tableau[3],
@@ -313,7 +315,7 @@ artists = [
     mpatches.FancyBboxPatch(
         to_plt(to_plot[1])
         - np.array([box_size / 2, box_size / 2])
-        - (10/11) * np.array([distance, 0.0]),
+        - (10 / 11) * np.array([distance, 0.0]),
         box_size,
         box_size,
         ec="none",
@@ -322,7 +324,11 @@ artists = [
         boxstyle=mpatches.BoxStyle("Round", pad=0.005),
     ),
     mpatches.PathPatch(
-        make_rhombus(to_plt(to_plot[1]) + (10/11) * np.array([distance, 0.0]), rhombus_size, 0.9),
+        make_rhombus(
+            to_plt(to_plot[1]) + (10 / 11) * np.array([distance, 0.0]),
+            rhombus_size,
+            0.9,
+        ),
         ec="none",
         fc=tableau[3],
         transform=plt.gca().transAxes,
@@ -353,8 +359,8 @@ for artist in artists:
     plt.gca().add_artist(artist)
 
 plt.text(
-    0.04,
-    0.96,
+    0.045,
+    0.955,
     r"(c)",
     ha="center",
     va="center",
@@ -376,7 +382,7 @@ plt.text(
 )
 
 plt.text(
-    0.78,
+    0.73,
     0.95,
     r"\emph{direct interception}",
     ha="center",
@@ -388,7 +394,7 @@ plt.text(
 
 plt.text(
     0.8,
-    0.13,
+    0.12,
     r"\emph{advection --}",
     ha="center",
     va="top",
@@ -399,7 +405,7 @@ plt.text(
 )
 plt.text(
     0.84,
-    0.048,
+    0.038,
     r"\emph{ -- diffusion}",
     ha="center",
     va="center",
@@ -417,7 +423,7 @@ plt.text(
 #     c="k",
 # )
 
-box_x_lim = 4 * 10 ** (4)
+box_x_lim = 2 * 10 ** (5)
 box_y_lim = 10 ** (-2)
 
 plt.plot(
@@ -439,21 +445,20 @@ plt.yscale("log")
 plt.xlim(pe_min, pe_max)
 plt.ylim(rsyf_min, rsyf_max)
 
-plt.xlabel(r"P\'{e}clet number $\textrm{Pe}$", fontsize=fontsize)
+plt.xlabel(r"P\'{e}clet number $\textrm{\textit{Pe}}$", fontsize=fontsize)
 plt.ylabel(r"Colliders' size ratio $\beta$", fontsize=fontsize)
 
-plt.xticks(fontsize=fontsize)
+
 plt.yticks(fontsize=fontsize)
-
-
-xtick_list = [10 ** (pow) for pow in [ 1, 3, 5, 7, 9, 11]]
-plt.xticks(xtick_list)
+xtick_list = [10 ** (pow) for pow in [1, 3, 5, 7, 9, 11]]
+plt.xticks(xtick_list, fontsize=fontsize)
+plt.gca().tick_params(axis='x', pad=10)
 
 tosave = parent_dir / "graphics/beta_pe_for_players.pdf"
 plt.savefig(
     tosave,
     bbox_inches="tight",
-    pad_inches=0.01,
+    pad_inches=0.001,
 )
 
 plt.show()
