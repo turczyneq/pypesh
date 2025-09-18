@@ -164,14 +164,31 @@ peclet_values = np.logspace(-1, 12, 300)
 analytic_clift = clift_approximation(peclet_values)
 
 
-fontsize = 15
+fontsize = 11.5 * (11.3 / 9) * 1.2 * 0.97
 marker_size = 10
+figure_aspect_ratio = 300 / 800
 
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
-fig, axes = plt.subplots(3, 1, figsize=(10.5 * 0.6, 16 * 0.6), sharex=True)
+fig = plt.figure(figsize=(11.7, 11.7 * figure_aspect_ratio * 1.4))
 # plt.figure(figsize=(16 * 0.85, 9 * 0.85))
 # plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 
+gs = fig.add_gridspec(
+    2,
+    2,
+    wspace=0.2,
+    hspace=0.28,
+    width_ratios=[1, 1],
+    height_ratios=[1, 1],
+)
+
+ax0 = fig.add_subplot(gs[0, 0])
+ax1 = fig.add_subplot(gs[0, 1])
+
+ax2 = fig.add_subplot(gs[1, :])
+
+
+axes = [ax0, ax1, ax2]
 """first plot"""
 
 empty = axes[0].scatter(
@@ -239,13 +256,15 @@ legend1 = axes[0].legend(
     frameon=False,
     labelspacing=0.1,
     handlelength=0.1,
+    handletextpad=0.4,
     loc=(0.01, 0.35),
-    ncols=2,
+    ncols=3,
+    columnspacing=0.6,
 )
 
 axes[0].text(
-    0.08,
-    0.76,
+    0.09,
+    0.78,
     r"$\beta = $",
     ha="center",
     fontsize=fontsize,
@@ -310,7 +329,7 @@ axes[1].plot(
     [1 for x in peclet_values],
     color="0.7",
     linestyle="-",
-    linewidth=1.,
+    linewidth=1.0,
     zorder=-1,
 )
 
@@ -340,15 +359,15 @@ legend2 = axes[1].legend(
     handles=utils,
     fontsize=fontsize,
     frameon=False,
-    loc=(0.01, 0.55),
+    loc=(0.67, 0.55),
     labelspacing=0.1,
+    handletextpad=0.4,
     handlelength=0.4,
 )
 axes[1].add_artist(legend2)
 
 
 """third plot"""
-
 
 femdots = [
     axes[2].scatter(
@@ -457,22 +476,18 @@ for ax in axes:
 for ax in axes[:2]:
     ax.set_yscale("log")
 
-axes[0].set_ylim(0.5, 8 * 10**10)
+axes[0].set_ylim(0.5, 10**11)
 axes[1].set_ylim(0.7, 80)
 axes[2].set_ylim(-0.05, 0.185)
 
-for i, x in enumerate([r"(a)", r"(b)", r"(c)"]):
-    axes[i].text(0.01, 0.9, x, transform=axes[i].transAxes, fontsize=fontsize)
+# for ax in axes[1:3]:
+#     ax.tick_params(axis="x", labelsize=fontsize, top=True)
+#     ax.tick_params(axis="y", labelsize=fontsize)
 
+# axes[0].tick_params(axis="x", labelsize=fontsize)
+# axes[0].tick_params(axis="y", labelsize=fontsize)
 
-for ax in axes[1:3]:
-    ax.tick_params(axis="x", labelsize=fontsize, top=True)
-    ax.tick_params(axis="y", labelsize=fontsize)
-
-axes[0].tick_params(axis="x", labelsize=fontsize)
-axes[0].tick_params(axis="y", labelsize=fontsize)
-
-for ax in axes:
+for ax, text in zip(axes, [r"(a)", r"(b)", r"(c)"]):
     x_range = np.log10(ax.get_xlim()[1]) - np.log10(ax.get_xlim()[0])
 
     y_range = (
@@ -482,41 +497,27 @@ for ax in axes:
     )
     ax.set_aspect(0.53 * x_range / y_range)
 
-# axes[0].set_ylabel(r"Sherwood number $\left(Sh\right)$", fontsize=fontsize)
-# axes[1].set_ylabel(
-#     r"Modified Sherwood number $\left(\widetilde{Sh}\right)$", fontsize=fontsize
-# )
-# axes[2].set_ylabel(
-#     r"Relative error $\left(\frac{Sh - Sh_{\mathrm{f}}}{Sh}\right)$", fontsize=fontsize
-# )
+    ax.set_xlabel(
+        r"P\'{e}clet number $\textrm{\textit{Pe}}$",
+        labelpad=-1,
+        fontsize=fontsize,
+    )
+    ax.tick_params(
+        labelsize=fontsize,
+    )
 
-axes[0].set_ylabel(r"$\textrm{Sh}$", fontsize=fontsize)
-axes[1].set_ylabel(r"$\widetilde{\textrm{Sh}}$", fontsize=fontsize)
+    ax.text(0.01, 0.9, text, transform=ax.transAxes, fontsize=fontsize)
+
+axes[2].set_yticks([-0.05, 0, 0.05, 0.1, 0.15])
+
+axes[0].set_ylabel(r"$\textrm{\textit{Sh}}$", fontsize=fontsize, labelpad=-1)
+axes[1].set_ylabel(r"$\widetilde{\textrm{\textit{Sh}}}$", fontsize=fontsize, labelpad=-1)
 axes[2].set_ylabel(
-    r"$(\textrm{Sh} - \textrm{Sh}_{\mathrm{f}}) / \textrm{Sh}$", fontsize=fontsize
+    r"$(\textrm{\textit{Sh}} - \textrm{\textit{Sh}}_{\mathrm{f}}) / \textrm{\textit{Sh}}$", fontsize=fontsize
 )
 
-axes[2].set_xlabel(
-    r"P\'{e}clet number $\textrm{Pe}$",
-    fontsize=fontsize,
-)
-
-# fig.text(
-#     0.5,
-#     0.04,
-#     r"Peclet number $\left(Pe\right)$",
-#     fontsize=fontsize,
-#     ha="center",
-#     va="center",
-# )
-# Labels and Title
-# plt.xlabel(r"Peclet number $\left(Pe\right)$", fontsize=fontsize)
-
-# fig.tight_layout()
-plt.subplots_adjust(hspace=0)
-
-tosave = parent_dir / "graphics/big_plot.pdf"
-fig.savefig(tosave, bbox_inches="tight", pad_inches=0.02)
+tosave = parent_dir / "graphics/big_plot_horizontal.pdf"
+fig.savefig(tosave, bbox_inches="tight", pad_inches=0.05)
 
 # Show plot
-plt.show()
+# plt.show()

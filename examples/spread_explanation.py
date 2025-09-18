@@ -87,7 +87,7 @@ def dispersion(peclet):
     return 10 * (1 / peclet) ** (1 / 2)
 
 
-fontsize = 26 * 1.2 * 0.8 * 0.8 / 0.7
+fontsize = 26 * 1.2 * 0.8 * 0.8 / 0.7 * 1.12
 marker_size = 80
 plt.figure(figsize=(16 * 0.85, 9 * 0.85))
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
@@ -115,7 +115,7 @@ plt.scatter(
     [-1,-1],
     [-1,-1],
     color='w',
-    label=r"$\textrm{Pe}=7 \times 10^5$",
+    label=r"$\textrm{\textit{Pe}}=7 \times 10^5$",
 )
 
 plt.scatter(

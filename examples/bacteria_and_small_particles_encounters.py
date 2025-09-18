@@ -80,7 +80,7 @@ def to_upper_band(r_bact):
     return np.max(to_max)
 
 
-r_bacteria_list = np.linspace(10 ** (-5), 25, 1000)
+r_bacteria_list = np.linspace(10 ** (-5), 30, 1000)
 
 
 def for_line(r_snow, drho):
@@ -128,7 +128,7 @@ def make_length_scale(xargs, yargs, thickness, height, c, label, axes):
         c=c,
         va="top",
         ha="left",
-        fontsize=fontsize,
+        fontsize=fontsize / 1.34,
     )
     return None
 
@@ -169,7 +169,7 @@ y_max_from_top = (
 )
 prochloroccus = prochloroccus[y_min_from_top:y_max_from_top, x_min:x_max]
 
-fontsize = 11.5 * (11.3 / 9)
+fontsize = 11.5 * (11.3 / 9) * 1.34
 marker_size = 80
 plt.rcParams.update({"text.usetex": True, "font.family": "Times", "savefig.dpi": 700})
 
@@ -221,7 +221,7 @@ for image_ax, text in zip(
         c="w",
         va="top",
         ha="left",
-        fontsize=fontsize,
+        fontsize=fontsize / 1.34,
         # transform=axes_big.transAxes,
         bbox=dict(boxstyle="square,pad=0.15", fc="0.2", ec="none"),
     )
@@ -246,14 +246,14 @@ axes_big.plot(
     lower_band,
     c="k",
     ls="--",
-    label=r"$a=10^3$ $\mu$m" + "\n" + r"$U = 2.4\times10^4$ m/day",
+    label=r"$a=10^3$ $\mu$m" + "\n" + r"$U = 2.4\times10^4$ $\frac{\textrm{m}}{\textrm{day}}$",
 )
 
 axes_big.plot(
     r_bacteria_list,
     upper_band,
     c="k",
-    label=r"$a=20$ $\mu$m" + "\n" + r"$U = 1.4$ m/day",
+    label=r"$a=20$ $\mu$m" + "\n" + r"$U = 1.4$ $\frac{\textrm{m}}{\textrm{day}}$",
 )
 
 # axes_big.plot(
@@ -295,8 +295,8 @@ axes_big.fill_between(
 
 
 axes_big.text(
-    0.01,
-    0.2,
+    0.29,
+    0.25,
     "advection--\n--diffusion share",
     ha="left",
     va="top",
@@ -307,10 +307,10 @@ axes_big.text(
 )
 
 axes_big.text(
-    0.82,
-    0.8,
-    r"direct interception share",
-    ha="center",
+    0.7,
+    0.9,
+    "direct interception\n share",
+    ha="left",
     va="top",
     fontsize=fontsize,
     transform=axes_big.transAxes,
@@ -320,9 +320,9 @@ axes_big.text(
 
 
 added_text = CurvedText(
-    x=r_bacteria_list[18:],
-    y=line_3[18:],
-    text=r"varying marine snow parameters $a$ and $U$",
+    x=r_bacteria_list[15:],
+    y=line_3[15:],
+    text=r"varying parameters $a$ and $U$",
     ha="center",
     va="center",
     axes=axes_big,
@@ -356,7 +356,7 @@ for val in [0.3, 0.4, 2.5, 3.5]:
 
 axes_big.text(
     3.5,
-    0.6,
+    0.5,
     r"\textit{Thalassiosira}",
     va="bottom",
     ha="right",
@@ -366,7 +366,7 @@ axes_big.text(
 
 axes_big.text(
     2.5,
-    0.5,
+    0.45,
     r"\textit{E. huxleyi}",
     va="bottom",
     ha="right",
@@ -385,7 +385,7 @@ axes_big.text(
 
 axes_big.text(
     0.3,
-    0.3,
+    0.35,
     r"\textit{Prochlorococcus}",
     va="bottom",
     ha="right",
@@ -397,16 +397,16 @@ axes_big.text(
 axes_big.set_xlim(1e-1, r_bacteria_list[-1])
 axes_big.set_xscale("log")
 
-axes_big.set_ylim(-0.06, 1.001)
+axes_big.set_ylim(-0.09, 1.001)
 
 axes_big.set_xlabel(r"Size of suspended objects $b$ [$\mu$m]", fontsize=fontsize)
 axes_big.set_ylabel(r"Partial contribution", fontsize=fontsize)
 
-axes_big.plot([2, 2], [-0.06, 0], c="k", ls="--", lw=0.5)
+axes_big.plot([2, 2], [-0.09, 0], c="k", ls="--", lw=0.5)
 
 axes_big.text(
     0.5,
-    -0.03,
+    -0.045,
     r"picoplankton",
     ha="center",
     va="center",
@@ -418,7 +418,7 @@ axes_big.text(
 
 axes_big.text(
     7,
-    -0.03,
+    -0.045,
     r"nanoplankton",
     ha="center",
     va="center",
@@ -434,7 +434,10 @@ plt.legend(
     facecolor="white",
     framealpha=0.3,
     edgecolor="none",
-    loc=(0.657, 0.2),
+    # labelspacing=-0.1,
+    handletextpad=0.2,
+    handlelength=0.7,
+    loc=(0.64, 0.22),
 )
 
 axes_big.tick_params(which="both", labelsize=fontsize, left=True, labelleft=True)
@@ -446,4 +449,4 @@ plt.savefig(
     pad_inches=0.02,
 )
 
-plt.show()
+# plt.show()
