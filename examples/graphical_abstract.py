@@ -1,0 +1,371 @@
+import pypesh.trajectories as traj
+import pypesh.fem as fem
+import pypesh.stokes_flow as sf
+import pypesh.mpl.streamplot_many_arrows as many_arrows
+from pypesh.mpl.fenix_arrow import FenixArrowStyle
+import matplotlib.pyplot as plt
+from matplotlib.patches import Arc, Wedge
+from matplotlib.patches import FancyArrowPatch, ArrowStyle
+from skfem import (
+    BilinearForm,
+)
+
+from skfem import asm, solve, condense
+from skfem.helpers import grad, dot
+import numpy as np
+import jax
+import jax.numpy as jnp
+
+
+def draw_scheme_sde_pde(
+    peclet,
+    ball_radius,
+    positions,
+    limits=[-2.5, 2.5, -2.5, 5],
+    t_max=30,
+    downstream_distance=3,
+    save="no",
+):
+    """
+    Draws pde versus sde aproach.
+
+    Parameters
+    ----------
+    peclet : float
+        Peclet number defined as R u / D.
+
+    ball_radius : float
+        Radius of the big ball.
+
+    positions: dict
+        Keys: position where simulate, Values: how many times
+
+    t_max : float, optional
+        Default 20, time of simulation
+
+    downstream_distance : float, optional
+        Default 5, downstream distance in ball radius where distribution is plotted
+
+    limits : list
+        minimal radius, maximal radius, minimal height, maximal height
+
+    Returns
+    --------
+    list
+        list of outcomes from pychastic for each position
+
+    """
+
+    # # # make scheme
+
+    def stream(x, z):
+        vx, vy, vz = sf.stokes_around_sphere_explicite(x, z, ball_radius)
+        return vx, vz
+
+    x_min, x_max, z_min, z_max = limits
+
+    xlist = np.linspace(x_min - 1, 0, 400)
+    zlist = np.linspace(-downstream_distance - 1, z_max, 400)
+
+    X, Z = np.meshgrid(xlist, zlist)
+
+    VX, VZ = stream(X, Z)
+
+    speed = np.sqrt(VX**2 + VZ**2)
+
+    def make_arrow(start, end, ax, scale=1, mutation_scale=2, tpercent=0.15):
+        style = FenixArrowStyle(
+            "fenix",
+            head_length=2 * scale,
+            head_width=2 * scale,
+            tail_width=0.01 * scale,
+            tpercent=tpercent,
+        )
+        arrow = FancyArrowPatch(
+            start,
+            end,
+            mutation_scale=mutation_scale,
+            arrowstyle=style,
+            color="k",
+            zorder=3,
+            joinstyle="miter",
+        )
+        ax.add_patch(arrow)
+        return None
+
+    def make_line(start, end, ax, ls="--"):
+        ax.plot(
+            start,
+            end,
+            zorder=3,
+            c="k",
+            linestyle=ls,
+            linewidth=1,
+        )
+        return None
+
+    # # # calculate multiple trajectories
+
+    def drift(q):
+        return sf.stokes_around_sphere_jnp(q, ball_radius)
+
+    _drift = jax.jit(drift)
+
+    _diffusion_at_peclet = jax.jit(traj._diffusion_function(peclet=peclet))
+
+    initial = jnp.array(
+        [
+            [
+                [
+                    x,
+                    0,
+                    -5,
+                ]
+                for i in range(amount)
+            ]
+            for x, amount in positions.items()
+        ]
+    )
+
+    initial = jnp.concatenate(initial, axis=0)
+
+    collision_data = collision_data = traj.simulate_trajectory(
+        drift=_drift,
+        noise=_diffusion_at_peclet,
+        initial=initial,
+        t_max=t_max,
+        whole_trajectory=True,
+    )
+
+    # # # calculate solution by fem
+    @BilinearForm
+    def advection(k, l, m):
+        # Coordinate fields
+        r, z = m.x
+
+        v_r, v_y, v_z = sf.stokes_around_sphere_explicite(r, z, ball_radius)
+
+        return (l * v_r * grad(k)[0] + l * v_z * grad(k)[1]) * 2 * np.pi * r
+
+    @BilinearForm
+    def claplace(u, v, m):
+        """Laplace operator in cylindrical coordinates."""
+        r, z = m.x
+        return dot(grad(u), grad(v)) * 2 * np.pi * r
+
+    mesh, basis = fem.get_mesh(peclet)
+
+    # Assemble the system matrix
+    A = asm(claplace, basis) + peclet * asm(advection, basis)
+    # Identify the interior degrees of freedom
+    interior = basis.complement_dofs(basis.get_dofs({"bottom", "ball"}))
+    # Boundary condition
+    u = basis.zeros()
+    u[basis.get_dofs("bottom")] = 1.0
+    u[basis.get_dofs("ball")] = 0.0
+    # Solve the problem
+    u = solve(*condense(A, x=u, I=interior))
+
+    # artefacts of past text size changes to fit text in paper
+    fontsize = 15 * 1.3 * 11.5 / 16 * 1.26
+    size = 2
+    plt.rcParams.update(
+        {"text.usetex": True, "font.family": "Times", "savefig.dpi": 300}
+    )
+    fig = plt.figure(
+        figsize=(6 * size, 5 * size),
+    )
+
+    gs = fig.add_gridspec(
+        1,
+        2,
+        width_ratios=[1, 1],
+        # sharey=True,
+    )
+
+    ax0 = fig.add_subplot(gs[0, 0])
+    ax1 = fig.add_subplot(gs[0, 1], sharey=ax0)
+    axes = [ax0, ax1]
+
+    trajectories = collision_data["trajectories"]
+    for i in range(len(trajectories)):
+
+        r = (trajectories[i, :, 0] ** 2 + trajectories[i, :, 1] ** 2) ** 0.5
+        z = trajectories[i, :, -1]
+        when_hit = np.concatenate((np.where(r**2 + z**2 < 1)[0], [-1]))[0]
+
+        r = r[:when_hit]
+        z = z[:when_hit]
+
+        if collision_data["ball_hit"][i]:
+            color = "C0"
+        elif collision_data["something_hit"][i]:
+            color = "C0"
+        else:
+            color = "#a22"
+
+        if i % 2:
+            axes[1].plot(r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
+        else:
+            axes[1].plot(-r, z, color=color, linewidth=0.2, zorder=1, rasterized=True)
+
+    tric1 = axes[0].tripcolor(
+        mesh.p[0],
+        mesh.p[1],
+        mesh.t.T,
+        u,
+        shading="gouraud",
+        cmap="viridis",
+        zorder=1,
+        rasterized=True,
+    )
+
+    tric2 = axes[0].tripcolor(
+        -mesh.p[0],
+        mesh.p[1],
+        mesh.t.T,
+        u,
+        shading="gouraud",
+        cmap="viridis",
+        zorder=1,
+        rasterized=True,
+    )
+
+    tric1.set_clim(vmin=0, vmax=1)
+    tric2.set_clim(vmin=0, vmax=1)
+
+    axes[0].add_artist(
+        plt.Circle(
+            (0, 0),
+            ball_radius,
+            edgecolor="k",
+            facecolor="#fff",
+            hatch="////",
+            zorder=2,
+            linewidth=1,
+        )
+    )
+    axes[0].add_artist(
+        Wedge(
+            (0.0, 0.0),
+            1,
+            -90,
+            90,
+            facecolor="C2",
+            alpha=0.5,
+        )
+    )
+
+    axes[1].add_artist(
+        plt.Circle(
+            (0.0, 0.0),
+            ball_radius,
+            edgecolor="k",
+            facecolor="#fff",
+            hatch="////",
+            zorder=2,
+            linewidth=1,
+        )
+    )
+    axes[1].add_artist(
+        Arc(
+            (0, 0),
+            2,
+            2,
+            color="k",
+            linestyle="--",
+            theta1=0,
+            theta2=360,
+            zorder=2,
+            linewidth=1.6,
+        )
+    )
+
+    axes[0].add_artist(
+        plt.Circle(
+            (0.0, 0.0),
+            ball_radius,
+            edgecolor="k",
+            facecolor="#fff",
+            hatch="////",
+            zorder=2,
+            linewidth=1,
+        )
+    )
+    axes[0].add_artist(
+        Arc(
+            (0, 0),
+            2,
+            2,
+            color="w",
+            linestyle="--",
+            theta1=-90,
+            theta2=90,
+            zorder=2,
+            linewidth=1.6,
+        )
+    )
+
+    cmap = plt.get_cmap("viridis")
+    axes[0].add_artist(
+        plt.Circle(
+            (0, 0), 1, edgecolor=None, facecolor=cmap(0), zorder=1, rasterized=True
+        )
+    )
+
+    for ax in axes:
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(z_min, z_max)
+        ax.set_aspect(1)
+        ax.tick_params(axis="x", labelsize=fontsize, top=False, bottom=False)
+        ax.tick_params(axis="y", labelsize=fontsize, left=False, right=False)
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+    plt.subplots_adjust(wspace=0.0)
+
+    if save != "no":
+        tosave = str(save)
+        plt.savefig(
+            tosave + ".pdf",
+            bbox_inches="tight",
+            pad_inches=0.02,
+        )
+
+    plt.show()
+
+    return None
+
+
+from pathlib import Path
+
+parent_dir = Path(__file__).parent
+
+# tosave = parent_dir / "graphics/graphical_abstract_not_much"
+# draw_scheme_sde_pde(
+#     500,
+#     0.7,
+#     {0: 4, 0.1: 4, 0.2: 4, 0.3: 4, 0.4: 4, 0.5: 4, 0.6: 4, 0.7: 4},
+#     limits=[-2.25, 2.25, -2.5, 5],
+#     save=tosave,
+# )
+
+
+"""
+WARNING time expensive code, 
+"""
+positions = np.linspace(0, 2.8**2, 150)
+amount = 20
+
+to_plt = {}
+for x in positions:
+    to_plt[np.sqrt(x)] = amount
+
+tosave = parent_dir / "graphics/graphical_abstract"
+draw_scheme_sde_pde(
+    500,
+    0.7,
+    to_plt,
+    limits=[-2.25, 2.25, -2.5, 5],
+    save=tosave,
+)
