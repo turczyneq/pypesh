@@ -261,7 +261,7 @@ axes[0].add_artist(legend1)
 (clift,) = axes[1].loglog(
     peclet_values,
     analytic_clift,
-    label="Eq. (14)",
+    label="Eq. (4.3)",
     color="k",
     linestyle="-",
     linewidth=2,
