@@ -87,7 +87,7 @@ def dispersion(peclet):
     return 10 * (1 / peclet) ** (1 / 2)
 
 
-fontsize = 26 * 1.2 * 0.8 * 0.8 / 0.7 * 1.12
+fontsize = 26 * 1.2 * 0.8 * 0.8 / 0.7 * 1.13
 marker_size = 80
 plt.figure(figsize=(16 * 0.85, 9 * 0.85))
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
@@ -158,7 +158,7 @@ plt.hlines(
     lw=0.1
 )
 
-text_height = -0.09
+text_height = -0.077
 
 plt.text(
     (vertical_lines[0] + vertical_lines[1]) / 2,

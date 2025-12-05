@@ -42,6 +42,8 @@ chase = 10 ** (-6) * np.array([4, 10])
 bacterium = 10 ** (-6) * np.array([1, 0])
 mucus = 10 ** (-6) * np.array([4, 0])
 
+print([float(diffusion(r)) for r, u in [iversen, chajwa, chase, bacterium, mucus]])
+
 
 def pair(i_1, i_2):
     return np.array(
@@ -452,7 +454,7 @@ plt.ylabel(r"Colliders' size ratio $\beta$", fontsize=fontsize)
 plt.yticks(fontsize=fontsize)
 xtick_list = [10 ** (pow) for pow in [1, 3, 5, 7, 9, 11]]
 plt.xticks(xtick_list, fontsize=fontsize)
-plt.gca().tick_params(axis='x', pad=10)
+plt.gca().tick_params(axis="x", pad=10)
 
 tosave = parent_dir / "graphics/beta_pe_for_players.pdf"
 plt.savefig(
