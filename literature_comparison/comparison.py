@@ -81,7 +81,7 @@ kuta = plt.scatter(
 kra = plt.scatter(
     kramers[:, 2],
     kramers[:, 3],
-    label="Kramers et al. (exp.)",
+    label="Kramers (exp.)",
     color=tableau[6],
     marker="s",
     s=marker_size,
@@ -129,7 +129,7 @@ frie = plt.scatter(
 feng = plt.scatter(
     feng[:, 2],
     feng[:, 3],
-    label="Feng et al. (sim.)",
+    label="Feng \& Michaelides (sim.)",
     color=tableau[3],
     marker="D",
     s=marker_size,
