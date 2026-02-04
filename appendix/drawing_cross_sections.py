@@ -58,7 +58,7 @@ for i, peclet in enumerate([10**3, 10**4, 10**5, 10**6]):
         color=tableau[i],
         linestyle="-",
         ms=2,
-        label=rf"$\textrm{{Pe}} = 10^{round(np.log10(peclet))}$",
+        label=r"$\textrm{\textit{{Pe}}}$" + rf"$= 10^{round(np.log10(peclet))}$",
     )
     jax.clear_caches()
 
@@ -87,7 +87,7 @@ plt.plot(
     color=tableau[4],
     linestyle="-",
     ms=2,
-    label=r"$\textrm{Pe} = 10^8$",
+    label=r"$\textrm{\textit{Pe}} = 10^8$",
 )
 
 # add dummy plt to make legend

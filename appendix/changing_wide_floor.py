@@ -112,7 +112,7 @@ ball_list = [
     # 1,
 ]
 
-fontsize = 15 * 15 / 14 * (23.8 / 20.9) * (11.34 / 12.23)
+fontsize = 15 * 15 / 14 * (23.8 / 21) * (11.34 / 12.23)
 plt.rcParams.update({"text.usetex": True, "font.family": "Times"})
 fig, axes = plt.subplots(
     1,
@@ -191,9 +191,9 @@ for ax in axes:
     ax.set_ylim(-0.05, 0.19)
     ax.tick_params(which="both", labelsize=fontsize)
 
-    ax.set_xlabel(r"P\'eclet number $\textrm{Pe}$", fontsize=fontsize)
+    ax.set_xlabel(r"P\'eclet number $\textrm{\textit{Pe}}$", fontsize=fontsize)
 axes[0].set_ylabel(
-    r"$(\textrm{Sh} - \textrm{Sh}_{\mathrm{f}}) / \textrm{Sh}$", fontsize=fontsize
+    r"$(\textrm{\textit{Sh}} - \textrm{\textit{Sh}}_{\mathrm{f}}) / \textrm{\textit{Sh}}$", fontsize=fontsize
 )
 
 legend_wide10 = axes[0].scatter([0], [0], label=r"$\texttt{wide} = 10$", color="k")

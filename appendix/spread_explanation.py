@@ -59,7 +59,7 @@ plt.plot(
     linestyle="None",
     ms=8,
     marker="o",
-    label=rf"pychastic for $\textrm{{Pe}} = 10^{round(np.log10(peclet))}$",
+    label=rf"pychastic for $\textrm{{\textit{{Pe}}}} = 10^{round(np.log10(peclet))}$",
 )
 plt.plot(
     fem_cross[:, 0],
@@ -67,7 +67,7 @@ plt.plot(
     color="C1",
     linestyle="-",
     ms=2,
-    label=rf"scikit-fem for $\textrm{{Pe}} = 10^{round(np.log10(peclet))}$",
+    label=rf"scikit-fem for $\textrm{{\textit{{Pe}}}} = 10^{round(np.log10(peclet))}$",
 )
 
 vertical_lines = [
