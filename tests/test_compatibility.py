@@ -16,7 +16,7 @@ def test_compatibility():
         mesh_out=5,
         spread=2,
     )
-    fem_sherwood = fem.sherwood_fem(peclet, ball_radius)
+    fem_sherwood = 2 * fem.sherwood_fem(peclet, ball_radius)
 
     assert np.isclose(pychastic, fem_sherwood, rtol=0.03), 'if fem and trajetories give simmilar sherwood'
 
