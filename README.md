@@ -23,18 +23,19 @@ Where $D$ is diffusion constant and $\Phi$ is flux falling onto the sphere.
 If you use **pypesh** in your research, please cite the associated article:
 
 Turczynowicz, J., Waszkiewicz, R., Lisicki, M., and Słomka, J. 
-*Bridging advection and diffusion in the encounter dynamics of sedimenting marine snow*; arXiv (2025)  
+*Bridging advection and diffusion in the encounter dynamics of sedimenting marine snow.* Journal of Fluid Mechanics. 2026  
 
-https://doi.org/10.48550/arXiv.2504.08992
+https://doi.org/10.1017/jfm.2026.11282
 
 ```bibtex
-@article{Turczynowicz_2025,
-  title     = {Bridging advection and diffusion in the encounter dynamics of sedimenting marine snow},
-  author    = {Turczynowicz, Jan and Waszkiewicz, Radost and Lisicki, Maciej and Słomka, Jonasz},
-  journal   = {arXiv},
-  year      = {2025},
-  doi       = {10.48550/arXiv.2504.08992},
-  url       = {https://doi.org/10.48550/arXiv.2504.08992}
+@article{Turczynowicz_2026,
+	title        = {Bridging advection and diffusion in the encounter dynamics of sedimenting marine snow},
+	author       = {Turczynowicz, Jan and Waszkiewicz, Radost and S{\l}omka, Jonasz and Lisicki, Maciej},
+	year         = 2026,
+	journal      = {Journal of Fluid Mechanics},
+	volume       = 1031,
+	pages        = {A5},
+	doi          = {10.1017/jfm.2026.11282}
 }
 ```
 
