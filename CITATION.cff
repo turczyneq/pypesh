@@ -36,11 +36,10 @@ preferred-citation:
     - given-names: Jonasz
       family-names: Słomka
       orcid: 'https://orcid.org/0000-0002-7097-5810'
-  doi: 10.48550/arXiv.2504.08992
-  date-released: 2025-04-11
-  url: https://doi.org/10.48550/arXiv.2504.08992
+  doi: 10.1017/jfm.2026.11282 
+  date-released: 2026-03-23
   publisher:
-    name: arXiv
-  year: 2025
-  journal: arXiv
+    name: Journal of Fluid Mechanics
+  year: 2026
+  journal: Journal of Fluid Mechanics
 
